@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IV-2026-00589 | 請求書</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .record-page { background: #f3f3f3; padding: 0.75rem; }
+
+      /* 右カラム詳細パネルのフィールド */
+      .detail-field { border-bottom: 1px solid #e5e5e5; padding: 0.5rem 0; }
+      .detail-field:last-child { border-bottom: none; }
+      .detail-field__label { font-size: 0.75rem; color: #706e6b; }
+      .detail-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+
+      /* 金額強調 */
+      .amount-highlight { font-size: 1.1rem; font-weight: 700; color: #0070d2; }
+      .amount-overdue { color: #c23934; }
+
+      /* バッジ */
+      .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .status-badge--sent { background: #d4edfc; color: #0070d2; }
+      .status-badge--paid { background: #d4f0d4; color: #2e844a; }
+      .status-badge--overdue { background: #fdd; color: #c23934; }
+      .status-badge--draft { background: #e5e5e5; color: #706e6b; }
+
+      /* サマリーカード */
+      .summary-card {
+        background: #f8fafc;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+      .summary-card__row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: 0.8125rem;
+      }
+      .summary-card__row--total {
+        border-top: 2px solid #0070d2;
+        margin-top: 4px;
+        padding-top: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ========================================================
+           1. グローバルナビゲーション
+           ======================================================== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="学習塾管理">学習塾管理</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="ホーム">
+                <span class="slds-truncate" title="ホーム">ホーム</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="生徒">
+                <span class="slds-truncate" title="生徒">生徒</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="保護者">
+                <span class="slds-truncate" title="保護者">保護者</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="#" class="slds-context-bar__label-action" title="請求書">
+                <span class="slds-truncate" title="請求書">請求書</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="入金">
+                <span class="slds-truncate" title="入金">入金</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="コース">
+                <span class="slds-truncate" title="コース">コース</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="レポート">
+                <span class="slds-truncate" title="レポート">レポート</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- レコードタブ -->
+      <div class="slds-context-bar slds-context-bar_tabs" style="border-top: 1px solid #d8dde6;">
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item slds-context-bar__item_tab slds-is-active" role="presentation">
+              <a href="#" class="slds-context-bar__label-action" role="tab" title="IV-2026-00589 | 請求書">
+                <span class="slds-truncate" title="IV-2026-00589 | 請求書">IV-2026-00589 | 請求書</span>
+              </a>
+              <div class="slds-context-bar__icon-action slds-context-bar__icon-action_container">
+                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" title="閉じる">
+                  <span style="font-size:0.65rem;">✕</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ========================================================
+           2. Highlights Panel（レコードヘッダー）
+           ======================================================== -->
+      <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span style="background-color: #e56798; border-radius: 4px; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center;">
+                  <span style="color: #fff; font-size: 1.1rem;">&#xffe5;</span>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                      <span class="slds-page-header__name-meta">請求書</span>
+                      <span class="slds-page-header__title slds-truncate" title="IV-2026-00589">IV-2026-00589</span>
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <ul class="slds-button-group-list">
+                  <li><button class="slds-button slds-button_neutral">編集</button></li>
+                  <li><button class="slds-button slds-button_neutral">入金登録</button></li>
+                  <li><button class="slds-button slds-button_neutral">PDF発行</button></li>
+                  <li><button class="slds-button slds-button_neutral">メール送信</button></li>
+                  <li>
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション">
+                      <span style="font-size: 0.65rem;">&#x25BC;</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ハイライト項目 -->
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+          <div class="slds-page-header__col-details">
+            <ul class="slds-page-header__detail-row">
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="ステータス">ステータス</p>
+                <p><span class="status-badge status-badge--sent">送付済</span></p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="生徒名">生徒名</p>
+                <p><a href="#" title="山田 太郎">山田 太郎</a></p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="保護者名">保護者名</p>
+                <p><a href="#" title="山田 花子">山田 花子</a></p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="請求月">請求月</p>
+                <p class="slds-truncate" title="2026年3月">2026年3月</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="請求金額（税込）">請求金額（税込）</p>
+                <p class="amount-highlight">&yen;52,800</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="支払期限">支払期限</p>
+                <p class="slds-truncate" title="2026/02/25">2026/02/25</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           3. Path コンポーネント（請求ステータス）
+           ======================================================== -->
+      <div class="slds-path" style="background: #fff; border-bottom: 1px solid #d8dde6;">
+        <div class="slds-grid slds-path__track">
+          <div class="slds-grid slds-path__scroller-container" style="flex: 1;">
+            <div class="slds-path__scroller" role="application">
+              <div class="slds-path__scroller_inner" role="tablist">
+                <ul class="slds-path__nav" role="presentation">
+                  <li class="slds-path__item slds-is-complete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">下書き</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-complete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">承認済</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="0" aria-selected="true">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">送付済</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">入金済</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">消込完了</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">&#x2713;</span></span>
+                      <span class="slds-path__title">キャンセル</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="slds-grid slds-path__action">
+            <button class="slds-button slds-button_brand slds-path__mark-complete">
+              <span>入金済にする</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           4. レコードページ本体（2カラム）
+           ======================================================== -->
+      <div class="record-page">
+        <div class="slds-grid slds-gutters">
+
+          <!-- ===== 左カラム: 関連リスト群 ===== -->
+          <div class="slds-col slds-size_8-of-12">
+
+            <!-- 関連リスト: 請求明細 -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #f28b00; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">&#x1F4CB;</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>請求明細 (5)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">5 items &middot; Sorted by 種別</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">&#x27F3;</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="明細番号">明細番号</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="種別">種別</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="項目名">項目名</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:80px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="数量">数量</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:110px; text-align:right;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                            <span class="slds-truncate" title="単価">単価</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:110px; text-align:right;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                            <span class="slds-truncate" title="小計">小計</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#">IL-001</a></div></td>
+                      <td><div class="slds-truncate">月謝</div></td>
+                      <td><div class="slds-truncate">中3 受験対策コース（数学・英語・国語）</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">1</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;28,000</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;28,000</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#">IL-002</a></div></td>
+                      <td><div class="slds-truncate">月謝</div></td>
+                      <td><div class="slds-truncate">中3 理科特訓講座</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">1</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;8,000</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;8,000</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#">IL-003</a></div></td>
+                      <td><div class="slds-truncate">教材費</div></td>
+                      <td><div class="slds-truncate">春期講習テキスト（数学）</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">1</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;2,200</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;2,200</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#">IL-004</a></div></td>
+                      <td><div class="slds-truncate">教材費</div></td>
+                      <td><div class="slds-truncate">春期講習テキスト（英語）</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">1</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;2,200</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;2,200</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#">IL-005</a></div></td>
+                      <td><div class="slds-truncate">施設利用料</div></td>
+                      <td><div class="slds-truncate">自習室利用料（3月分）</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">1</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;7,600</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;7,600</div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 金額サマリー -->
+              <div class="slds-card__footer" style="padding: 0.75rem 1rem;">
+                <div class="summary-card">
+                  <div class="summary-card__row">
+                    <span>小計</span>
+                    <span>&yen;48,000</span>
+                  </div>
+                  <div class="summary-card__row">
+                    <span>消費税（10%）</span>
+                    <span>&yen;4,800</span>
+                  </div>
+                  <div class="summary-card__row summary-card__row--total">
+                    <span>請求金額（税込）</span>
+                    <span>&yen;52,800</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 入金履歴 -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #4bc076; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">&#x1F4B0;</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>入金履歴 (0)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">0 items</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">&#x27F3;</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-illustration slds-illustration_small" style="padding: 1rem 0;">
+                  <div style="text-align:center; color:#706e6b; font-size:0.8125rem;">
+                    入金履歴はありません
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 受講スケジュール（該当月） -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #7f8de1; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">&#x1F4C5;</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>受講スケジュール — 2026年3月 (12)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">12 items &middot; Sorted by 日付</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">&#x27F3;</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th scope="col" style="width:110px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="日付">日付</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:90px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="曜日">曜日</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:120px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="時間">時間</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="科目">科目</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="講師">講師</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">&#x25BC;</span>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/03</div></td>
+                      <td><div class="slds-truncate">火</div></td>
+                      <td><div class="slds-truncate">18:00 - 19:30</div></td>
+                      <td><div class="slds-truncate">数学</div></td>
+                      <td><div class="slds-truncate"><a href="#">佐藤 先生</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">木</div></td>
+                      <td><div class="slds-truncate">18:00 - 19:30</div></td>
+                      <td><div class="slds-truncate">英語</div></td>
+                      <td><div class="slds-truncate"><a href="#">鈴木 先生</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/07</div></td>
+                      <td><div class="slds-truncate">土</div></td>
+                      <td><div class="slds-truncate">10:00 - 11:30</div></td>
+                      <td><div class="slds-truncate">国語</div></td>
+                      <td><div class="slds-truncate"><a href="#">田中 先生</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/07</div></td>
+                      <td><div class="slds-truncate">土</div></td>
+                      <td><div class="slds-truncate">13:00 - 14:30</div></td>
+                      <td><div class="slds-truncate">理科特訓</div></td>
+                      <td><div class="slds-truncate"><a href="#">高橋 先生</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/10</div></td>
+                      <td><div class="slds-truncate">火</div></td>
+                      <td><div class="slds-truncate">18:00 - 19:30</div></td>
+                      <td><div class="slds-truncate">数学</div></td>
+                      <td><div class="slds-truncate"><a href="#">佐藤 先生</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2026/03/12</div></td>
+                      <td><div class="slds-truncate">木</div></td>
+                      <td><div class="slds-truncate">18:00 - 19:30</div></td>
+                      <td><div class="slds-truncate">英語</div></td>
+                      <td><div class="slds-truncate"><a href="#">鈴木 先生</a></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="slds-card__footer">
+                <a href="#" class="slds-card__footer-action">すべて表示 (12件)</a>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 活動履歴 -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #62b7ed; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">&#x1F4DD;</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>活動履歴 (3)</span>
+                    </h2>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">&#x27F3;</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <ul class="slds-has-dividers_bottom-space">
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>2026/02/20 10:30</strong> &mdash; 請求書をメールで送付（山田 花子 宛 hanako.yamada@example.com）
+                  </li>
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>2026/02/19 15:00</strong> &mdash; ステータスを「下書き」&rarr;「承認済」に変更（教室長 承認）
+                  </li>
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>2026/02/18 09:15</strong> &mdash; 請求書を作成（管理者）
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- ===== 右カラム: 詳細パネル ===== -->
+          <div class="slds-col slds-size_4-of-12">
+            <article class="slds-card">
+              <div class="slds-card__body slds-p-around_none">
+
+                <!-- タブ: 概要 | 活動 | Chatter -->
+                <div class="slds-tabs_default">
+                  <ul class="slds-tabs_default__nav" role="tablist">
+                    <li class="slds-tabs_default__item slds-is-active" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="0" aria-selected="true">概要</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">活動</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">Chatter</a>
+                    </li>
+                  </ul>
+
+                  <!-- 概要タブ -->
+                  <div class="slds-tabs_default__content slds-show" role="tabpanel">
+                    <div class="slds-p-horizontal_medium slds-p-vertical_x-small">
+
+                      <h3 class="slds-text-title_caps slds-m-bottom_x-small slds-m-top_small" style="font-size:0.7rem; letter-spacing:0.05em; color:#706e6b;">請求情報</h3>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">請求書番号</div>
+                        <div class="detail-field__value">IV-2026-00589</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">ステータス</div>
+                        <div class="detail-field__value"><span class="status-badge status-badge--sent">送付済</span></div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">請求月</div>
+                        <div class="detail-field__value">2026年3月</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">発行日</div>
+                        <div class="detail-field__value">2026/02/20</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">支払期限</div>
+                        <div class="detail-field__value">2026/02/25</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">支払方法</div>
+                        <div class="detail-field__value">口座振替</div>
+                      </div>
+
+                      <h3 class="slds-text-title_caps slds-m-bottom_x-small slds-m-top_medium" style="font-size:0.7rem; letter-spacing:0.05em; color:#706e6b;">金額情報</h3>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">小計（税抜）</div>
+                        <div class="detail-field__value">&yen;48,000</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">消費税</div>
+                        <div class="detail-field__value">&yen;4,800</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">請求金額（税込）</div>
+                        <div class="detail-field__value amount-highlight">&yen;52,800</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">入金済金額</div>
+                        <div class="detail-field__value">&yen;0</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">未入金残高</div>
+                        <div class="detail-field__value" style="color:#c23934; font-weight:600;">&yen;52,800</div>
+                      </div>
+
+                      <h3 class="slds-text-title_caps slds-m-bottom_x-small slds-m-top_medium" style="font-size:0.7rem; letter-spacing:0.05em; color:#706e6b;">生徒・保護者情報</h3>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">生徒名</div>
+                        <div class="detail-field__value"><a href="#">山田 太郎</a></div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">学年</div>
+                        <div class="detail-field__value">中学3年</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">在籍教室</div>
+                        <div class="detail-field__value"><a href="#">渋谷本校</a></div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">保護者名（請求先）</div>
+                        <div class="detail-field__value"><a href="#">山田 花子</a></div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">メールアドレス</div>
+                        <div class="detail-field__value">hanako.yamada@example.com</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">電話番号</div>
+                        <div class="detail-field__value">090-1234-5678</div>
+                      </div>
+
+                      <h3 class="slds-text-title_caps slds-m-bottom_x-small slds-m-top_medium" style="font-size:0.7rem; letter-spacing:0.05em; color:#706e6b;">システム情報</h3>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">作成者</div>
+                        <div class="detail-field__value"><a href="#">管理者</a>，2026/02/18 09:15</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">最終更新者</div>
+                        <div class="detail-field__value"><a href="#">管理者</a>，2026/02/20 10:30</div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

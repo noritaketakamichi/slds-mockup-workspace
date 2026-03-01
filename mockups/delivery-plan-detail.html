@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DP-2026-00142 | 配送計画</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .record-page { background: #f3f3f3; padding: 0.75rem; }
+
+      /* 右カラム詳細パネルのフィールド */
+      .detail-field { border-bottom: 1px solid #e5e5e5; padding: 0.5rem 0; }
+      .detail-field:last-child { border-bottom: none; }
+      .detail-field__label { font-size: 0.75rem; color: #706e6b; }
+      .detail-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+
+      /* 関連リストの折りたたみヘッダー */
+      .related-list-header { cursor: pointer; }
+      .related-list-header:hover { background: #f3f3f3; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ========================================================
+           1. グローバルナビゲーション
+           ======================================================== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="配送管理アプリ">配送管理アプリ</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="ホーム">
+                <span class="slds-truncate" title="ホーム">ホーム</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="#" class="slds-context-bar__label-action" title="配送計画">
+                <span class="slds-truncate" title="配送計画">配送計画</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="配送依頼">
+                <span class="slds-truncate" title="配送依頼">配送依頼</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="ドライバー">
+                <span class="slds-truncate" title="ドライバー">ドライバー</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="車両">
+                <span class="slds-truncate" title="車両">車両</span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="レポート">
+                <span class="slds-truncate" title="レポート">レポート</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- レコードタブ -->
+      <div class="slds-context-bar slds-context-bar_tabs" style="border-top: 1px solid #d8dde6;">
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item slds-context-bar__item_tab slds-is-active" role="presentation">
+              <a href="#" class="slds-context-bar__label-action" role="tab" title="DP-2026-00142 | 配送計画">
+                <span class="slds-truncate" title="DP-2026-00142 | 配送計画">DP-2026-00142 | 配送計画</span>
+              </a>
+              <div class="slds-context-bar__icon-action slds-context-bar__icon-action_container">
+                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" title="閉じる">
+                  <span style="font-size:0.65rem;">✕</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ========================================================
+           2. Highlights Panel（レコードヘッダー）
+           ======================================================== -->
+      <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span style="background-color: #7f8de1; border-radius: 4px; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center;">
+                  <span style="color: #fff; font-size: 1.1rem;">📦</span>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                      <span class="slds-page-header__name-meta">配送計画</span>
+                      <span class="slds-page-header__title slds-truncate" title="DP-2026-00142">DP-2026-00142</span>
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <ul class="slds-button-group-list">
+                  <li><button class="slds-button slds-button_neutral">編集</button></li>
+                  <li><button class="slds-button slds-button_neutral">ステータス更新</button></li>
+                  <li><button class="slds-button slds-button_neutral">PDFダウンロード</button></li>
+                  <li>
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション">
+                      <span style="font-size: 0.65rem;">▼</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ハイライト項目 -->
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+          <div class="slds-page-header__col-details">
+            <ul class="slds-page-header__detail-row">
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="ステータス">ステータス</p>
+                <p class="slds-truncate" title="配送中">配送中</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="配送日">配送日</p>
+                <p class="slds-truncate" title="2026/02/24">2026/02/24</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="担当ドライバー">担当ドライバー</p>
+                <p><a href="#" title="田中 太郎">田中 太郎</a></p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="車両">車両</p>
+                <p class="slds-truncate" title="品川 300 あ 12-34">品川 300 あ 12-34</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="作成者">作成者</p>
+                <p><a href="#" title="管理者">管理者</a>，2026/02/23 09:00</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           3. Path コンポーネント
+           ======================================================== -->
+      <div class="slds-path" style="background: #fff; border-bottom: 1px solid #d8dde6;">
+        <div class="slds-grid slds-path__track">
+          <div class="slds-grid slds-path__scroller-container" style="flex: 1;">
+            <div class="slds-path__scroller" role="application">
+              <div class="slds-path__scroller_inner" role="tablist">
+                <ul class="slds-path__nav" role="presentation">
+                  <li class="slds-path__item slds-is-complete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">計画作成</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-complete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">承認済</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="0" aria-selected="true">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">配送中</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">配送完了</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">完了確認</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;">✓</span></span>
+                      <span class="slds-path__title">キャンセル</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="slds-grid slds-path__action">
+            <button class="slds-button slds-button_brand slds-path__mark-complete">
+              <span>配送完了にする</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           4. レコードページ本体（2カラム）
+           ======================================================== -->
+      <div class="record-page">
+        <div class="slds-grid slds-gutters">
+
+          <!-- ===== 左カラム: 関連リスト群 ===== -->
+          <div class="slds-col slds-size_8-of-12">
+
+            <!-- 関連リスト: 配送依頼 -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #f28b00; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">📋</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>配送依頼 (8)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">8 items · Sorted by 配送順</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">⟳</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th scope="col" style="width:60px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="#">#</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="依頼番号">依頼番号</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">▼</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="届け先">届け先</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">▼</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="住所">住所</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">▼</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:110px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="時間指定">時間指定</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">▼</span>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:90px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="ステータス">ステータス</span>
+                            <span style="margin-left:0.25rem; font-size:0.5rem; color:#706e6b;">▼</span>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">1</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00301</a></div></td>
+                      <td><div class="slds-truncate">ABC商事 本社</div></td>
+                      <td><div class="slds-truncate">東京都千代田区丸の内1-1-1</div></td>
+                      <td><div class="slds-truncate">09:00-10:00</div></td>
+                      <td><div class="slds-truncate">配送済</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00302</a></div></td>
+                      <td><div class="slds-truncate">XYZ物産 東京支店</div></td>
+                      <td><div class="slds-truncate">東京都中央区銀座2-3-4</div></td>
+                      <td><div class="slds-truncate">09:00-10:00</div></td>
+                      <td><div class="slds-truncate">配送済</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">3</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00303</a></div></td>
+                      <td><div class="slds-truncate">山田製作所</div></td>
+                      <td><div class="slds-truncate">東京都港区六本木3-5-6</div></td>
+                      <td><div class="slds-truncate">10:00-11:00</div></td>
+                      <td><div class="slds-truncate">配送済</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">4</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00304</a></div></td>
+                      <td><div class="slds-truncate">佐藤電機 渋谷営業所</div></td>
+                      <td><div class="slds-truncate">東京都渋谷区道玄坂1-2-3</div></td>
+                      <td><div class="slds-truncate">11:00-12:00</div></td>
+                      <td><div class="slds-truncate">配送済</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">5</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00305</a></div></td>
+                      <td><div class="slds-truncate">鈴木建設 新宿事務所</div></td>
+                      <td><div class="slds-truncate">東京都新宿区西新宿7-8-9</div></td>
+                      <td><div class="slds-truncate">13:00-14:00</div></td>
+                      <td><div class="slds-truncate">配送済</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">6</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00306</a></div></td>
+                      <td><div class="slds-truncate">高橋食品 池袋倉庫</div></td>
+                      <td><div class="slds-truncate">東京都豊島区東池袋4-5-6</div></td>
+                      <td><div class="slds-truncate">14:00-15:00</div></td>
+                      <td><div class="slds-truncate">配送中</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">7</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00307</a></div></td>
+                      <td><div class="slds-truncate">伊藤化学 板橋工場</div></td>
+                      <td><div class="slds-truncate">東京都板橋区舟渡1-2-3</div></td>
+                      <td><div class="slds-truncate">15:00-16:00</div></td>
+                      <td><div class="slds-truncate">未配送</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">8</div></td>
+                      <td><div class="slds-truncate"><a href="#">DR-2026-00308</a></div></td>
+                      <td><div class="slds-truncate">中村機械 赤羽支店</div></td>
+                      <td><div class="slds-truncate">東京都北区赤羽南1-7-1</div></td>
+                      <td><div class="slds-truncate">16:00-17:00</div></td>
+                      <td><div class="slds-truncate">未配送</div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 配送ルート -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #4bc076; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">🗺</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>配送ルート (1)</span>
+                    </h2>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">⟳</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div style="width:100%; height:240px; background:#e0e5ee; border:1px solid #c9c7c5; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#706e6b; font-size:0.8125rem;">
+                  [ 地図プレースホルダ — Google Maps / Mapbox 等を埋め込み ]
+                </div>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                  出発: 東京倉庫 → 8拠点 → 帰庫 ｜ 推定所要時間: 6時間30分 ｜ 総走行距離: 145 km
+                </p>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 活動履歴 -->
+            <article class="slds-card slds-m-bottom_small">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #62b7ed; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="color: #fff; font-size: 0.7rem;">📝</span>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>活動履歴 (4)</span>
+                    </h2>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <span style="font-size: 0.7rem;">⟳</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <ul class="slds-has-dividers_bottom-space">
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>14:25</strong> — DR-2026-00305 配送完了（鈴木建設 新宿事務所）
+                  </li>
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>13:10</strong> — DR-2026-00306 配送開始（高橋食品 池袋倉庫へ移動中）
+                  </li>
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>08:05</strong> — 計画開始。東京倉庫を出発
+                  </li>
+                  <li class="slds-item slds-p-vertical_x-small">
+                    <strong>07:45</strong> — ステータスを「計画作成」→「配送中」に変更（田中 太郎）
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- ===== 右カラム: 詳細パネル ===== -->
+          <div class="slds-col slds-size_4-of-12">
+            <article class="slds-card">
+              <div class="slds-card__body slds-p-around_none">
+
+                <!-- タブ: 概要 | 活動 | Chatter -->
+                <div class="slds-tabs_default">
+                  <ul class="slds-tabs_default__nav" role="tablist">
+                    <li class="slds-tabs_default__item slds-is-active" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="0" aria-selected="true">概要</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">活動</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">Chatter</a>
+                    </li>
+                  </ul>
+
+                  <!-- 概要タブ -->
+                  <div class="slds-tabs_default__content slds-show" role="tabpanel">
+                    <div class="slds-p-horizontal_medium slds-p-vertical_x-small">
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">ステータス</div>
+                        <div class="detail-field__value">配送中</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">配送日</div>
+                        <div class="detail-field__value">2026/02/24</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">出発時刻</div>
+                        <div class="detail-field__value">08:00</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">担当ドライバー</div>
+                        <div class="detail-field__value"><a href="#">田中 太郎</a></div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">車両</div>
+                        <div class="detail-field__value">品川 300 あ 12-34（2tトラック）</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">配送依頼数</div>
+                        <div class="detail-field__value">8</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">完了数</div>
+                        <div class="detail-field__value">5</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">進捗率</div>
+                        <div class="detail-field__value">62.5%</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">総走行距離</div>
+                        <div class="detail-field__value">145 km</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">備考</div>
+                        <div class="detail-field__value">午前中に優先配送3件あり。高速道路利用可。</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">作成者</div>
+                        <div class="detail-field__value"><a href="#">管理者</a>，2026/02/23 09:00</div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div class="detail-field__label">最終更新者</div>
+                        <div class="detail-field__value"><a href="#">田中 太郎</a>，2026/02/24 14:30</div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

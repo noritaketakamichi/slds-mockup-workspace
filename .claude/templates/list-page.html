@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{PAGE_TITLE}} - 一覧</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body {
+        font-family: "Salesforce Sans", Arial, sans-serif;
+      }
+      .app-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+      <div class="app-container">
+
+        <!-- ページヘッダー -->
+        <div class="slds-page-header">
+          <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+              <div class="slds-media">
+                <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                    <div class="slds-page-header__name-title">
+                      <h1>
+                        <span class="slds-page-header__title slds-truncate">{{PAGE_TITLE}}</span>
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+              <div class="slds-page-header__controls">
+                <div class="slds-page-header__control">
+                  <button class="slds-button slds-button_neutral">
+                    新規作成
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- データテーブル -->
+        <article class="slds-card slds-m-top_medium">
+          <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="列1">列1</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="列2">列2</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="列3">列3</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="アクション">アクション</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="slds-hint-parent">
+                  <td data-label="列1">
+                    <div class="slds-truncate">サンプルデータ1</div>
+                  </td>
+                  <td data-label="列2">
+                    <div class="slds-truncate">サンプルデータ2</div>
+                  </td>
+                  <td data-label="列3">
+                    <div class="slds-truncate">サンプルデータ3</div>
+                  </td>
+                  <td data-label="アクション">
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="詳細">
+                      <span class="slds-assistive-text">詳細</span>
+                      ▸
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </body>
+</html>

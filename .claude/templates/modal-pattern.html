@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{PAGE_TITLE}} - モーダル</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body {
+        font-family: "Salesforce Sans", Arial, sans-serif;
+      }
+      .app-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+      <div class="app-container">
+
+        <!-- モーダルを開くボタン -->
+        <button class="slds-button slds-button_brand" onclick="document.getElementById('modal').classList.remove('slds-hide')">
+          モーダルを開く
+        </button>
+
+        <!-- モーダル -->
+        <section id="modal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+
+            <!-- ヘッダー -->
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick="document.getElementById('modal').classList.add('slds-hide')">
+                <span class="slds-assistive-text">閉じる</span>
+                ✕
+              </button>
+              <h2 class="slds-modal__title slds-hyphenate">{{MODAL_TITLE}}</h2>
+            </header>
+
+            <!-- ボディ -->
+            <div class="slds-modal__content slds-p-around_medium">
+              <div class="slds-form slds-form_stacked">
+
+                <div class="slds-form-element slds-m-bottom_small">
+                  <label class="slds-form-element__label" for="input-01">
+                    <abbr class="slds-required" title="required">*</abbr> 入力項目1
+                  </label>
+                  <div class="slds-form-element__control">
+                    <input type="text" id="input-01" class="slds-input" placeholder="入力してください" />
+                  </div>
+                </div>
+
+                <div class="slds-form-element slds-m-bottom_small">
+                  <label class="slds-form-element__label" for="select-01">選択項目</label>
+                  <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                      <select id="select-01" class="slds-select">
+                        <option value="">選択してください</option>
+                        <option value="1">オプション1</option>
+                        <option value="2">オプション2</option>
+                        <option value="3">オプション3</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="slds-form-element slds-m-bottom_small">
+                  <label class="slds-form-element__label" for="textarea-01">テキストエリア</label>
+                  <div class="slds-form-element__control">
+                    <textarea id="textarea-01" class="slds-textarea" placeholder="入力してください"></textarea>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- フッター -->
+            <footer class="slds-modal__footer">
+              <button class="slds-button slds-button_neutral" onclick="document.getElementById('modal').classList.add('slds-hide')">キャンセル</button>
+              <button class="slds-button slds-button_brand">保存</button>
+            </footer>
+
+          </div>
+        </section>
+
+        <!-- バックドロップ -->
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+      </div>
+    </div>
+  </body>
+</html>

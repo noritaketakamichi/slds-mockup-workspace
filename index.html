@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salesforce Mockups</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .header { background: #032D60; padding: 1.5rem 2rem; }
+      .header__title { color: #fff; font-size: 1.5rem; font-weight: 700; }
+      .header__subtitle { color: rgba(255,255,255,0.7); font-size: 0.875rem; margin-top: 0.25rem; }
+      .main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; padding-bottom: 3rem; }
+
+      /* ── Flow Card ── */
+      .flow-card { background: #fff; border: 1px solid #d8dde6; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+      .flow-card__link { display: block; padding: 1.25rem 1.5rem; text-decoration: none; transition: background 0.15s; }
+      .flow-card__link:hover { background: #f9f9f9; }
+      .flow-card__header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+      .flow-card__icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .flow-card__icon svg { width: 22px; height: 22px; fill: #fff; }
+      .flow-card__title { font-size: 1.0625rem; font-weight: 700; color: #181818; }
+      .flow-card__desc { font-size: 0.8125rem; color: #706e6b; line-height: 1.5; margin-left: 52px; }
+      .flow-card__steps { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-left: 52px; margin-top: 0.5rem; font-size: 0.75rem; color: #706e6b; }
+      .flow-card__step { background: #f3f3f3; border: 1px solid #d8dde6; border-radius: 3px; padding: 2px 8px; }
+      .flow-card__arrow { color: #b0adab; }
+
+      /* ── Notes Panel ── */
+      .notes-panel { border-top: 1px solid #d8dde6; padding: 0.75rem 1.5rem; background: #fafaf9; }
+      .notes-panel__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+      .notes-panel__title { font-size: 0.75rem; font-weight: 700; color: #706e6b; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; }
+      .notes-panel__count { background: #706e6b; color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 0.6875rem; font-weight: 600; }
+      .notes-panel__count.has-open { background: #c23934; }
+      .notes-panel__add { background: none; border: 1px solid #d8dde6; border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; color: #0070d2; cursor: pointer; font-weight: 600; }
+      .notes-panel__add:hover { background: #f3f3f3; }
+
+      .note-list { list-style: none; padding: 0; margin: 0; }
+      .note-item { display: flex; align-items: flex-start; gap: 0.5rem; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 0.8125rem; }
+      .note-item:last-child { border-bottom: none; }
+      .note-item__checkbox { margin-top: 2px; accent-color: #0070d2; width: 15px; height: 15px; cursor: pointer; flex-shrink: 0; }
+      .note-item__text { flex: 1; color: #181818; line-height: 1.4; }
+      .note-item__text.is-resolved { text-decoration: line-through; color: #b0adab; }
+      .note-item__date { font-size: 0.6875rem; color: #b0adab; white-space: nowrap; margin-top: 2px; }
+      .note-item__delete { background: none; border: none; cursor: pointer; color: #b0adab; padding: 0; margin-top: 1px; flex-shrink: 0; }
+      .note-item__delete:hover { color: #c23934; }
+      .note-item__delete svg { width: 14px; height: 14px; fill: currentColor; }
+
+      /* ── Add Note Form ── */
+      .note-form { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+      .note-form.is-hidden { display: none; }
+      .note-form__input { flex: 1; border: 1px solid #d8dde6; border-radius: 4px; padding: 6px 10px; font-size: 0.8125rem; color: #181818; font-family: inherit; resize: none; }
+      .note-form__input:focus { outline: none; border-color: #0070d2; box-shadow: 0 0 0 1px #0070d2; }
+      .note-form__submit { background: #0070d2; color: #fff; border: none; border-radius: 4px; padding: 6px 14px; font-size: 0.8125rem; cursor: pointer; font-weight: 600; white-space: nowrap; }
+      .note-form__submit:hover { background: #005fb2; }
+      .note-form__cancel { background: none; border: 1px solid #d8dde6; border-radius: 4px; padding: 6px 10px; font-size: 0.8125rem; cursor: pointer; color: #706e6b; white-space: nowrap; }
+
+      .notes-empty { font-size: 0.8125rem; color: #b0adab; padding: 0.5rem 0; }
+
+      /* ── Export Bar ── */
+      .export-bar { text-align: right; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #d8dde6; }
+      .export-bar__btn { background: none; border: 1px solid #d8dde6; border-radius: 4px; padding: 6px 14px; font-size: 0.75rem; color: #706e6b; cursor: pointer; }
+      .export-bar__btn:hover { background: #fff; color: #181818; }
+
+      .section-title { font-size: 0.75rem; font-weight: 700; color: #706e6b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; margin-top: 1.5rem; }
+      .section-title:first-child { margin-top: 0; }
+
+      /* ── Toast ── */
+      .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: #04844b; color: #fff; padding: 0.75rem 1.5rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100; }
+      .toast.is-visible { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+      <div class="header">
+        <div class="header__title">Salesforce Mockups</div>
+        <div class="header__subtitle">Manabie - UI/UX Prototype Collection</div>
+      </div>
+      <div class="main">
+
+        <div class="section-title">業務フロー</div>
+
+        <!-- Order Flow -->
+        <div class="flow-card" data-flow="order_flow">
+          <a class="flow-card__link" href="mockups/order_flow/student-detail.html">
+            <div class="flow-card__header">
+              <div class="flow-card__icon" style="background:#7e57c2;">
+                <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+              </div>
+              <div class="flow-card__title">Order Flow (オーダーフロー)</div>
+            </div>
+            <div class="flow-card__desc">生徒詳細画面から商品を選択し、オーダーグループ編集、商品確認を経てオーダー詳細に至るフロー</div>
+            <div class="flow-card__steps">
+              <span class="flow-card__step">生徒詳細</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">商品選択</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">ODG編集</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">商品追加・変更</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">オーダー詳細</span>
+            </div>
+          </a>
+          <div class="notes-panel" id="notes-order_flow"></div>
+        </div>
+
+        <!-- Enrollment Flow -->
+        <div class="flow-card" data-flow="enrollment_flow">
+          <a class="flow-card__link" href="mockups/enrollment_flow/student-detail.html">
+            <div class="flow-card__header">
+              <div class="flow-card__icon" style="background:#0070d2;">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg>
+              </div>
+              <div class="flow-card__title">Enrollment Flow (所属先登録申請フロー)</div>
+            </div>
+            <div class="flow-card__desc">生徒詳細画面から所属先登録申請を作成し、商品選択、ODG編集、商品確認を経て申請詳細に至るフロー</div>
+            <div class="flow-card__steps">
+              <span class="flow-card__step">生徒詳細</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">商品選択</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">ODG編集</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">商品追加・変更</span>
+              <span class="flow-card__arrow">&rarr;</span>
+              <span class="flow-card__step">申請詳細</span>
+            </div>
+          </a>
+          <div class="notes-panel" id="notes-enrollment_flow"></div>
+        </div>
+
+        <!-- Export -->
+        <div class="export-bar">
+          <button class="export-bar__btn" id="btnExport" title="現在のノートをJSONでクリップボードにコピー">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            notes.json にエクスポート
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+    (function() {
+      var LS_KEY = 'mockup_notes_local';
+      var allNotes = {};   // flowId -> [ {id, text, status, date} ]
+
+      // ── Load ──
+      function loadNotes() {
+        return fetch('data/notes.json')
+          .then(function(r) { return r.ok ? r.json() : {}; })
+          .catch(function() { return {}; })
+          .then(function(fileNotes) {
+            var localRaw = localStorage.getItem(LS_KEY);
+            var localNotes = localRaw ? JSON.parse(localRaw) : {};
+            // Merge: file notes are base, local overrides/additions
+            var flows = new Set(Object.keys(fileNotes).concat(Object.keys(localNotes)));
+            flows.forEach(function(flowId) {
+              var base = (fileNotes[flowId] || []).slice();
+              var local = localNotes[flowId] || {};
+              // Apply local overrides to file notes
+              base = base.map(function(n) {
+                return local[n.id] ? Object.assign({}, n, local[n.id]) : n;
+              });
+              // Add locally-created notes
+              Object.keys(local).forEach(function(lid) {
+                if (local[lid]._new && !local[lid]._deleted) {
+                  base.push(local[lid]);
+                }
+              });
+              allNotes[flowId] = base.filter(function(n) {
+                var lo = local[n.id];
+                return !(lo && lo._deleted);
+              });
+            });
+            renderAll();
+          });
+      }
+
+      // ── Save local overrides ──
+      function saveLocal() {
+        var localRaw = localStorage.getItem(LS_KEY);
+        var local = localRaw ? JSON.parse(localRaw) : {};
+        localStorage.setItem(LS_KEY, JSON.stringify(local));
+      }
+      function getLocal() {
+        var raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      }
+      function setLocalNote(flowId, noteId, patch) {
+        var local = getLocal();
+        if (!local[flowId]) local[flowId] = {};
+        local[flowId][noteId] = Object.assign(local[flowId][noteId] || {}, patch);
+        localStorage.setItem(LS_KEY, JSON.stringify(local));
+      }
+
+      // ── Render ──
+      function renderAll() {
+        Object.keys(allNotes).forEach(function(flowId) { renderNotes(flowId); });
+        // Also render for panels that have no notes yet
+        document.querySelectorAll('.notes-panel').forEach(function(panel) {
+          var flowId = panel.id.replace('notes-', '');
+          if (!allNotes[flowId]) { allNotes[flowId] = []; renderNotes(flowId); }
+        });
+      }
+
+      function renderNotes(flowId) {
+        var panel = document.getElementById('notes-' + flowId);
+        if (!panel) return;
+        var notes = allNotes[flowId] || [];
+        var openCount = notes.filter(function(n) { return n.status === 'open'; }).length;
+
+        var html = '<div class="notes-panel__header">';
+        html += '<span class="notes-panel__title">';
+        html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>';
+        html += '論点メモ ';
+        html += '<span class="notes-panel__count' + (openCount > 0 ? ' has-open' : '') + '">' + openCount + ' open</span>';
+        html += '</span>';
+        html += '<button class="notes-panel__add" onclick="NotesApp.showForm(\'' + flowId + '\')">+ 追加</button>';
+        html += '</div>';
+
+        if (notes.length === 0) {
+          html += '<div class="notes-empty">論点メモはまだありません</div>';
+        } else {
+          html += '<ul class="note-list">';
+          notes.forEach(function(n) {
+            var resolved = n.status === 'resolved';
+            html += '<li class="note-item">';
+            html += '<input type="checkbox" class="note-item__checkbox" ' + (resolved ? 'checked' : '') + ' onchange="NotesApp.toggleStatus(\'' + flowId + '\',\'' + n.id + '\')" title="' + (resolved ? '未解決に戻す' : '解決済にする') + '" />';
+            html += '<span class="note-item__text' + (resolved ? ' is-resolved' : '') + '">' + escHtml(n.text) + '</span>';
+            html += '<span class="note-item__date">' + n.date + '</span>';
+            html += '<button class="note-item__delete" onclick="NotesApp.deleteNote(\'' + flowId + '\',\'' + n.id + '\')" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>';
+            html += '</li>';
+          });
+          html += '</ul>';
+        }
+
+        html += '<div class="note-form is-hidden" id="form-' + flowId + '">';
+        html += '<input type="text" class="note-form__input" id="input-' + flowId + '" placeholder="論点を入力..." onkeydown="if(event.key===\'Enter\'){NotesApp.addNote(\'' + flowId + '\');}" />';
+        html += '<button class="note-form__submit" onclick="NotesApp.addNote(\'' + flowId + '\')">追加</button>';
+        html += '<button class="note-form__cancel" onclick="NotesApp.hideForm(\'' + flowId + '\')">Cancel</button>';
+        html += '</div>';
+
+        panel.innerHTML = html;
+      }
+
+      function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+      function today() {
+        var d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      }
+
+      function genId(flowId) {
+        var prefix = flowId.split('_').map(function(w){return w[0];}).join('');
+        return prefix + '-' + Date.now().toString(36);
+      }
+
+      function showToast(msg) {
+        var t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('is-visible');
+        setTimeout(function() { t.classList.remove('is-visible'); }, 2000);
+      }
+
+      // ── Public API ──
+      window.NotesApp = {
+        showForm: function(flowId) {
+          document.getElementById('form-' + flowId).classList.remove('is-hidden');
+          document.getElementById('input-' + flowId).focus();
+        },
+        hideForm: function(flowId) {
+          document.getElementById('form-' + flowId).classList.add('is-hidden');
+          document.getElementById('input-' + flowId).value = '';
+        },
+        addNote: function(flowId) {
+          var input = document.getElementById('input-' + flowId);
+          var text = input.value.trim();
+          if (!text) return;
+          var note = { id: genId(flowId), text: text, status: 'open', date: today(), _new: true };
+          if (!allNotes[flowId]) allNotes[flowId] = [];
+          allNotes[flowId].push(note);
+          setLocalNote(flowId, note.id, note);
+          renderNotes(flowId);
+          showToast('論点を追加しました');
+        },
+        toggleStatus: function(flowId, noteId) {
+          var notes = allNotes[flowId] || [];
+          var note = notes.find(function(n) { return n.id === noteId; });
+          if (!note) return;
+          note.status = note.status === 'open' ? 'resolved' : 'open';
+          setLocalNote(flowId, noteId, { status: note.status });
+          renderNotes(flowId);
+        },
+        deleteNote: function(flowId, noteId) {
+          allNotes[flowId] = (allNotes[flowId] || []).filter(function(n) { return n.id !== noteId; });
+          setLocalNote(flowId, noteId, { _deleted: true });
+          renderNotes(flowId);
+          showToast('論点を削除しました');
+        },
+        exportJson: function() {
+          var out = {};
+          Object.keys(allNotes).forEach(function(flowId) {
+            out[flowId] = allNotes[flowId].map(function(n) {
+              return { id: n.id, text: n.text, status: n.status, date: n.date };
+            });
+          });
+          var json = JSON.stringify(out, null, 2);
+          navigator.clipboard.writeText(json).then(function() {
+            showToast('JSON をクリップボードにコピーしました - data/notes.json に貼り付けてください');
+          });
+        }
+      };
+
+      document.getElementById('btnExport').addEventListener('click', window.NotesApp.exportJson);
+
+      // ── Init ──
+      loadNotes();
+    })();
+    </script>
+  </body>
+</html>

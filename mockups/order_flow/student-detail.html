@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>テスト 太郎 | ユーザー</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .record-page { background: #f3f3f3; padding: 0.75rem; }
+
+      /* ===== グローバルヘッダー ===== */
+      .sf-global-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #032D60;
+        height: 40px;
+        padding: 0 0.75rem;
+      }
+      .sf-global-header__left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .sf-global-header__logo svg { width: 32px; height: 22px; }
+      .sf-global-header__search {
+        display: flex;
+        align-items: center;
+        background: rgba(255,255,255,0.15);
+        border-radius: 4px;
+        padding: 4px 12px;
+        min-width: 260px;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8125rem;
+      }
+      .sf-global-header__search svg { margin-right: 6px; opacity: 0.7; }
+      .sf-global-header__right {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .sf-global-header__right button {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        border-radius: 4px;
+      }
+      .sf-global-header__right button:hover { background: rgba(255,255,255,0.1); }
+      .sf-global-header__right button svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.8); }
+      .sf-global-header__partners {
+        background: #0070d2;
+        color: #fff;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        padding: 2px 10px;
+        border-radius: 3px;
+        margin-right: 6px;
+        white-space: nowrap;
+      }
+      .sf-global-header__avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #4BC076;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 4px;
+      }
+
+      /* ===== ナビタブのドロップダウン矢印 ===== */
+      .nav-tab-with-arrow { display: flex; align-items: center; gap: 2px; }
+      .nav-arrow {
+        font-size: 0.5rem;
+        color: rgba(255,255,255,0.7);
+        margin-left: 2px;
+      }
+      .slds-context-bar__item.slds-is-active .slds-context-bar__label-action {
+        border-bottom: 3px solid #fff;
+      }
+
+      /* ===== Highlights Panel カスタム ===== */
+      .highlights-panel {
+        background: #fff;
+        border-bottom: 1px solid #d8dde6;
+        padding: 0.75rem 1rem;
+      }
+      .highlights-panel__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .highlights-panel__record {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .highlights-panel__icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background: #7F8DE1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .highlights-panel__icon svg { width: 24px; height: 24px; fill: #fff; }
+      .highlights-panel__label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+        text-transform: none;
+      }
+      .highlights-panel__name {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #181818;
+      }
+      .highlights-panel__actions {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-shrink: 0;
+      }
+      .highlights-panel__actions .slds-button_icon-border {
+        margin-right: 0.5rem;
+      }
+      .highlights-panel__actions .slds-button_neutral,
+      .highlights-panel__actions .slds-button_outline-brand {
+        border-radius: 0;
+        margin-left: -1px;
+      }
+      .highlights-panel__actions .slds-button_neutral:first-of-type {
+        border-radius: 4px 0 0 4px;
+        margin-left: 0;
+      }
+      .highlights-panel__actions .slds-button_icon-border-filled {
+        border-radius: 0 4px 4px 0;
+        margin-left: -1px;
+      }
+      .highlights-panel__fields {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 0.75rem;
+        padding-left: 52px;
+        flex-wrap: wrap;
+      }
+      .highlights-field {
+        min-width: 80px;
+      }
+      .highlights-field__label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+      }
+      .highlights-field__value {
+        font-size: 0.8125rem;
+        color: #181818;
+        margin-top: 2px;
+      }
+
+      /* ===== レコード本体 ===== */
+      .record-body {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: #f3f3f3;
+        min-height: 600px;
+      }
+      .record-body__left {
+        flex: 0 0 63%;
+        max-width: 63%;
+      }
+      .record-body__right {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* ===== 左カラム - タブ付きカード ===== */
+      .detail-card {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+      }
+      .detail-tabs {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #d8dde6;
+        padding: 0 0.5rem;
+        overflow: hidden;
+        position: relative;
+      }
+      .detail-tabs__list {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      .detail-tab {
+        padding: 0.625rem 0.75rem;
+        font-size: 0.8125rem;
+        color: #706e6b;
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        text-decoration: none;
+        display: block;
+      }
+      .detail-tab:hover { color: #005fb2; }
+      .detail-tab.is-active {
+        color: #0070d2;
+        border-bottom-color: #0070d2;
+        font-weight: 600;
+      }
+      .detail-tabs__more {
+        margin-left: auto;
+        padding: 0.625rem 0.5rem;
+        font-size: 0.8125rem;
+        color: #706e6b;
+        cursor: pointer;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+      }
+
+      /* ===== セクション（基本情報など） ===== */
+      .form-section {
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .form-section:last-child { border-bottom: none; }
+      .form-section__header {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        user-select: none;
+      }
+      .form-section__toggle {
+        width: 16px;
+        height: 16px;
+        margin-right: 0.5rem;
+        color: #706e6b;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+      .form-section__toggle.is-collapsed { transform: rotate(-90deg); }
+      .form-section__title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #181818;
+      }
+      .form-section__body {
+        padding: 0 1rem 0.75rem;
+      }
+      .form-section__body.is-hidden { display: none; }
+
+      /* ===== フォームフィールド (2カラム) ===== */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+      }
+      .form-field {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.5rem 0.25rem;
+        border-bottom: 1px solid #e5e5e5;
+        min-height: 44px;
+      }
+      .form-field__content { flex: 1; }
+      .form-field__label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+      }
+      .form-field__value {
+        font-size: 0.8125rem;
+        color: #181818;
+        margin-top: 2px;
+        min-height: 1.2em;
+      }
+      .form-field__edit {
+        background: none;
+        border: none;
+        color: #706e6b;
+        cursor: pointer;
+        padding: 2px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        margin-left: 4px;
+        opacity: 0.6;
+      }
+      .form-field__edit:hover { opacity: 1; color: #0070d2; }
+
+      /* ===== SVG編集ペンシルアイコン ===== */
+      .form-field__edit svg {
+        width: 14px;
+        height: 14px;
+        fill: #706e6b;
+      }
+      .form-field__edit:hover svg { fill: #0070d2; }
+
+      /* ===== 右カラム ===== */
+      .activity-card {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+      }
+      .activity-tabs {
+        display: flex;
+        border-bottom: 1px solid #d8dde6;
+        padding: 0 0.75rem;
+      }
+      .activity-tab {
+        padding: 0.625rem 0.75rem;
+        font-size: 0.8125rem;
+        color: #706e6b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        text-decoration: none;
+      }
+      .activity-tab.is-active {
+        color: #0070d2;
+        border-bottom-color: #0070d2;
+        font-weight: 600;
+      }
+      .activity-body { padding: 0.75rem; }
+
+      /* 活動アクションボタン */
+      .activity-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+      .activity-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+      .activity-action-btn__icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px 0 0 4px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #fff;
+        font-size: 0.875rem;
+      }
+      .activity-action-btn__dropdown {
+        width: 20px;
+        height: 32px;
+        border-radius: 0 4px 4px 0;
+        border: none;
+        border-left: 1px solid rgba(255,255,255,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #fff;
+        font-size: 0.5rem;
+      }
+      .btn-phone .activity-action-btn__icon,
+      .btn-phone .activity-action-btn__dropdown { background: #0070d2; }
+      .btn-email .activity-action-btn__icon,
+      .btn-email .activity-action-btn__dropdown { background: #939393; }
+      .btn-task .activity-action-btn__icon,
+      .btn-task .activity-action-btn__dropdown { background: #4BC076; }
+      .btn-event .activity-action-btn__icon,
+      .btn-event .activity-action-btn__dropdown { background: #6B7AE8; }
+
+      /* 活動フィルター */
+      .activity-filter {
+        font-size: 0.75rem;
+        color: #706e6b;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .activity-filter__gear {
+        background: none; border: 1px solid #d8dde6; border-radius: 4px;
+        width: 24px; height: 24px; cursor: pointer; color: #706e6b;
+        display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+      }
+      .activity-links {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+      .activity-links a { color: #0070d2; text-decoration: none; }
+      .activity-links a:hover { text-decoration: underline; }
+      .activity-links span { color: #706e6b; }
+
+      /* 今後 & 期限切れ */
+      .upcoming-section {
+        background: #f3f3f3;
+        border-radius: 4px;
+        padding: 0.625rem 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+      .upcoming-section__header {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #181818;
+        margin-bottom: 0.5rem;
+      }
+      .upcoming-section__toggle {
+        width: 14px;
+        height: 14px;
+        margin-right: 0.375rem;
+        color: #706e6b;
+      }
+      .upcoming-section__body {
+        text-align: center;
+        font-size: 0.8125rem;
+        color: #706e6b;
+        padding: 0.5rem 0;
+        line-height: 1.6;
+      }
+      .upcoming-section__past {
+        font-size: 0.8125rem;
+        color: #706e6b;
+        text-align: center;
+        padding: 0.5rem 0;
+        border-top: 1px solid #e5e5e5;
+        line-height: 1.6;
+      }
+
+      /* 同期ログ / フォーム提出状況 */
+      .related-item {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+      .related-item:hover { background: #f8f8f8; }
+      .related-item__icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+      .related-item__title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #181818;
+      }
+
+      /* ===== フッター ===== */
+      .sf-footer {
+        display: flex;
+        align-items: center;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        color: #706e6b;
+        background: #fff;
+        border-top: 1px solid #d8dde6;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+      }
+      .sf-footer a { color: #0070d2; text-decoration: none; }
+      .sf-footer__arrow { margin-right: 4px; font-size: 0.625rem; }
+
+      /* リンクスタイル */
+      a.field-link { color: #0070d2; text-decoration: none; }
+      a.field-link:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ================================================================
+           1. グローバルヘッダー（最上部の紺色バー）
+           ================================================================ -->
+      <div class="sf-global-header">
+        <div class="sf-global-header__left">
+          <!-- Salesforce クラウドロゴ -->
+          <div class="sf-global-header__logo">
+            <svg viewBox="0 0 48 32" width="32" height="22" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.1 6.2c1.7-1.8 4.1-2.9 6.8-2.9 3.3 0 6.2 1.7 7.9 4.3 1.4-.6 3-.9 4.7-.9 6.2 0 11.2 5 11.2 11.2S45.7 29 39.5 29c-.9 0-1.8-.1-2.6-.3-1.4 2.3-3.9 3.8-6.8 3.8-1.5 0-2.9-.4-4.1-1.1-1.5 2.9-4.6 4.8-8.1 4.8-4.1 0-7.6-2.7-8.8-6.5-.7.2-1.5.3-2.3.3-4.3 0-7.8-3.5-7.8-7.8 0-3.1 1.7-5.7 4.1-7.2-.4-1.1-.7-2.4-.7-3.7C2.4 4.9 7.4 0 13.4 0c3 0 5.7 1.2 7.6 3.2l-.9 3z" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <!-- 検索バー -->
+        <div class="sf-global-header__search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          検索...
+        </div>
+        <!-- 右側ユーティリティ -->
+        <div class="sf-global-header__right">
+          <div class="sf-global-header__partners">Partners</div>
+          <button title="印刷">
+            <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          </button>
+          <button title="お気に入り">
+            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </button>
+          <button title="サブスクリプション">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </button>
+          <button title="ホーム">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          </button>
+          <button title="ヘルプ">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+          </button>
+          <button title="設定">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </button>
+          <button title="通知">
+            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          </button>
+          <div class="sf-global-header__avatar">T</div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           2. グローバルナビゲーション（アプリタブ）
+           ================================================================ -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="Manabieユーザー管理">Manabieユーザー管...</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid" id="globalNavTabs">
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="#" class="slds-context-bar__label-action" title="ユーザー">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">ユーザー</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="在籍状態">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">在籍状態</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="学校">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">学校</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="学校履歴">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">学校履歴</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="紹介報酬">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">紹介報酬</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="紹介">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">紹介</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="フォーム">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">フォーム</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="入退室記録">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">入退室記録</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ================================================================
+           3. Highlights Panel（レコードヘッダー）
+           ================================================================ -->
+      <div class="highlights-panel">
+        <div class="highlights-panel__top">
+          <div class="highlights-panel__record">
+            <!-- ユーザーアイコン -->
+            <div class="highlights-panel__icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff">
+                <path d="M12 12c2.7 0 4.8-2.2 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="highlights-panel__label">ユーザー</div>
+              <div class="highlights-panel__name">テスト 太郎</div>
+            </div>
+          </div>
+          <!-- アクションボタン -->
+          <div class="highlights-panel__actions">
+            <button class="slds-button slds-button_icon slds-button_icon-border" title="ユーザー詳細">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#706e6b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </button>
+            <button class="slds-button slds-button_neutral" id="btnCopy">コピー</button>
+            <button class="slds-button slds-button_neutral" id="btnEdit">編集</button>
+            <button class="slds-button slds-button_outline-brand" id="btnCreateOrder">オーダー作成</button>
+            <button class="slds-button slds-button_outline-brand" id="btnCreateAffiliation">所属先登録申請の作成</button>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション" id="btnMoreActions">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+          </div>
+        </div>
+        <!-- ハイライトフィールド -->
+        <div class="highlights-panel__fields">
+          <div class="highlights-field">
+            <div class="highlights-field__label">フリガナ</div>
+            <div class="highlights-field__value">&nbsp;</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">メール</div>
+            <div class="highlights-field__value">&nbsp;</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">学年</div>
+            <div class="highlights-field__value"><a href="#" class="field-link">中1</a></div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">性別</div>
+            <div class="highlights-field__value">&nbsp;</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">外部ユーザーID</div>
+            <div class="highlights-field__value">&nbsp;</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">アプリのアクティブステータス</div>
+            <div class="highlights-field__value">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           4. レコードページ本体（2カラム）
+           ================================================================ -->
+      <div class="record-body">
+
+        <!-- ============ 左カラム: 詳細タブ ============ -->
+        <div class="record-body__left">
+          <div class="detail-card">
+            <!-- タブ -->
+            <div class="detail-tabs">
+              <ul class="detail-tabs__list" id="detailTabList">
+                <li><a href="#" class="detail-tab is-active" data-tab="detail">詳細</a></li>
+                <li><a href="#" class="detail-tab" data-tab="family">家族</a></li>
+                <li><a href="#" class="detail-tab" data-tab="billing">請求先情報</a></li>
+                <li><a href="#" class="detail-tab" data-tab="course">コース</a></li>
+                <li><a href="#" class="detail-tab" data-tab="order">オーダー</a></li>
+                <li><a href="#" class="detail-tab" data-tab="invoice">請求書</a></li>
+                <li><a href="#" class="detail-tab" data-tab="referral">紹介</a></li>
+                <li><a href="#" class="detail-tab" data-tab="application">申請</a></li>
+                <li><a href="#" class="detail-tab" data-tab="risk">リスク管理</a></li>
+                <li><a href="#" class="detail-tab" data-tab="events">イベント履歴</a></li>
+                <li><a href="#" class="detail-tab" data-tab="other">その他</a></li>
+              </ul>
+              <div class="detail-tabs__more" id="tabMoreBtn">他 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b" style="margin-left: 2px; vertical-align: middle;"><path d="M7 10l5 5 5-5z"/></svg></div>
+            </div>
+
+            <!-- 詳細タブコンテンツ -->
+            <div id="tabContent-detail" class="tab-content">
+              <!-- 基本情報セクション -->
+              <div class="form-section" id="section-basic">
+                <div class="form-section__header" onclick="toggleSection('basic')">
+                  <svg class="form-section__toggle" id="toggle-basic" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                  <span class="form-section__title">基本情報</span>
+                </div>
+                <div class="form-section__body" id="body-basic">
+                  <div class="form-grid">
+                    <!-- 左列: 名前 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">名前</div>
+                        <div class="form-field__value">テスト 太郎</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- 右列: ユーザー名 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">ユーザー名</div>
+                        <div class="form-field__value">26001339</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- フリガナ -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">フリガナ</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- 外部ユーザーID -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">外部ユーザーID</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 姓(カナ) -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">姓 (カナ)</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- メール -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">メール</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 名(カナ) -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">名(カナ)</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- メールアドレス認証が完了しました -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">メールアドレス認証が完了しました</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 誕生日 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">誕生日</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- メールアドレス認証済 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">メールアドレス認証済</div>
+                        <div class="form-field__value">未認証</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 年齢 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">年齢</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- メールアドレス認証時刻 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">メールアドレス認証時刻</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 性別 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">性別</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- 学年 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">学年</div>
+                        <div class="form-field__value"><a href="#" class="field-link">中1</a></div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 表示名 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">表示名</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <!-- ホーム教室 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">ホーム教室</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 左列空 -->
+                    <div class="form-field" style="border-bottom: none;">
+                      <div class="form-field__content">&nbsp;</div>
+                    </div>
+                    <!-- 在籍状況（ホーム教室） -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">在籍状況（ホーム教室）</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+
+                    <!-- 左列空 -->
+                    <div class="form-field" style="border-bottom: none;">
+                      <div class="form-field__content">&nbsp;</div>
+                    </div>
+                    <!-- 現在の学校 -->
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">現在の学校</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 電話番号セクション -->
+              <div class="form-section" id="section-phone">
+                <div class="form-section__header" onclick="toggleSection('phone')">
+                  <svg class="form-section__toggle" id="toggle-phone" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                  <span class="form-section__title">電話番号</span>
+                </div>
+                <div class="form-section__body" id="body-phone">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">電話番号</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                    <div class="form-field">
+                      <div class="form-field__content">
+                        <div class="form-field__label">携帯電話</div>
+                        <div class="form-field__value">&nbsp;</div>
+                      </div>
+                      <button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 他のタブコンテンツ (初期非表示) -->
+            <div id="tabContent-family" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">家族情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-billing" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">請求先情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-course" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">コース情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-order" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">オーダー情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-invoice" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">請求書情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-referral" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">紹介情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-application" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">申請情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-risk" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">リスク管理情報がここに表示されます</div>
+            </div>
+            <div id="tabContent-events" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">イベント履歴がここに表示されます</div>
+            </div>
+            <div id="tabContent-other" class="tab-content" style="display:none;">
+              <div style="padding: 2rem; text-align: center; color: #706e6b;">その他の情報がここに表示されます</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 右カラム: 活動 + 関連リスト ============ -->
+        <div class="record-body__right">
+
+          <!-- 活動カード -->
+          <div class="activity-card">
+            <!-- 活動 / Chatter タブ -->
+            <div class="activity-tabs" id="activityTabBar">
+              <a href="#" class="activity-tab is-active" data-activity-tab="activity">活動</a>
+              <a href="#" class="activity-tab" data-activity-tab="chatter">Chatter</a>
+            </div>
+
+            <!-- 活動タブコンテンツ -->
+            <div class="activity-body" id="activityContent-activity">
+              <!-- アクションボタン -->
+              <div class="activity-actions">
+                <div class="activity-action-btn btn-phone">
+                  <button class="activity-action-btn__icon" title="電話">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.1.31.03.66-.25 1.02l-2.2 2.2z"/></svg>
+                  </button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-email">
+                  <button class="activity-action-btn__icon" title="メール">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                  </button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-task">
+                  <button class="activity-action-btn__icon" title="ToDo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                  </button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-event">
+                  <button class="activity-action-btn__icon" title="行動">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+              </div>
+
+              <!-- フィルター -->
+              <div class="activity-filter">
+                <span>条件: 常時・すべての活動・すべての種別</span>
+                <button class="activity-filter__gear" title="フィルター設定"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+              </div>
+              <!-- リンク -->
+              <div class="activity-links">
+                <a href="#">更新</a><span>・</span>
+                <a href="#">すべて展開</a><span>・</span>
+                <a href="#">すべて表示</a>
+              </div>
+
+              <!-- 今後 & 期限切れ -->
+              <div class="upcoming-section">
+                <div class="upcoming-section__header" onclick="toggleUpcoming()">
+                  <svg class="upcoming-section__toggle" id="upcomingToggle" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                  今後 &amp; 期限切れ
+                </div>
+                <div class="upcoming-section__body" id="upcomingBody">
+                  表示する活動がありません。<br>
+                  使用を開始するには、メールの送信や ToDo のスケジュールなどを行ってください。
+                </div>
+              </div>
+
+              <!-- 過去の活動 -->
+              <div class="upcoming-section__past">
+                過去の活動はありません。「完了」とマークされた過去のミーティングと ToDo がここに表示されます。
+              </div>
+            </div>
+
+            <!-- Chatter タブコンテンツ (初期非表示) -->
+            <div class="activity-body" id="activityContent-chatter" style="display:none;">
+              <div style="padding: 1rem; text-align: center; color: #706e6b;">Chatter フィードがここに表示されます</div>
+            </div>
+          </div>
+
+          <!-- 同期ログ -->
+          <div class="related-item" id="syncLogItem">
+            <div class="related-item__icon" style="background: #0070d2;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            </div>
+            <div class="related-item__title">同期ログ (0)</div>
+          </div>
+
+          <!-- フォームの提出状況 -->
+          <div class="related-item" id="formSubmissionItem">
+            <div class="related-item__icon" style="background: #4BC076;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="related-item__title">フォームの提出状況 (0)</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           5. フッター
+           ================================================================ -->
+      <div class="sf-footer">
+        <span class="sf-footer__arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></span>
+        <a href="#">BackOffice</a>
+      </div>
+
+    </div><!-- /slds-scope -->
+
+    <!-- ================================================================
+         JavaScript（画面遷移・インタラクション用）
+         ================================================================ -->
+    <script>
+      // ===== セクション折りたたみ =====
+      function toggleSection(sectionId) {
+        const body = document.getElementById('body-' + sectionId);
+        const toggle = document.getElementById('toggle-' + sectionId);
+        if (body.classList.contains('is-hidden')) {
+          body.classList.remove('is-hidden');
+          toggle.classList.remove('is-collapsed');
+        } else {
+          body.classList.add('is-hidden');
+          toggle.classList.add('is-collapsed');
+        }
+      }
+
+      // ===== 左カラム詳細タブ切り替え =====
+      document.getElementById('detailTabList').addEventListener('click', function(e) {
+        const tab = e.target.closest('.detail-tab');
+        if (!tab) return;
+        e.preventDefault();
+
+        // タブのアクティブ切り替え
+        document.querySelectorAll('.detail-tab').forEach(function(t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+
+        // コンテンツ切り替え
+        const tabName = tab.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.style.display = 'none'; });
+        const content = document.getElementById('tabContent-' + tabName);
+        if (content) content.style.display = 'block';
+      });
+
+      // ===== 右カラム活動/Chatter タブ切り替え =====
+      document.getElementById('activityTabBar').addEventListener('click', function(e) {
+        const tab = e.target.closest('.activity-tab');
+        if (!tab) return;
+        e.preventDefault();
+
+        document.querySelectorAll('.activity-tab').forEach(function(t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+
+        const tabName = tab.dataset.activityTab;
+        document.getElementById('activityContent-activity').style.display = tabName === 'activity' ? 'block' : 'none';
+        document.getElementById('activityContent-chatter').style.display = tabName === 'chatter' ? 'block' : 'none';
+      });
+
+      // ===== 今後 & 期限切れ 折りたたみ =====
+      function toggleUpcoming() {
+        const body = document.getElementById('upcomingBody');
+        const toggle = document.getElementById('upcomingToggle');
+        if (body.style.display === 'none') {
+          body.style.display = 'block';
+          toggle.style.transform = '';
+        } else {
+          body.style.display = 'none';
+          toggle.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      // ===== ボタンクリックハンドラ（後から実装を追加可能） =====
+      const buttonHandlers = {
+        btnCopy: function() { console.log('コピー clicked'); },
+        btnEdit: function() { console.log('編集 clicked'); },
+        btnCreateOrder: function() { MockupRouter.navigateTo('product-select.html'); },
+        btnCreateAffiliation: function() { console.log('所属先登録申請の作成 clicked'); },
+        btnMoreActions: function() { console.log('その他のアクション clicked'); },
+      };
+
+      // ボタンイベント登録
+      Object.keys(buttonHandlers).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('click', buttonHandlers[id]);
+      });
+
+      // ===== 画面遷移ユーティリティ（後で利用） =====
+      var MockupRouter = {
+        navigateTo: function(url) {
+          console.log('Navigating to:', url);
+          window.location.href = url;
+        },
+        showModal: function(modalId) {
+          var modal = document.getElementById(modalId);
+          if (modal) modal.style.display = 'block';
+        },
+        hideModal: function(modalId) {
+          var modal = document.getElementById(modalId);
+          if (modal) modal.style.display = 'none';
+        }
+      };
+    </script>
+  </body>
+</html>

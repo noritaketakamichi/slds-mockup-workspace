@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>オーダーに商品を追加</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* ===== モーダルオーバーレイ ===== */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 2rem;
+        overflow-y: auto;
+      }
+      .modal-container {
+        background: #fff;
+        border-radius: 6px;
+        width: 90%;
+        max-width: 960px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 4rem);
+      }
+
+      /* ===== モーダルヘッダー ===== */
+      .modal-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #d8dde6;
+        text-align: center;
+      }
+      .modal-header__title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #181818;
+      }
+
+      /* ===== モーダルボディ ===== */
+      .modal-body {
+        padding: 1rem 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .modal-body__subtitle {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #181818;
+        margin-bottom: 0.75rem;
+      }
+      .required-note {
+        text-align: right;
+        font-size: 0.75rem;
+        color: #c23934;
+        margin-bottom: 0.5rem;
+      }
+
+      /* ===== フィルターフォーム ===== */
+      .filter-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      .filter-field {
+        flex: 1;
+      }
+      .filter-field__label {
+        font-size: 0.75rem;
+        color: #181818;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .filter-field__label .required {
+        color: #c23934;
+        margin-right: 2px;
+      }
+      .pill-input {
+        display: flex;
+        align-items: center;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 4px 8px;
+        min-height: 32px;
+        background: #fff;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #f3f3f3;
+        border: 1px solid #d8dde6;
+        border-radius: 3px;
+        padding: 2px 8px;
+        font-size: 0.8125rem;
+        color: #181818;
+      }
+      .pill__icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background: #0070d2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pill__icon svg { width: 10px; height: 10px; fill: #fff; }
+      .pill__remove {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #706e6b;
+        font-size: 0.75rem;
+        padding: 0;
+        margin-left: 4px;
+        display: flex;
+        align-items: center;
+      }
+      .pill__remove svg { width: 12px; height: 12px; fill: #706e6b; }
+
+      .filter-select {
+        width: 100%;
+        height: 32px;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 0 8px;
+        font-size: 0.8125rem;
+        color: #181818;
+        background: #fff;
+        appearance: auto;
+      }
+
+      /* ===== チェックボックスグループ ===== */
+      .checkbox-group {
+        margin-bottom: 0.5rem;
+      }
+      .checkbox-group__label {
+        font-size: 0.75rem;
+        color: #181818;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .checkbox-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8125rem;
+        color: #181818;
+      }
+      .checkbox-item input[type="checkbox"] {
+        accent-color: #0070d2;
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ===== 検索バー ===== */
+      .search-bar {
+        display: flex;
+        align-items: center;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 6px 10px;
+        margin-bottom: 0.75rem;
+        background: #fff;
+      }
+      .search-bar svg { margin-right: 6px; flex-shrink: 0; }
+      .search-bar input {
+        border: none;
+        outline: none;
+        font-size: 0.8125rem;
+        flex: 1;
+        color: #181818;
+      }
+      .search-bar input::placeholder { color: #b0adab; }
+
+      /* ===== 選択カウント ===== */
+      .select-count {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #181818;
+        margin-bottom: 0.5rem;
+      }
+
+      /* ===== 商品テーブル ===== */
+      .product-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8125rem;
+      }
+      .product-table thead th {
+        padding: 8px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #181818;
+        border-bottom: 1px solid #d8dde6;
+        background: #fafaf9;
+        white-space: nowrap;
+      }
+      .product-table thead th .sort-icon {
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+      .product-table tbody td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #e5e5e5;
+        color: #181818;
+        vertical-align: middle;
+      }
+      .product-table tbody tr:hover {
+        background: #f3f3f3;
+      }
+      .product-table tbody td input[type="checkbox"] {
+        accent-color: #0070d2;
+        width: 16px;
+        height: 16px;
+      }
+      .product-table a {
+        color: #0070d2;
+        text-decoration: none;
+      }
+      .product-table a:hover { text-decoration: underline; }
+      .row-num {
+        color: #706e6b;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* ===== モーダルフッター ===== */
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-top: 1px solid #d8dde6;
+        background: #fafaf9;
+        border-radius: 0 0 6px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ===== 背景: 生徒詳細画面（薄く見える） ===== -->
+      <div style="opacity: 0.3; pointer-events: none; filter: blur(1px);">
+        <div style="background: #032D60; height: 40px;"></div>
+        <div style="background: #243B53; height: 40px;"></div>
+        <div style="background: #fff; height: 100px; border-bottom: 1px solid #d8dde6;"></div>
+      </div>
+
+      <!-- ===== モーダル ===== -->
+      <div class="modal-backdrop" id="productModal">
+        <div class="modal-container">
+
+          <!-- ヘッダー -->
+          <div class="modal-header">
+            <div class="modal-header__title">オーダーに商品を追加</div>
+          </div>
+
+          <!-- ボディ -->
+          <div class="modal-body">
+            <div class="required-note"><span style="color:#c23934;">*</span> = 必要な情報</div>
+            <div class="modal-body__subtitle">商品情報を追加</div>
+
+            <!-- フィルター: 年度 + 拠点 -->
+            <div class="filter-row">
+              <div class="filter-field">
+                <label class="filter-field__label"><span class="required">*</span>年度</label>
+                <div class="pill-input">
+                  <span class="pill">
+                    <span class="pill__icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>
+                    2025 (正)
+                    <button class="pill__remove" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+                  </span>
+                </div>
+              </div>
+              <div class="filter-field">
+                <label class="filter-field__label"><span class="required">*</span>拠点</label>
+                <div class="pill-input">
+                  <span class="pill">
+                    <span class="pill__icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></span>
+                    オーダーテスト用教室
+                    <button class="pill__remove" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 商品タイプ -->
+            <div style="margin-bottom: 0.75rem;">
+              <label class="filter-field__label">商品タイプ</label>
+              <select class="filter-select" id="productTypeFilter">
+                <option>すべて</option>
+                <option>コース商品</option>
+                <option>費用</option>
+                <option>教材</option>
+              </select>
+            </div>
+
+            <!-- 請求タイプ -->
+            <div class="checkbox-group">
+              <label class="checkbox-group__label">請求タイプ</label>
+              <div class="checkbox-row">
+                <label class="checkbox-item"><input type="checkbox" checked> 継続商品</label>
+                <label class="checkbox-item"><input type="checkbox" checked> 単発商品</label>
+              </div>
+            </div>
+
+            <!-- 季節講習商品 -->
+            <div class="checkbox-group" style="margin-bottom: 1rem;">
+              <label class="checkbox-group__label">季節講習商品</label>
+              <label class="checkbox-item"><input type="checkbox"> 季節講習商品のみ表示</label>
+            </div>
+
+            <!-- 検索 -->
+            <div class="search-bar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#b0adab"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              <input type="text" placeholder="商品を検索..." id="productSearch" />
+            </div>
+
+            <!-- 選択カウント -->
+            <div class="select-count" id="selectCount">0 選択中</div>
+
+            <!-- 商品テーブル -->
+            <table class="product-table">
+              <thead>
+                <tr>
+                  <th style="width:32px;"><input type="checkbox" id="selectAll" /></th>
+                  <th style="width:24px;"></th>
+                  <th>名称 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                  <th>商品タイプ <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                  <th>請求タイプ <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                  <th>拠点 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                  <th>年度 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <tr>
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">1</td>
+                  <td><a href="#">2025小6 継続個別コース商品テスト</a></td>
+                  <td>コース商品</td>
+                  <td>継続商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2025 (正)</a></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">2</td>
+                  <td><a href="#">入会費</a></td>
+                  <td>費用</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2025 (正)</a></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">3</td>
+                  <td><a href="#">中1 英語 教科書</a></td>
+                  <td>教材</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2025 (正)</a></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">4</td>
+                  <td><a href="#">中1 数学 教科書</a></td>
+                  <td>教材</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2025 (正)</a></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">5</td>
+                  <td><a href="#">中1 国語 教科書</a></td>
+                  <td>教材</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2026 (正)</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- フッター -->
+          <div class="modal-footer">
+            <button class="slds-button slds-button_neutral" id="btnCancel">キャンセル</button>
+            <button class="slds-button slds-button_brand" id="btnNext">次へ</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      // ===== チェックボックス選択カウント =====
+      function updateSelectCount() {
+        var checked = document.querySelectorAll('.product-checkbox:checked').length;
+        document.getElementById('selectCount').textContent = checked + ' 選択中';
+      }
+
+      document.querySelectorAll('.product-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', updateSelectCount);
+      });
+
+      // 全選択
+      document.getElementById('selectAll').addEventListener('change', function() {
+        var checked = this.checked;
+        document.querySelectorAll('.product-checkbox').forEach(function(cb) {
+          cb.checked = checked;
+        });
+        updateSelectCount();
+      });
+
+      // ===== ボタンハンドラ =====
+      var buttonHandlers = {
+        btnCancel: function() {
+          // 生徒詳細画面に戻る
+          window.location.href = 'student-detail.html';
+        },
+        btnNext: function() {
+          var checked = document.querySelectorAll('.product-checkbox:checked').length;
+          if (checked === 0) {
+            alert('商品を選択してください。');
+            return;
+          }
+          // オーダーグループ編集画面へ
+          window.location.href = 'order-group-edit.html';
+        }
+      };
+
+      Object.keys(buttonHandlers).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('click', buttonHandlers[id]);
+      });
+
+      // ===== 画面遷移ユーティリティ =====
+      var MockupRouter = {
+        navigateTo: function(url) {
+          window.location.href = url;
+        },
+        goBack: function() {
+          window.location.href = 'student-detail.html';
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!-- ============================================
+     Path コンポーネント（ステータス遷移ステップバー）
+     ============================================ -->
+<div class="slds-path">
+  <div class="slds-grid slds-path__track">
+    <div class="slds-grid slds-path__scroller-container">
+      <div class="slds-path__scroller" role="application">
+        <div class="slds-path__scroller_inner" role="tablist">
+          <ul class="slds-path__nav" role="presentation">
+
+            <!-- 完了ステップ: slds-is-complete -->
+            <li class="slds-path__item slds-is-complete" role="presentation">
+              <a class="slds-path__link" role="tab" tabindex="-1">
+                <span class="slds-path__stage">
+                  <span style="font-size:0.6rem;">✓</span>
+                </span>
+                <span class="slds-path__title">{{STEP_COMPLETE}}</span>
+              </a>
+            </li>
+
+            <!-- 現在ステップ: slds-is-current + slds-is-active -->
+            <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+              <a class="slds-path__link" role="tab" tabindex="0" aria-selected="true">
+                <span class="slds-path__stage">
+                  <span style="font-size:0.6rem;">✓</span>
+                </span>
+                <span class="slds-path__title">{{STEP_CURRENT}}</span>
+              </a>
+            </li>
+
+            <!-- 未到達ステップ: slds-is-incomplete -->
+            <li class="slds-path__item slds-is-incomplete" role="presentation">
+              <a class="slds-path__link" role="tab" tabindex="-1">
+                <span class="slds-path__stage">
+                  <span style="font-size:0.6rem;">✓</span>
+                </span>
+                <span class="slds-path__title">{{STEP_INCOMPLETE}}</span>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slds-grid slds-path__action">
+      <button class="slds-button slds-button_brand slds-path__mark-complete">
+        <span>次のステータスへ</span>
+      </button>
+    </div>
+  </div>
+</div>
