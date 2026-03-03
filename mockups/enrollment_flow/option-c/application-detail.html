@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application-18696 | 申請</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* ===== グローバルヘッダー ===== */
+      .sf-global-header { display: flex; align-items: center; justify-content: space-between; background: #032D60; height: 40px; padding: 0 0.75rem; }
+      .sf-global-header__left { display: flex; align-items: center; gap: 0.5rem; }
+      .sf-global-header__logo svg { width: 32px; height: 22px; }
+      .sf-global-header__search { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: 4px; padding: 4px 12px; min-width: 260px; color: rgba(255,255,255,0.7); font-size: 0.8125rem; }
+      .sf-global-header__search svg { margin-right: 6px; opacity: 0.7; }
+      .sf-global-header__right { display: flex; align-items: center; gap: 4px; }
+      .sf-global-header__right button { background: none; border: none; color: rgba(255,255,255,0.8); cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+      .sf-global-header__right button:hover { background: rgba(255,255,255,0.1); }
+      .sf-global-header__right button svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.8); }
+      .sf-global-header__partners { background: #0070d2; color: #fff; font-size: 0.6875rem; font-weight: 600; padding: 2px 10px; border-radius: 3px; margin-right: 6px; white-space: nowrap; }
+      .sf-global-header__avatar { width: 26px; height: 26px; border-radius: 50%; background: #4BC076; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem; font-weight: 600; margin-left: 4px; }
+      .nav-tab-with-arrow { display: flex; align-items: center; gap: 2px; }
+      .nav-arrow { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-left: 2px; }
+
+      /* ===== レコードタブバー ===== */
+      .record-tabs { display: flex; align-items: center; background: #fff; border-bottom: 1px solid #d8dde6; padding: 0 0.5rem; height: 36px; font-size: 0.8125rem; overflow-x: auto; }
+      .record-tab { display: flex; align-items: center; gap: 4px; padding: 0 0.75rem; height: 100%; white-space: nowrap; color: #706e6b; text-decoration: none; border-bottom: 3px solid transparent; cursor: pointer; }
+      .record-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .record-tab__close { background: none; border: none; color: #706e6b; cursor: pointer; font-size: 0.625rem; padding: 0; margin-left: 4px; display: flex; align-items: center; }
+      .record-tab__close svg { width: 10px; height: 10px; fill: #706e6b; }
+      .record-tab__more { padding: 0 0.75rem; height: 100%; display: flex; align-items: center; color: #706e6b; cursor: pointer; font-size: 0.8125rem; white-space: nowrap; }
+
+      /* ===== Highlights Panel ===== */
+      .highlights-panel { background: #fff; border-bottom: 1px solid #d8dde6; padding: 0.75rem 1rem; }
+      .highlights-panel__top { display: flex; justify-content: space-between; align-items: flex-start; }
+      .highlights-panel__record { display: flex; align-items: center; gap: 0.75rem; }
+      .highlights-panel__icon { width: 40px; height: 40px; border-radius: 6px; background: #0070d2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .highlights-panel__icon svg { width: 24px; height: 24px; fill: #fff; }
+      .highlights-panel__label { font-size: 0.6875rem; color: #706e6b; }
+      .highlights-panel__name { font-size: 1.125rem; font-weight: 700; color: #181818; }
+      .highlights-panel__actions { display: flex; align-items: center; gap: 0; flex-shrink: 0; }
+      .highlights-panel__actions .slds-button_neutral, .highlights-panel__actions .slds-button_outline-brand { border-radius: 0; margin-left: -1px; }
+      .highlights-panel__actions .slds-button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+      .highlights-panel__actions .slds-button:last-child { border-radius: 0 4px 4px 0; }
+      .highlights-panel__actions .slds-button_icon-border-filled { border-radius: 0 4px 4px 0; margin-left: -1px; }
+      .highlights-panel__fields { display: flex; gap: 1.5rem; margin-top: 0.75rem; padding-left: 52px; flex-wrap: wrap; }
+      .highlights-field { min-width: 80px; }
+      .highlights-field__label { font-size: 0.6875rem; color: #706e6b; }
+      .highlights-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+      a.field-link { color: #0070d2; text-decoration: none; }
+      a.field-link:hover { text-decoration: underline; }
+
+      /* ===== Path コンポーネント ===== */
+      .path-container { background: #fff; padding: 0.5rem 1rem; border-bottom: 1px solid #d8dde6; display: flex; align-items: center; gap: 0.75rem; }
+      .path-steps { display: flex; align-items: center; flex: 1; border-radius: 20px; overflow: hidden; height: 30px; border: 1px solid #d8dde6; }
+      .path-step { flex: 1; text-align: center; font-size: 0.6875rem; font-weight: 600; padding: 0 0.25rem; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; white-space: nowrap; background: #f3f3f3; color: #706e6b; border-right: 1px solid #d8dde6; }
+      .path-step:last-child { border-right: none; }
+      .path-step.is-current { background: #0070d2; color: #fff; }
+      .path-step.is-complete { background: #4bca81; color: #fff; }
+      .path-mark-btn { display: flex; align-items: center; gap: 4px; padding: 0.375rem 1rem; background: #0070d2; color: #fff; border: none; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+      .path-mark-btn svg { width: 14px; height: 14px; fill: #fff; }
+
+      /* ===== レコード本体 ===== */
+      .record-body { display: flex; gap: 0.75rem; padding: 0.75rem; background: #f3f3f3; min-height: 500px; padding-bottom: 3rem; }
+      .record-body__left { flex: 0 0 63%; max-width: 63%; }
+      .record-body__right { flex: 1; min-width: 0; }
+
+      /* ===== セクションカード ===== */
+      .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 0.75rem; }
+      .section-header { display: flex; align-items: center; padding: 0.75rem 1rem; cursor: pointer; }
+      .section-header__toggle { width: 16px; height: 16px; margin-right: 0.5rem; color: #706e6b; transition: transform 0.2s; flex-shrink: 0; }
+      .section-header__toggle.is-collapsed { transform: rotate(-90deg); }
+      .section-header__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+
+      /* ===== フォーム ===== */
+      .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0 1rem 0.75rem; }
+      .form-field { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.5rem 0.25rem; border-bottom: 1px solid #e5e5e5; min-height: 44px; }
+      .form-field__content { flex: 1; }
+      .form-field__label { font-size: 0.6875rem; color: #706e6b; }
+      .form-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; min-height: 1.2em; }
+      .form-field__edit { background: none; border: none; color: #706e6b; cursor: pointer; padding: 2px; flex-shrink: 0; margin-left: 4px; opacity: 0.6; }
+      .form-field__edit:hover { opacity: 1; color: #0070d2; }
+      .form-field__edit svg { width: 14px; height: 14px; fill: #706e6b; }
+      .form-field__edit:hover svg { fill: #0070d2; }
+      .form-field__upload { font-size: 0.8125rem; color: #706e6b; margin-top: 2px; }
+
+      /* ===== データテーブル ===== */
+      .data-section { padding: 0; }
+      .data-section-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; }
+      .data-section-header__left { display: flex; align-items: center; gap: 0.5rem; }
+      .data-section-header__toggle { width: 16px; height: 16px; color: #706e6b; flex-shrink: 0; }
+      .data-section-header__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+      .data-section-header__right { display: flex; align-items: center; gap: 0.5rem; }
+      .data-section-header__note { font-size: 0.75rem; color: #706e6b; }
+      .data-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+      .data-table thead th { padding: 8px 12px; text-align: left; font-weight: 600; color: #181818; border-bottom: 1px solid #d8dde6; background: #fafaf9; white-space: nowrap; }
+      .data-table thead th .th-content { display: flex; align-items: center; gap: 4px; }
+      .data-table tbody td { padding: 8px 12px; border-bottom: 1px solid #e5e5e5; color: #181818; vertical-align: top; }
+      .data-table tbody tr:hover { background: #f3f3f3; }
+      .data-table a { color: #0070d2; text-decoration: none; }
+      .data-table a:hover { text-decoration: underline; }
+      .row-num { color: #706e6b; }
+      .view-all-link { display: block; text-align: center; padding: 0.5rem; color: #0070d2; text-decoration: none; font-size: 0.8125rem; border-top: 1px solid #e5e5e5; }
+      .view-all-link:hover { text-decoration: underline; }
+      .course-list { list-style: none; padding: 0; margin: 0; font-size: 0.8125rem; }
+      .course-list li { line-height: 1.5; }
+      .course-list li::before { content: "\2022 "; color: #181818; }
+
+      /* ===== 右カラム ===== */
+      .right-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 0.75rem; }
+      .right-card__header { display: flex; align-items: center; justify-content: space-between; padding: 0.625rem 0.75rem; border-bottom: 1px solid #e5e5e5; }
+      .right-card__header-left { display: flex; align-items: center; gap: 0.5rem; }
+      .right-card__icon { width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .right-card__icon svg { width: 14px; height: 14px; fill: #fff; }
+      .right-card__title { font-size: 0.875rem; font-weight: 600; color: #181818; }
+      .right-card__toggle { background: none; border: 1px solid #d8dde6; border-radius: 3px; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+      .right-card__toggle svg { width: 12px; height: 12px; fill: #706e6b; }
+      .right-card__empty { text-align: center; color: #706e6b; font-size: 0.8125rem; padding: 1rem; }
+
+      /* ===== Chatter/アンケート ===== */
+      .chatter-tabs { display: flex; border-bottom: 1px solid #d8dde6; padding: 0 0.75rem; }
+      .chatter-tab { padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: #706e6b; cursor: pointer; border-bottom: 3px solid transparent; text-decoration: none; }
+      .chatter-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .chatter-body { padding: 0.75rem; }
+      .chatter-input-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; }
+      .chatter-input { flex: 1; border: 1px solid #d8dde6; border-radius: 4px; padding: 0.5rem; font-size: 0.8125rem; color: #706e6b; }
+      .chatter-input::placeholder { color: #b0adab; }
+      .chatter-feed-tools { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem 0; }
+      .chatter-feed-tools__left { display: flex; align-items: center; gap: 0.25rem; }
+      .chatter-feed-tools__sort { background: none; border: 1px solid #d8dde6; border-radius: 4px; padding: 2px 6px; cursor: pointer; display: flex; align-items: center; gap: 2px; font-size: 0.75rem; color: #706e6b; }
+      .chatter-feed-tools__sort svg { width: 12px; height: 12px; fill: #706e6b; }
+      .chatter-feed-tools__right { display: flex; align-items: center; gap: 0.25rem; }
+      .chatter-search { display: flex; align-items: center; border: 1px solid #d8dde6; border-radius: 4px; padding: 2px 6px; }
+      .chatter-search svg { margin-right: 4px; }
+      .chatter-search input { border: none; outline: none; font-size: 0.75rem; width: 80px; }
+
+      /* ===== 活動 ===== */
+      .activity-tabs { display: flex; border-bottom: 1px solid #d8dde6; padding: 0 0.75rem; }
+      .activity-tab { padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: #706e6b; cursor: pointer; border-bottom: 3px solid transparent; text-decoration: none; }
+      .activity-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .activity-body { padding: 0.75rem; }
+      .activity-actions { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+      .activity-action-btn { display: flex; align-items: center; gap: 0; }
+      .activity-action-btn__icon { width: 32px; height: 32px; border-radius: 4px 0 0 4px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; }
+      .activity-action-btn__dropdown { width: 20px; height: 32px; border-radius: 0 4px 4px 0; border: none; border-left: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; }
+      .btn-phone .activity-action-btn__icon, .btn-phone .activity-action-btn__dropdown { background: #0070d2; }
+      .btn-email .activity-action-btn__icon, .btn-email .activity-action-btn__dropdown { background: #939393; }
+      .btn-task .activity-action-btn__icon, .btn-task .activity-action-btn__dropdown { background: #4BC076; }
+      .btn-event .activity-action-btn__icon, .btn-event .activity-action-btn__dropdown { background: #6B7AE8; }
+      .activity-filter { font-size: 0.75rem; color: #706e6b; display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; margin-bottom: 0.25rem; }
+      .activity-filter__gear { background: none; border: 1px solid #d8dde6; border-radius: 4px; width: 24px; height: 24px; cursor: pointer; color: #706e6b; display: flex; align-items: center; justify-content: center; }
+      .activity-links { display: flex; justify-content: flex-end; gap: 0.25rem; font-size: 0.75rem; margin-bottom: 0.75rem; }
+      .activity-links a { color: #0070d2; text-decoration: none; }
+      .activity-links span { color: #706e6b; }
+      .upcoming-section { background: #f3f3f3; border-radius: 4px; padding: 0.625rem 0.75rem; margin-bottom: 0.5rem; }
+      .upcoming-section__header { display: flex; align-items: center; cursor: pointer; font-size: 0.8125rem; font-weight: 600; color: #181818; margin-bottom: 0.5rem; }
+      .upcoming-section__toggle { width: 14px; height: 14px; margin-right: 0.375rem; color: #706e6b; }
+      .upcoming-section__body { text-align: center; font-size: 0.8125rem; color: #706e6b; padding: 0.5rem 0; line-height: 1.6; }
+      .upcoming-section__past { font-size: 0.8125rem; color: #706e6b; text-align: center; padding: 0.5rem 0; border-top: 1px solid #e5e5e5; line-height: 1.6; }
+
+      /* ===== フッター ===== */
+      .sf-footer { display: flex; align-items: center; padding: 0.375rem 0.75rem; font-size: 0.75rem; color: #706e6b; background: #fff; border-top: 1px solid #d8dde6; position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; }
+      .sf-footer a { color: #0070d2; text-decoration: none; }
+      .sf-footer__arrow { margin-right: 4px; font-size: 0.625rem; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ===== グローバルヘッダー ===== -->
+      <div class="sf-global-header">
+        <div class="sf-global-header__left">
+          <div class="sf-global-header__logo"><svg viewBox="0 0 48 32" width="32" height="22" xmlns="http://www.w3.org/2000/svg"><path d="M20.1 6.2c1.7-1.8 4.1-2.9 6.8-2.9 3.3 0 6.2 1.7 7.9 4.3 1.4-.6 3-.9 4.7-.9 6.2 0 11.2 5 11.2 11.2S45.7 29 39.5 29c-.9 0-1.8-.1-2.6-.3-1.4 2.3-3.9 3.8-6.8 3.8-1.5 0-2.9-.4-4.1-1.1-1.5 2.9-4.6 4.8-8.1 4.8-4.1 0-7.6-2.7-8.8-6.5-.7.2-1.5.3-2.3.3-4.3 0-7.8-3.5-7.8-7.8 0-3.1 1.7-5.7 4.1-7.2-.4-1.1-.7-2.4-.7-3.7C2.4 4.9 7.4 0 13.4 0c3 0 5.7 1.2 7.6 3.2l-.9 3z" fill="#fff"/></svg></div>
+        </div>
+        <div class="sf-global-header__search"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>検索...</div>
+        <div class="sf-global-header__right">
+          <div class="sf-global-header__partners">Partners</div>
+          <button title="印刷"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg></button>
+          <button title="お気に入り"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button>
+          <button title="ヘルプ"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></button>
+          <button title="設定"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+          <button title="通知"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+          <div class="sf-global-header__avatar">T</div>
+        </div>
+      </div>
+
+      <!-- ===== グローバルナビゲーション ===== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action"><button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー"><span class="slds-icon-waffle"><span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span><span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span><span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span></span></button></div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name"><span class="slds-truncate">Manabieユーザー管...</span></span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item"><a href="student-detail.html" class="slds-context-bar__label-action" title="ユーザー"><span class="nav-tab-with-arrow"><span class="slds-truncate">ユーザー</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="在籍状態"><span class="nav-tab-with-arrow"><span class="slds-truncate">在籍状態</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="学校"><span class="nav-tab-with-arrow"><span class="slds-truncate">学校</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="学校履歴"><span class="nav-tab-with-arrow"><span class="slds-truncate">学校履歴</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="紹介報酬"><span class="nav-tab-with-arrow"><span class="slds-truncate">紹介報酬</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="紹介"><span class="nav-tab-with-arrow"><span class="slds-truncate">紹介</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="フォーム"><span class="nav-tab-with-arrow"><span class="slds-truncate">フォーム</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="入退室記録"><span class="nav-tab-with-arrow"><span class="slds-truncate">入退室記録</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ===== レコードタブバー ===== -->
+      <div class="record-tabs">
+        <a href="#" class="record-tab is-active">* Application-18696 | 申請 <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></a>
+        <span class="record-tab__more">* さらに表示 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b" style="margin-left:2px;"><path d="M7 10l5 5 5-5z"/></svg></span>
+      </div>
+
+      <!-- ===== Highlights Panel ===== -->
+      <div class="highlights-panel">
+        <div class="highlights-panel__top">
+          <div class="highlights-panel__record">
+            <div class="highlights-panel__icon">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.2 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            </div>
+            <div>
+              <div class="highlights-panel__label">申請</div>
+              <div class="highlights-panel__name">Application-18696</div>
+            </div>
+          </div>
+          <div class="highlights-panel__actions">
+            <button class="slds-button slds-button_neutral" id="btnUploadContract">サイン済の入会契約書をアップロード</button>
+            <button class="slds-button slds-button_neutral" id="btnTrialLesson">体験授業登録</button>
+            <button class="slds-button slds-button_outline-brand" id="btnAddOrderProduct" style="color:#c23934;border-color:#c23934;">オーダーの内容を変更</button>
+            <button class="slds-button slds-button_neutral" id="btnEditApp">編集</button>
+            <button class="slds-button slds-button_brand" id="btnSubmitApp">申請提出</button>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="highlights-panel__fields">
+          <div class="highlights-field"><div class="highlights-field__label">ステータス</div><div class="highlights-field__value">下書き</div></div>
+          <div class="highlights-field"><div class="highlights-field__label">レコードタイプ</div><div class="highlights-field__value">所属先登録</div></div>
+          <div class="highlights-field"><div class="highlights-field__label">請求書作成済</div><div class="highlights-field__value" style="font-size:1rem;">&#x1F50D;</div></div>
+        </div>
+      </div>
+
+      <!-- ===== Path コンポーネント ===== -->
+      <div class="path-container">
+        <div class="path-steps">
+          <div class="path-step is-current">問い合わせ受付</div>
+          <div class="path-step">架電対応/DMリ...</div>
+          <div class="path-step">資料送付完了</div>
+          <div class="path-step">テスト</div>
+          <div class="path-step">テスト結果返却</div>
+          <div class="path-step">体験</div>
+          <div class="path-step">保護者面談</div>
+          <div class="path-step">講習申込</div>
+          <div class="path-step">入会検討中</div>
+          <div class="path-step">入会決定</div>
+        </div>
+        <button class="path-mark-btn">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Stageを完了としてマーク
+        </button>
+      </div>
+
+      <!-- ===== レコード本体 ===== -->
+      <div class="record-body">
+
+        <!-- ===== 左カラム ===== -->
+        <div class="record-body__left">
+
+          <!-- 申請情報 -->
+          <div class="section-card">
+            <div class="section-header" onclick="toggleSection('app-info')">
+              <svg class="section-header__toggle" id="toggle-app-info" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              <span class="section-header__title">申請情報</span>
+            </div>
+            <div id="body-app-info">
+              <div class="form-grid">
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">生徒名</div><div class="form-field__value"><a href="student-detail.html" class="field-link">テスト 太郎</a></div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">備考</div><div class="form-field__value">&nbsp;</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">拠点</div><div class="form-field__value"><a href="#" class="field-link">オーダーテスト用教室</a></div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">入会・講習開始日</div><div class="form-field__value">&nbsp;</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">サイン済の入会契約書をアップロード</div><div class="form-field__value form-field__upload">&nbsp;</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">問合日</div><div class="form-field__value">2026/03/01</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">入会申請タイプ</div><div class="form-field__value">通常</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">請求基準日</div><div class="form-field__value">&nbsp;</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+                <div class="form-field" style="border-bottom:none;"><div class="form-field__content">&nbsp;</div></div>
+                <div class="form-field"><div class="form-field__content"><div class="form-field__label">Decision Date</div><div class="form-field__value">&nbsp;</div></div><button class="form-field__edit" title="編集"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- システム情報 -->
+          <div class="section-card">
+            <div class="section-header" onclick="toggleSection('sys-info')">
+              <svg class="section-header__toggle" id="toggle-sys-info" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              <span class="section-header__title">システム情報</span>
+            </div>
+            <div id="body-sys-info" style="display:none;"></div>
+          </div>
+
+          <!-- オーダー (1) -->
+          <div class="section-card">
+            <div class="data-section-header">
+              <div class="data-section-header__left">
+                <svg class="data-section-header__toggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                <span class="data-section-header__title">オーダー (1)</span>
+              </div>
+              <div class="data-section-header__right">
+                <span class="data-section-header__note">1 個の項目 ・ 数秒前 に更新されました。</span>
+                <button class="slds-button slds-button_icon slds-button_icon-border" title="表示切替"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></button>
+                <button class="slds-button slds-button_icon slds-button_icon-border" title="更新"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead><tr>
+                <th style="width:24px;"></th>
+                <th><div class="th-content">オーダー番号 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">ステータス <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">オーダー時に確定す... <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">最終更新日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">備考 (削除予定) <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td class="row-num">1</td>
+                  <td><a href="#">ODG-540276</a></td>
+                  <td>下書き</td>
+                  <td>&yen; 49,000</td>
+                  <td>2026/03/01 17:14</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <a href="#" class="view-all-link">すべて表示</a>
+          </div>
+
+          <!-- オーダー商品 (2) -->
+          <div class="section-card">
+            <div class="data-section-header">
+              <div class="data-section-header__left">
+                <svg class="data-section-header__toggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                <span class="data-section-header__title">オーダー商品 (2)</span>
+              </div>
+              <div class="data-section-header__right">
+                <span class="data-section-header__note">2 個の項目 ・ 数秒前 に更新されました。</span>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead><tr>
+                <th style="width:24px;"></th>
+                <th><div class="th-content">オーダーグ... <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">商品 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">提供コース <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">オーダータ... <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">拠点 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">開始日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">終了日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">変更日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td class="row-num">1</td>
+                  <td><a href="#">OGP-568783</a></td>
+                  <td><a href="#">2025小6継続個...</a></td>
+                  <td><ul class="course-list"><li>(1) [2025_test]...</li></ul></td>
+                  <td>新規</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td>2026/03/01 0:00</td>
+                  <td>2026/03/31 23:59</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="row-num">2</td>
+                  <td><a href="#">OGP-568784</a></td>
+                  <td><a href="#">入会費</a></td>
+                  <td></td>
+                  <td>新規</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <a href="#" class="view-all-link">すべて表示</a>
+          </div>
+
+          <!-- オーダーの請求項目 (2) -->
+          <div class="section-card">
+            <div class="data-section-header">
+              <div class="data-section-header__left">
+                <svg class="data-section-header__toggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                <span class="data-section-header__title">オーダーの請求項目 (2)</span>
+              </div>
+              <div class="data-section-header__right">
+                <span class="data-section-header__note">2 個の項目 ・ 数秒前 に更新されました。</span>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead><tr>
+                <th><div class="th-content">商品 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">コース名 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">請求期間 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">拠点 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">金額 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                <th><div class="th-content">割引 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#">2025小6継続個別コース商品テスト</a></td>
+                  <td></td>
+                  <td>2026/03</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td>&yen; 24,000</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><a href="#">入会費</a></td>
+                  <td></td>
+                  <td>2026/03</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td>&yen; 25,000</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <a href="#" class="view-all-link">すべて表示</a>
+          </div>
+        </div>
+
+        <!-- ===== 右カラム ===== -->
+        <div class="record-body__right">
+
+          <!-- Contact Action Logs -->
+          <div class="right-card">
+            <div class="right-card__header">
+              <div class="right-card__header-left">
+                <div class="right-card__icon" style="background: #4bc076;"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div>
+                <span class="right-card__title">Contact Action Logs (Action To Contact) for ... (0)</span>
+              </div>
+              <button class="right-card__toggle"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+            </div>
+          </div>
+
+          <!-- アンケート/投稿 -->
+          <div class="right-card">
+            <div class="chatter-tabs">
+              <a href="#" class="chatter-tab is-active">アンケート</a>
+              <a href="#" class="chatter-tab">投稿</a>
+            </div>
+            <div class="chatter-body">
+              <div class="chatter-input-row">
+                <input type="text" class="chatter-input" placeholder="何を質問しますか?" />
+                <button class="slds-button slds-button_brand slds-button_small">質問する</button>
+              </div>
+              <div class="chatter-feed-tools">
+                <div class="chatter-feed-tools__left">
+                  <button class="chatter-feed-tools__sort"><svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg> <svg viewBox="0 0 24 24" width="10" height="10"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="chatter-feed-tools__right">
+                  <div class="chatter-search"><svg width="12" height="12" viewBox="0 0 24 24" fill="#b0adab"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="このフィードを検索..." /></div>
+                  <button class="slds-button slds-button_icon slds-button_icon-border" title="更新"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 活動 -->
+          <div class="right-card">
+            <div style="padding: 0.625rem 0.75rem; font-size: 0.875rem; font-weight: 600; color: #181818; border-bottom: 1px solid #e5e5e5;">活動</div>
+            <div class="activity-body">
+              <div class="activity-actions">
+                <div class="activity-action-btn btn-phone"><button class="activity-action-btn__icon" title="電話"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.1.31.03.66-.25 1.02l-2.2 2.2z"/></svg></button><button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button></div>
+                <div class="activity-action-btn btn-email"><button class="activity-action-btn__icon" title="メール"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></button><button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button></div>
+                <div class="activity-action-btn btn-task"><button class="activity-action-btn__icon" title="ToDo"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button><button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button></div>
+                <div class="activity-action-btn btn-event"><button class="activity-action-btn__icon" title="行動"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></button><button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button></div>
+              </div>
+              <div class="activity-filter"><span>条件: 常時・すべての活動・すべての種別</span><button class="activity-filter__gear"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button></div>
+              <div class="activity-links"><a href="#">更新</a><span>・</span><a href="#">すべて展開</a><span>・</span><a href="#">すべて表示</a></div>
+              <div class="upcoming-section">
+                <div class="upcoming-section__header"><svg class="upcoming-section__toggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>今後 &amp; 期限切れ</div>
+                <div class="upcoming-section__body">表示する活動がありません。<br>使用を開始するには、メールの送信や ToDo のスケジュールなどを行ってください。</div>
+              </div>
+              <div class="upcoming-section__past">過去の活動はありません。「完了」とマークされた過去のミーティングと ToDo がここに表示されます。</div>
+            </div>
+          </div>
+
+          <!-- Referrals -->
+          <div class="right-card">
+            <div class="right-card__header">
+              <div class="right-card__header-left">
+                <div class="right-card__icon" style="background: #f28b00;"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+                <span class="right-card__title">Referrals (0)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sf-footer">
+        <span class="sf-footer__arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></span>
+        <a href="#">BackOffice</a>
+      </div>
+    </div>
+
+    <script>
+      function toggleSection(sectionId) {
+        var body = document.getElementById('body-' + sectionId);
+        var toggle = document.getElementById('toggle-' + sectionId);
+        if (!body) return;
+        if (body.style.display === 'none') { body.style.display = 'block'; if (toggle) toggle.classList.remove('is-collapsed'); }
+        else { body.style.display = 'none'; if (toggle) toggle.classList.add('is-collapsed'); }
+      }
+      var buttonHandlers = {
+        btnUploadContract: function() { console.log('サイン済の入会契約書をアップロード'); },
+        btnTrialLesson: function() { console.log('体験授業登録'); },
+        btnAddOrderProduct: function() { window.location.href = 'product-select.html'; },
+        btnEditApp: function() { console.log('編集'); },
+        btnSubmitApp: function() { console.log('申請提出'); }
+      };
+      Object.keys(buttonHandlers).forEach(function(id) { var el = document.getElementById(id); if (el) el.addEventListener('click', buttonHandlers[id]); });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enrollment Flow - Option Index</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+      .flow-card { background: #fff; border: 1px solid #d8dde6; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; transition: box-shadow 0.2s; }
+      .flow-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+      .flow-card__title { font-size: 1.125rem; font-weight: 700; color: #0070d2; margin-bottom: 0.5rem; }
+      .flow-card__title a { color: inherit; text-decoration: none; }
+      .flow-card__title a:hover { text-decoration: underline; }
+      .flow-card__desc { font-size: 0.875rem; color: #706e6b; line-height: 1.5; }
+      .flow-card__steps { font-size: 0.75rem; color: #969492; margin-top: 0.75rem; }
+      h1 { font-size: 1.5rem; color: #181818; margin-bottom: 0.5rem; }
+      .subtitle { font-size: 0.875rem; color: #706e6b; margin-bottom: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Enrollment Flow Mockups</h1>
+      <p class="subtitle">各オプションの画面遷移フローを選択してください。各フローは student-detail から始まり、割引設定画面で終わります。</p>
+
+      <div class="flow-card">
+        <div class="flow-card__title"><a href="option-a/student-detail.html">Option A: マルチタグ割引（インライン）</a></div>
+        <div class="flow-card__desc">商品ごとにタグベースの割引をインラインで設定するパターン。複数の割引タグを組み合わせた柔軟な割引構成が可能。</div>
+        <div class="flow-card__steps">student-detail → application-detail → product-select → order-group-edit → product-add-change → discount-option-a</div>
+      </div>
+
+      <div class="flow-card">
+        <div class="flow-card__title"><a href="option-b/student-detail.html">Option B: 割引ウォーターフォール</a></div>
+        <div class="flow-card__desc">割引を段階的（ウォーターフォール形式）に適用するパターン。割引ステップの順序や条件を視覚的に確認・編集できる。</div>
+        <div class="flow-card__steps">student-detail → application-detail → product-select → order-group-edit → product-add-change → discount-option-b</div>
+      </div>
+
+      <div class="flow-card">
+        <div class="flow-card__title"><a href="option-c/student-detail.html">Option C: 自動検出 + 予測カード</a></div>
+        <div class="flow-card__desc">適用可能な割引を自動検出し、予測結果をカード形式で表示するパターン。割引の比較・シミュレーションが容易。</div>
+        <div class="flow-card__steps">student-detail → application-detail → product-select → order-group-edit → product-add-change → discount-option-c</div>
+      </div>
+    </div>
+  </body>
+</html>

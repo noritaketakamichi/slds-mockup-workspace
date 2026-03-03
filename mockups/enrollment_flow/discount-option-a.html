@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Option A: マルチタグ割引 + 請求プレビュー</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* ===== Global Header ===== */
+      .sf-global-header { display: flex; align-items: center; justify-content: space-between; background: #032D60; height: 40px; padding: 0 0.75rem; }
+      .sf-global-header__logo { display: flex; align-items: center; }
+      .sf-global-header__logo svg { height: 22px; width: auto; }
+      .sf-global-header__search { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: 4px; padding: 4px 12px; min-width: 260px; color: rgba(255,255,255,0.7); font-size: 0.8125rem; }
+      .sf-global-header__search svg { margin-right: 6px; opacity: 0.7; }
+      .sf-global-header__right { display: flex; align-items: center; gap: 4px; }
+      .sf-global-header__right button { background: none; border: none; color: rgba(255,255,255,0.8); cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+      .sf-global-header__right button:hover { background: rgba(255,255,255,0.1); }
+      .sf-global-header__right button svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.8); }
+      .sf-global-header__avatar { width: 24px; height: 24px; border-radius: 50%; background: #5B9BD5; display: flex; align-items: center; justify-content: center; margin-left: 4px; }
+      .sf-global-header__avatar svg { width: 14px; height: 14px; fill: #fff; }
+
+      /* ===== Option Tabs ===== */
+      .option-tabs { background: #fff; border-bottom: 1px solid #d8dde6; padding: 0 1.5rem; display: flex; align-items: center; gap: 0; }
+      .option-tabs__tab { padding: 0.625rem 1rem; font-size: 0.8125rem; color: #706e6b; text-decoration: none; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+      .option-tabs__tab:hover { color: #0070d2; }
+      .option-tabs__tab--active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .option-tabs__separator { margin-left: auto; }
+      .option-tabs__link { padding: 0.625rem 1rem; font-size: 0.75rem; color: #0070d2; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+      .option-tabs__link:hover { text-decoration: underline; }
+      .option-tabs__link svg { width: 12px; height: 12px; fill: #0070d2; }
+
+      /* ===== Page Header ===== */
+      .page-header { background: #fff; border-bottom: 1px solid #d8dde6; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+      .page-header__icon { width: 40px; height: 40px; border-radius: 6px; background: #706e6b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .page-header__icon svg { width: 24px; height: 24px; fill: #fff; }
+      .page-header__id { font-size: 0.75rem; color: #706e6b; }
+      .page-header__title { font-size: 1.125rem; font-weight: 700; color: #181818; display: flex; align-items: center; gap: 0.5rem; }
+      .page-header__badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.6875rem; font-weight: 600; background: #eef4ff; color: #0070d2; border: 1px solid #b0d0f5; }
+      .page-header__student { font-size: 0.75rem; color: #706e6b; margin-top: 2px; }
+
+      /* ===== Content ===== */
+      .edit-content { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; padding-bottom: 5rem; }
+      .required-note { text-align: right; font-size: 0.75rem; color: #c23934; margin-bottom: 1rem; }
+
+      /* ===== Product Section ===== */
+      .product-section { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 1rem; }
+      .product-section__header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: #f3f3f3; border-bottom: 1px solid #d8dde6; border-radius: 4px 4px 0 0; cursor: pointer; user-select: none; }
+      .product-section__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+      .product-section__toggle { width: 20px; height: 20px; background: none; border: 1px solid #d8dde6; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #706e6b; }
+      .product-section__toggle svg { width: 14px; height: 14px; fill: #706e6b; transition: transform 0.2s; }
+      .product-section__body { padding: 1rem; }
+      .product-section__body.is-hidden { display: none; }
+
+      /* ===== Field Row ===== */
+      .field-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+      .field-item__label { font-size: 0.75rem; color: #181818; margin-bottom: 4px; display: block; }
+      .field-item__label .required { color: #c23934; margin-right: 2px; }
+      .field-input { width: 100%; height: 32px; border: 1px solid #d8dde6; border-radius: 4px; padding: 0 8px; font-size: 0.8125rem; color: #181818; background: #fff; box-sizing: border-box; }
+      .field-input-with-icon { position: relative; }
+      .field-input-with-icon input { padding-right: 32px; }
+      .field-input-with-icon__icon { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #706e6b; display: flex; align-items: center; }
+      .field-input-with-icon__icon svg { width: 16px; height: 16px; fill: #706e6b; }
+
+      /* ===== Multi-Select Discount Pills ===== */
+      .discount-multiselect { min-height: 36px; border: 1px solid #d8dde6; border-radius: 4px; padding: 4px 6px; background: #fff; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+      .discount-multiselect:focus-within { border-color: #0070d2; box-shadow: 0 0 3px 0 #0070d2; }
+
+      .discount-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 0.6875rem; font-weight: 600; line-height: 1.4; white-space: nowrap; max-width: 100%; }
+      .discount-pill__remove { width: 14px; height: 14px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; opacity: 0.7; flex-shrink: 0; }
+      .discount-pill__remove:hover { opacity: 1; background: rgba(0,0,0,0.1); }
+      .discount-pill__remove svg { width: 10px; height: 10px; }
+
+      /* Pill color variants */
+      .discount-pill--campaign { background: #fef3cd; border: 1px solid #ffc107; color: #856404; }
+      .discount-pill--campaign .discount-pill__remove svg { fill: #856404; }
+      .discount-pill--sibling { background: #cce5ff; border: 1px solid #0070d2; color: #004085; }
+      .discount-pill--sibling .discount-pill__remove svg { fill: #004085; }
+      .discount-pill--employee { background: #d4edda; border: 1px solid #28a745; color: #155724; }
+      .discount-pill--employee .discount-pill__remove svg { fill: #155724; }
+
+      .discount-add-btn { background: none; border: none; color: #0070d2; font-size: 0.75rem; cursor: pointer; padding: 2px 4px; display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+      .discount-add-btn:hover { text-decoration: underline; }
+      .discount-add-btn svg { width: 12px; height: 12px; fill: #0070d2; }
+
+      /* ===== Discount Dropdown (add) ===== */
+      .discount-dropdown { position: relative; display: inline-block; }
+      .discount-dropdown__menu { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #d8dde6; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.16); z-index: 100; min-width: 220px; padding: 4px 0; margin-top: 4px; }
+      .discount-dropdown__menu.is-open { display: block; }
+      .discount-dropdown__item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-size: 0.8125rem; color: #181818; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+      .discount-dropdown__item:hover { background: #f3f3f3; }
+      .discount-dropdown__item--disabled { opacity: 0.4; pointer-events: none; }
+      .discount-dropdown__dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+      /* ===== Slot Area ===== */
+      .slot-area { margin-top: 1rem; }
+      .slot-area__label { font-size: 0.8125rem; color: #706e6b; margin-bottom: 0.5rem; }
+      .slot-tables { display: flex; gap: 1.5rem; }
+      .slot-table-wrapper { flex: 1; }
+      .slot-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+      .slot-table thead th { padding: 8px 10px; text-align: left; font-weight: 600; color: #181818; border-bottom: 1px solid #d8dde6; background: #fafaf9; }
+      .slot-table thead th .header-content { display: flex; align-items: center; gap: 6px; }
+      .slot-table thead th input[type="checkbox"] { accent-color: #0070d2; width: 16px; height: 16px; }
+      .slot-table tbody td { padding: 8px 10px; border-bottom: 1px solid #e5e5e5; vertical-align: middle; }
+      .slot-table tbody td input[type="checkbox"] { accent-color: #0070d2; width: 16px; height: 16px; }
+      .slot-table a { color: #0070d2; text-decoration: none; }
+      .slot-table a:hover { text-decoration: underline; }
+      .slot-select { width: 100%; height: 28px; border: 1px solid #d8dde6; border-radius: 4px; padding: 0 6px; font-size: 0.8125rem; color: #706e6b; background: #fff; appearance: auto; }
+      .slot-num { color: #706e6b; width: 24px; text-align: center; }
+
+      /* ===== Billing Preview ===== */
+      .billing-preview { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 1rem; }
+      .billing-preview__header { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid #d8dde6; background: #fafaf9; border-radius: 4px 4px 0 0; }
+      .billing-preview__icon { width: 28px; height: 28px; border-radius: 6px; background: #0070d2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .billing-preview__icon svg { width: 16px; height: 16px; fill: #fff; }
+      .billing-preview__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+      .billing-preview__subtitle { font-size: 0.6875rem; color: #706e6b; font-weight: 400; margin-left: 4px; }
+      .billing-preview__body { padding: 1rem; }
+      .billing-preview__columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+      .billing-col__title { font-size: 0.8125rem; font-weight: 700; color: #181818; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid #0070d2; }
+
+      .billing-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+      .billing-table thead th { padding: 8px 10px; text-align: left; font-weight: 600; color: #181818; border-bottom: 1px solid #d8dde6; background: #fafaf9; font-size: 0.75rem; }
+      .billing-table thead th:last-child { text-align: right; }
+      .billing-table tbody td { padding: 8px 10px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+      .billing-table tbody td:last-child { text-align: right; font-weight: 600; }
+      .billing-table tfoot td { padding: 10px; border-top: 2px solid #181818; font-weight: 700; font-size: 0.875rem; }
+      .billing-table tfoot td:last-child { text-align: right; }
+
+      .price-original { text-decoration: line-through; color: #706e6b; font-size: 0.75rem; }
+      .price-discount { color: #04844b; font-size: 0.75rem; display: block; margin-top: 2px; }
+      .price-discount-detail { color: #04844b; font-size: 0.6875rem; display: block; }
+      .price-free { color: #04844b; font-weight: 700; font-size: 0.875rem; }
+      .price-muted { color: #706e6b; }
+
+      .savings-badge { background: #d4edda; border-left: 4px solid #04844b; padding: 8px 12px; margin-top: 0.75rem; border-radius: 0 4px 4px 0; display: flex; align-items: center; gap: 6px; }
+      .savings-badge__icon { width: 16px; height: 16px; flex-shrink: 0; }
+      .savings-badge__icon svg { width: 16px; height: 16px; fill: #04844b; }
+      .savings-badge__text { font-size: 0.8125rem; font-weight: 600; color: #155724; }
+
+      /* ===== Footer ===== */
+      .page-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #d8dde6; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+      .page-footer__left { display: flex; align-items: center; }
+      .page-footer__right { display: flex; align-items: center; gap: 0.5rem; }
+      .page-footer__nav-link { color: #0070d2; text-decoration: none; font-size: 0.8125rem; display: flex; align-items: center; gap: 4px; }
+      .page-footer__nav-link:hover { text-decoration: underline; }
+      .page-footer__nav-link svg { width: 14px; height: 14px; fill: #0070d2; }
+
+      /* ===== Responsive ===== */
+      @media (max-width: 768px) {
+        .field-row { grid-template-columns: 1fr 1fr; }
+        .billing-preview__columns { grid-template-columns: 1fr; }
+        .slot-tables { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ================================================================
+           1. Global Header
+           ================================================================ -->
+      <div class="sf-global-header">
+        <div class="sf-global-header__logo">
+          <svg viewBox="0 0 100 70" width="30" height="22" fill="none">
+            <path d="M45.4 0.2C40.7 0.2 36.5 2.1 33.6 5.2 31 2.9 27.5 1.5 23.7 1.5 15.6 1.5 9 8.1 9 16.2 9 16.8 9.1 17.4 9.1 18 3.9 20.2 0 25.4 0 31.5 0 39.6 6.6 46.2 14.7 46.2 16.2 46.2 17.7 45.9 19 45.5 21 50.2 26.3 53.2 32.5 53.2 34.2 53.2 35.8 52.9 37.3 52.4 39.7 56.8 44.4 59.5 49.9 59.5 55 59.5 59.4 57.2 62.6 53.7 64.5 56.9 68.4 58.6 72.8 58.6 81.2 58.6 88.1 51.9 88.6 43.6 93 41 96 36.7 96 31.8 96 24.2 89.5 18 81.6 18 81 18 80.4 18 79.8 18.1 78.7 11.3 72.7 6.2 65.5 6.2 62.5 6.2 59.7 7.2 57.4 8.8 55-0.1 50.2 0.2 45.4 0.2z" fill="white"/>
+          </svg>
+        </div>
+        <div class="sf-global-header__search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          検索...
+        </div>
+        <div class="sf-global-header__right">
+          <button title="印刷"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg></button>
+          <button title="お気に入り"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button>
+          <button title="ヘルプ"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></button>
+          <button title="設定"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+          <button title="通知"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+          <div class="sf-global-header__avatar" title="テスト 管理者">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           2. Option Tabs
+           ================================================================ -->
+      <div class="option-tabs">
+        <a class="option-tabs__tab option-tabs__tab--active" href="discount-option-a.html">Option A</a>
+        <a class="option-tabs__tab" href="discount-option-b.html">Option B</a>
+        <a class="option-tabs__tab" href="discount-option-c.html">Option C</a>
+        <div class="option-tabs__separator"></div>
+        <a class="option-tabs__link" href="discount-options-index.html">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          オプション一覧
+        </a>
+      </div>
+
+      <!-- ================================================================
+           3. Page Header
+           ================================================================ -->
+      <div class="page-header">
+        <div class="page-header__icon">
+          <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+        <div>
+          <div class="page-header__id">ODG-540276</div>
+          <div class="page-header__title">
+            オーダーグループ内商品を編集
+            <span class="page-header__badge">Option A: マルチタグ割引</span>
+          </div>
+          <div class="page-header__student">
+            <svg style="width: 12px; height: 12px; fill: #706e6b; vertical-align: middle; margin-right: 2px;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            生徒: テスト 太郎
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           4. Content
+           ================================================================ -->
+      <div class="edit-content">
+        <div class="required-note"><span style="color:#c23934;">*</span> = 必要な情報</div>
+
+        <!-- ================================================================
+             4a. Product Section: コース商品
+             ================================================================ -->
+        <div class="product-section" id="section-course">
+          <div class="product-section__header" onclick="toggleProductSection('course')">
+            <span class="product-section__title">[新規] 2025小6継続個別コース商品テスト</span>
+            <button class="product-section__toggle" id="toggle-course">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+          </div>
+          <div class="product-section__body" id="body-course">
+            <div class="field-row">
+              <!-- Discount Multi-Select -->
+              <div class="field-item">
+                <label class="field-item__label">割引</label>
+                <div class="discount-multiselect" id="discount-area-course">
+                  <span class="discount-pill discount-pill--campaign" id="pill-campaign" data-discount="campaign">
+                    キャンペーン割引(初月無料)
+                    <button class="discount-pill__remove" onclick="removeDiscount('campaign', event)" title="削除">
+                      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                  </span>
+                  <span class="discount-pill discount-pill--sibling" id="pill-sibling" data-discount="sibling">
+                    兄弟割引(10%)
+                    <button class="discount-pill__remove" onclick="removeDiscount('sibling', event)" title="削除">
+                      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                  </span>
+                  <span class="discount-pill discount-pill--employee" id="pill-employee" data-discount="employee">
+                    社員割引(10%)
+                    <button class="discount-pill__remove" onclick="removeDiscount('employee', event)" title="削除">
+                      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                  </span>
+                </div>
+                <div class="discount-dropdown" id="discount-dropdown-course">
+                  <button class="discount-add-btn" onclick="toggleDiscountDropdown('course')" id="add-discount-btn-course">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    割引を追加
+                  </button>
+                  <div class="discount-dropdown__menu" id="discount-menu-course">
+                    <button class="discount-dropdown__item discount-dropdown__item--disabled" data-discount="campaign" onclick="addDiscount('campaign')">
+                      <span class="discount-dropdown__dot" style="background: #ffc107;"></span>
+                      キャンペーン割引(初月無料)
+                      <span style="margin-left: auto; font-size: 0.6875rem; color: #706e6b;">適用済</span>
+                    </button>
+                    <button class="discount-dropdown__item discount-dropdown__item--disabled" data-discount="sibling" onclick="addDiscount('sibling')">
+                      <span class="discount-dropdown__dot" style="background: #0070d2;"></span>
+                      兄弟割引(10%)
+                      <span style="margin-left: auto; font-size: 0.6875rem; color: #706e6b;">適用済</span>
+                    </button>
+                    <button class="discount-dropdown__item discount-dropdown__item--disabled" data-discount="employee" onclick="addDiscount('employee')">
+                      <span class="discount-dropdown__dot" style="background: #28a745;"></span>
+                      社員割引(10%)
+                      <span style="margin-left: auto; font-size: 0.6875rem; color: #706e6b;">適用済</span>
+                    </button>
+                    <button class="discount-dropdown__item" data-discount="seasonal" onclick="addDiscount('seasonal')">
+                      <span class="discount-dropdown__dot" style="background: #9c27b0;"></span>
+                      季節限定割引(5%)
+                    </button>
+                    <button class="discount-dropdown__item" data-discount="referral" onclick="addDiscount('referral')">
+                      <span class="discount-dropdown__dot" style="background: #ff5722;"></span>
+                      紹介割引(15%)
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- 変更日 -->
+              <div class="field-item">
+                <label class="field-item__label">変更日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" placeholder="" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- 開始日 -->
+              <div class="field-item">
+                <label class="field-item__label"><span class="required">*</span>開始日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" value="2026/03/01" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- 終了日 -->
+              <div class="field-item">
+                <label class="field-item__label"><span class="required">*</span>終了日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" value="2026/03/31" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slot Area -->
+            <div class="slot-area">
+              <div class="slot-area__label">最大のスロット数 = 4</div>
+              <div class="slot-tables">
+                <div class="slot-table-wrapper">
+                  <table class="slot-table">
+                    <thead>
+                      <tr>
+                        <th style="width:32px;"><input type="checkbox" checked /></th>
+                        <th><div class="header-content">コース <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                        <th><div class="header-content">スロット <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="width:32px;"><input type="checkbox" checked /></td>
+                        <td class="slot-num">1</td>
+                        <td><a href="#">[2025_test] 小6社会</a></td>
+                        <td><select class="slot-select"><option>1</option><option>2</option><option>3</option><option>4</option></select></td>
+                      </tr>
+                      <tr>
+                        <td style="width:32px;"><input type="checkbox" checked /></td>
+                        <td class="slot-num">2</td>
+                        <td><a href="#">[2025_test] 小6理科</a></td>
+                        <td><select class="slot-select"><option>1</option><option>2</option><option>3</option><option>4</option></select></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="slot-table-wrapper">
+                  <table class="slot-table">
+                    <thead>
+                      <tr>
+                        <th style="width:32px;"><input type="checkbox" /></th>
+                        <th><div class="header-content">付随商品 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="2" style="text-align: center; color: #706e6b; padding: 1rem;">付随商品はありません</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             4b. Product Section: 入会費
+             ================================================================ -->
+        <div class="product-section" id="section-admission">
+          <div class="product-section__header" onclick="toggleProductSection('admission')">
+            <span class="product-section__title">[新規] 入会費</span>
+            <button class="product-section__toggle" id="toggle-admission">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+          </div>
+          <div class="product-section__body" id="body-admission">
+            <div class="field-row">
+              <!-- Discount (empty for admission) -->
+              <div class="field-item">
+                <label class="field-item__label">割引</label>
+                <div class="discount-multiselect" id="discount-area-admission" style="color: #706e6b; font-size: 0.8125rem;">
+                  <span style="color: #706e6b; font-size: 0.8125rem; padding: 2px 4px;">--</span>
+                </div>
+                <div class="discount-dropdown" id="discount-dropdown-admission">
+                  <button class="discount-add-btn" onclick="toggleDiscountDropdown('admission')">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    割引を追加
+                  </button>
+                  <div class="discount-dropdown__menu" id="discount-menu-admission">
+                    <button class="discount-dropdown__item" onclick="alert('入会費に割引を適用しました（デモ）')">
+                      <span class="discount-dropdown__dot" style="background: #ffc107;"></span>
+                      キャンペーン割引(入会費免除)
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- 変更日 -->
+              <div class="field-item">
+                <label class="field-item__label">変更日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" placeholder="" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- 開始日 -->
+              <div class="field-item">
+                <label class="field-item__label"><span class="required">*</span>開始日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" placeholder="" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- 終了日 -->
+              <div class="field-item">
+                <label class="field-item__label"><span class="required">*</span>終了日</label>
+                <div class="field-input-with-icon">
+                  <input type="text" class="field-input" placeholder="" />
+                  <button class="field-input-with-icon__icon" title="日付選択">
+                    <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             5. Billing Preview
+             ================================================================ -->
+        <div class="billing-preview" id="billing-preview">
+          <div class="billing-preview__header">
+            <div class="billing-preview__icon">
+              <!-- Calculator icon -->
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V9h2v4zm4 4h-2v-2h2v2zm0-4h-2V9h2v4zM9 17H7v-6h2v6zm0-8H7V7h2v2z"/></svg>
+            </div>
+            <span class="billing-preview__title">
+              請求プレビュー
+              <span class="billing-preview__subtitle">-- リアルタイム計算</span>
+            </span>
+          </div>
+          <div class="billing-preview__body">
+            <div class="billing-preview__columns">
+              <!-- Left: First Month -->
+              <div class="billing-col" id="preview-first-month">
+                <div class="billing-col__title">
+                  <svg style="width: 14px; height: 14px; fill: #0070d2; vertical-align: middle; margin-right: 4px;" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                  初月（2026年3月）
+                </div>
+                <table class="billing-table">
+                  <thead>
+                    <tr>
+                      <th>項目</th>
+                      <th>通常金額</th>
+                      <th>割引</th>
+                      <th>請求金額</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>授業料</td>
+                      <td>
+                        <span class="price-original" id="preview-tuition-original-1">&yen;24,000</span>
+                      </td>
+                      <td>
+                        <span class="price-discount" id="preview-tuition-discount-1">
+                          キャンペーン割引(初月無料)
+                        </span>
+                        <span class="price-discount-detail" id="preview-tuition-discount-detail-1">-&yen;24,000</span>
+                      </td>
+                      <td>
+                        <span class="price-free" id="preview-tuition-total-1">&yen;0</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>入会費</td>
+                      <td>&yen;25,000</td>
+                      <td><span class="price-muted">-</span></td>
+                      <td>&yen;25,000</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3">合計</td>
+                      <td id="preview-total-1">&yen;25,000</td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <div class="savings-badge" id="savings-badge-1">
+                  <div class="savings-badge__icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  </div>
+                  <span class="savings-badge__text" id="savings-text-1">初月 &yen;24,000 お得!</span>
+                </div>
+              </div>
+
+              <!-- Right: Ongoing Months -->
+              <div class="billing-col" id="preview-ongoing">
+                <div class="billing-col__title">
+                  <svg style="width: 14px; height: 14px; fill: #0070d2; vertical-align: middle; margin-right: 4px;" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                  翌月以降（2026年4月〜）
+                </div>
+                <table class="billing-table">
+                  <thead>
+                    <tr>
+                      <th>項目</th>
+                      <th>通常金額</th>
+                      <th>割引</th>
+                      <th>請求金額</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>授業料</td>
+                      <td>
+                        <span class="price-original" id="preview-tuition-original-2">&yen;24,000</span>
+                      </td>
+                      <td>
+                        <span class="price-discount" id="preview-tuition-discount-2a">兄弟割引(-10%)</span>
+                        <span class="price-discount-detail">-&yen;2,400</span>
+                        <span class="price-discount" id="preview-tuition-discount-2b" style="margin-top: 2px;">社員割引(-10%)</span>
+                        <span class="price-discount-detail">-&yen;2,400</span>
+                      </td>
+                      <td id="preview-tuition-total-2">&yen;19,200</td>
+                    </tr>
+                    <tr>
+                      <td>入会費</td>
+                      <td><span class="price-muted">- (単発)</span></td>
+                      <td><span class="price-muted">-</span></td>
+                      <td><span class="price-muted">-</span></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3">合計</td>
+                      <td id="preview-total-2">&yen;19,200/月</td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <div class="savings-badge" id="savings-badge-2">
+                  <div class="savings-badge__icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  </div>
+                  <span class="savings-badge__text" id="savings-text-2">毎月 &yen;4,800 お得!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /edit-content -->
+
+      <!-- ================================================================
+           6. Footer
+           ================================================================ -->
+      <div class="page-footer">
+        <div class="page-footer__left">
+          <a class="page-footer__nav-link" href="discount-option-b.html">
+            次のオプション
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </a>
+        </div>
+        <div class="page-footer__right">
+          <button class="slds-button slds-button_neutral" id="btnCancel">キャンセル</button>
+          <button class="slds-button slds-button_brand" id="btnExecute">実行</button>
+        </div>
+      </div>
+
+    </div><!-- /slds-scope -->
+
+    <!-- ================================================================
+         JavaScript
+         ================================================================ -->
+    <script>
+      /* ----- Section Toggle ----- */
+      function toggleProductSection(sectionId) {
+        var body = document.getElementById('body-' + sectionId);
+        var toggle = document.getElementById('toggle-' + sectionId);
+        if (body.classList.contains('is-hidden')) {
+          body.classList.remove('is-hidden');
+          toggle.querySelector('svg').style.transform = '';
+        } else {
+          body.classList.add('is-hidden');
+          toggle.querySelector('svg').style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      /* ----- Discount Dropdown Toggle ----- */
+      function toggleDiscountDropdown(sectionId) {
+        var menu = document.getElementById('discount-menu-' + sectionId);
+        if (menu.classList.contains('is-open')) {
+          menu.classList.remove('is-open');
+        } else {
+          // Close all other dropdowns first
+          document.querySelectorAll('.discount-dropdown__menu').forEach(function(m) {
+            m.classList.remove('is-open');
+          });
+          menu.classList.add('is-open');
+        }
+      }
+
+      /* Close dropdown when clicking outside */
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.discount-dropdown')) {
+          document.querySelectorAll('.discount-dropdown__menu').forEach(function(m) {
+            m.classList.remove('is-open');
+          });
+        }
+      });
+
+      /* ----- Discount Pill Data ----- */
+      var discountData = {
+        campaign: {
+          label: 'キャンペーン割引(初月無料)',
+          cssClass: 'discount-pill--campaign',
+          type: 'first-month',
+          rate: 1.0
+        },
+        sibling: {
+          label: '兄弟割引(10%)',
+          cssClass: 'discount-pill--sibling',
+          type: 'ongoing',
+          rate: 0.10
+        },
+        employee: {
+          label: '社員割引(10%)',
+          cssClass: 'discount-pill--employee',
+          type: 'ongoing',
+          rate: 0.10
+        },
+        seasonal: {
+          label: '季節限定割引(5%)',
+          cssClass: 'discount-pill--campaign',
+          type: 'ongoing',
+          rate: 0.05
+        },
+        referral: {
+          label: '紹介割引(15%)',
+          cssClass: 'discount-pill--sibling',
+          type: 'ongoing',
+          rate: 0.15
+        }
+      };
+
+      var activeDiscounts = ['campaign', 'sibling', 'employee'];
+
+      /* ----- Remove Discount ----- */
+      function removeDiscount(discountId, event) {
+        if (event) event.stopPropagation();
+        var pill = document.getElementById('pill-' + discountId);
+        if (pill) pill.remove();
+        var idx = activeDiscounts.indexOf(discountId);
+        if (idx > -1) activeDiscounts.splice(idx, 1);
+        updateDropdownState();
+        updateBillingPreview();
+      }
+
+      /* ----- Add Discount ----- */
+      function addDiscount(discountId) {
+        if (activeDiscounts.indexOf(discountId) > -1) return;
+        var data = discountData[discountId];
+        if (!data) return;
+
+        activeDiscounts.push(discountId);
+
+        // Create pill element
+        var pill = document.createElement('span');
+        pill.className = 'discount-pill ' + data.cssClass;
+        pill.id = 'pill-' + discountId;
+        pill.setAttribute('data-discount', discountId);
+        pill.innerHTML = data.label +
+          '<button class="discount-pill__remove" onclick="removeDiscount(\'' + discountId + '\', event)" title="削除">' +
+          '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
+          '</button>';
+
+        var area = document.getElementById('discount-area-course');
+        area.appendChild(pill);
+
+        updateDropdownState();
+        updateBillingPreview();
+
+        // Close dropdown
+        document.getElementById('discount-menu-course').classList.remove('is-open');
+      }
+
+      /* ----- Update Dropdown Menu State ----- */
+      function updateDropdownState() {
+        var menuItems = document.querySelectorAll('#discount-menu-course .discount-dropdown__item');
+        menuItems.forEach(function(item) {
+          var id = item.getAttribute('data-discount');
+          var existingBadge = item.querySelector('span[style*="margin-left"]');
+          if (activeDiscounts.indexOf(id) > -1) {
+            item.classList.add('discount-dropdown__item--disabled');
+            if (!existingBadge) {
+              var badge = document.createElement('span');
+              badge.style.cssText = 'margin-left: auto; font-size: 0.6875rem; color: #706e6b;';
+              badge.textContent = '適用済';
+              item.appendChild(badge);
+            }
+          } else {
+            item.classList.remove('discount-dropdown__item--disabled');
+            if (existingBadge) existingBadge.remove();
+          }
+        });
+      }
+
+      /* ----- Update Billing Preview ----- */
+      function updateBillingPreview() {
+        var tuitionBase = 24000;
+        var admissionFee = 25000;
+        var hasCampaign = activeDiscounts.indexOf('campaign') > -1;
+
+        // Calculate ongoing discounts
+        var ongoingDiscounts = [];
+        var ongoingTotalRate = 0;
+        activeDiscounts.forEach(function(id) {
+          var d = discountData[id];
+          if (d && d.type === 'ongoing') {
+            ongoingDiscounts.push({ id: id, label: d.label, rate: d.rate, amount: Math.round(tuitionBase * d.rate) });
+            ongoingTotalRate += d.rate;
+          }
+        });
+        var ongoingTotalDiscount = Math.round(tuitionBase * ongoingTotalRate);
+        var ongoingTuition = tuitionBase - ongoingTotalDiscount;
+
+        // ---- First Month ----
+        var firstMonthTuitionTotal = hasCampaign ? 0 : (tuitionBase - ongoingTotalDiscount);
+        var firstMonthTotal = firstMonthTuitionTotal + admissionFee;
+        var firstMonthSavings = tuitionBase - firstMonthTuitionTotal;
+
+        // Update first month tuition
+        var origEl1 = document.getElementById('preview-tuition-original-1');
+        var discEl1 = document.getElementById('preview-tuition-discount-1');
+        var discDetailEl1 = document.getElementById('preview-tuition-discount-detail-1');
+        var totalEl1 = document.getElementById('preview-tuition-total-1');
+
+        if (hasCampaign) {
+          origEl1.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          origEl1.className = 'price-original';
+          discEl1.textContent = 'キャンペーン割引(初月無料)';
+          discEl1.style.display = '';
+          discDetailEl1.textContent = '-\u00A5' + tuitionBase.toLocaleString();
+          discDetailEl1.style.display = '';
+          totalEl1.innerHTML = '&yen;0';
+          totalEl1.className = 'price-free';
+        } else if (ongoingDiscounts.length > 0) {
+          origEl1.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          origEl1.className = 'price-original';
+          discEl1.textContent = ongoingDiscounts.map(function(d) { return d.label; }).join(' / ');
+          discEl1.style.display = '';
+          discDetailEl1.textContent = '-\u00A5' + ongoingTotalDiscount.toLocaleString();
+          discDetailEl1.style.display = '';
+          totalEl1.innerHTML = '&yen;' + firstMonthTuitionTotal.toLocaleString();
+          totalEl1.className = '';
+        } else {
+          origEl1.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          origEl1.className = '';
+          discEl1.textContent = '-';
+          discEl1.style.display = '';
+          discEl1.className = 'price-muted';
+          discDetailEl1.style.display = 'none';
+          totalEl1.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          totalEl1.className = '';
+          firstMonthTotal = tuitionBase + admissionFee;
+          firstMonthSavings = 0;
+        }
+
+        document.getElementById('preview-total-1').innerHTML = '&yen;' + firstMonthTotal.toLocaleString();
+
+        var savingsBadge1 = document.getElementById('savings-badge-1');
+        if (firstMonthSavings > 0) {
+          savingsBadge1.style.display = 'flex';
+          document.getElementById('savings-text-1').innerHTML = '初月 &yen;' + firstMonthSavings.toLocaleString() + ' お得!';
+        } else {
+          savingsBadge1.style.display = 'none';
+        }
+
+        // ---- Ongoing Months ----
+        var discArea2a = document.getElementById('preview-tuition-discount-2a');
+        var discArea2b = document.getElementById('preview-tuition-discount-2b');
+        var totalEl2 = document.getElementById('preview-tuition-total-2');
+        var origEl2 = document.getElementById('preview-tuition-original-2');
+
+        if (ongoingDiscounts.length > 0) {
+          origEl2.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          origEl2.className = 'price-original';
+
+          // Build discount display
+          var discountHtml = '';
+          ongoingDiscounts.forEach(function(d, i) {
+            discountHtml += '<span class="price-discount">' + d.label + '</span>';
+            discountHtml += '<span class="price-discount-detail">-&yen;' + d.amount.toLocaleString() + '</span>';
+          });
+          // Replace the discount cell content
+          var discCell = discArea2a.parentNode;
+          discCell.innerHTML = discountHtml;
+
+          totalEl2.innerHTML = '&yen;' + ongoingTuition.toLocaleString();
+          document.getElementById('preview-total-2').innerHTML = '&yen;' + ongoingTuition.toLocaleString() + '/月';
+        } else {
+          origEl2.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          origEl2.className = '';
+
+          var discCell2 = discArea2a.parentNode;
+          discCell2.innerHTML = '<span class="price-muted">-</span>';
+
+          totalEl2.innerHTML = '&yen;' + tuitionBase.toLocaleString();
+          document.getElementById('preview-total-2').innerHTML = '&yen;' + tuitionBase.toLocaleString() + '/月';
+        }
+
+        var savingsBadge2 = document.getElementById('savings-badge-2');
+        if (ongoingTotalDiscount > 0) {
+          savingsBadge2.style.display = 'flex';
+          document.getElementById('savings-text-2').innerHTML = '毎月 &yen;' + ongoingTotalDiscount.toLocaleString() + ' お得!';
+        } else {
+          savingsBadge2.style.display = 'none';
+        }
+      }
+
+      /* ----- Button Handlers ----- */
+      var buttonHandlers = {
+        btnCancel: function() { window.location.href = 'order-group-edit.html'; },
+        btnExecute: function() { window.location.href = 'product-add-change.html'; }
+      };
+      Object.keys(buttonHandlers).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('click', buttonHandlers[id]);
+      });
+
+      /* ----- MockupRouter ----- */
+      var MockupRouter = {
+        navigateTo: function(url) { window.location.href = url; },
+        showModal: function(id) {
+          var modal = document.getElementById(id);
+          if (modal) modal.style.display = 'flex';
+        },
+        hideModal: function(id) {
+          var modal = document.getElementById(id);
+          if (modal) modal.style.display = 'none';
+        }
+      };
+    </script>
+  </body>
+</html>
