@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Variant B: タグ入力フィールド方式 | 割引属性</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* ===== バリアントラベル ===== */
+      .variant-label {
+        background: #9050E9; color: #fff; padding: 8px 16px;
+        font-size: 0.875rem; font-weight: 600;
+      }
+      .variant-label__sub { font-weight: 400; opacity: 0.85; margin-left: 8px; font-size: 0.8125rem; }
+
+      /* ===== グローバルヘッダー ===== */
+      .sf-global-header {
+        display: flex; align-items: center; justify-content: space-between;
+        background: #032D60; height: 40px; padding: 0 0.75rem;
+      }
+      .sf-global-header__left { display: flex; align-items: center; gap: 0.5rem; }
+      .sf-global-header__logo svg { width: 32px; height: 22px; }
+      .sf-global-header__search {
+        display: flex; align-items: center;
+        background: rgba(255,255,255,0.15); border-radius: 4px;
+        padding: 4px 12px; min-width: 260px;
+        color: rgba(255,255,255,0.7); font-size: 0.8125rem;
+      }
+      .sf-global-header__search svg { margin-right: 6px; opacity: 0.7; }
+      .sf-global-header__right { display: flex; align-items: center; gap: 4px; }
+      .sf-global-header__right button {
+        background: none; border: none; color: rgba(255,255,255,0.8);
+        cursor: pointer; width: 28px; height: 28px;
+        display: flex; align-items: center; justify-content: center; border-radius: 4px;
+      }
+      .sf-global-header__right button:hover { background: rgba(255,255,255,0.1); }
+      .sf-global-header__right button svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.8); }
+      .sf-global-header__partners {
+        background: #0070d2; color: #fff; font-size: 0.6875rem; font-weight: 600;
+        padding: 2px 10px; border-radius: 3px; margin-right: 6px; white-space: nowrap;
+      }
+      .sf-global-header__avatar {
+        width: 26px; height: 26px; border-radius: 50%; background: #4BC076;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 0.75rem; font-weight: 600; margin-left: 4px;
+      }
+
+      /* ===== ナビゲーションバー ===== */
+      .nav-tab-with-arrow { display: flex; align-items: center; gap: 2px; }
+
+      /* ===== レコードタブバー ===== */
+      .record-tabs {
+        display: flex; align-items: center; background: #fff;
+        border-bottom: 1px solid #d8dde6; padding: 0 0.5rem;
+        height: 36px; font-size: 0.8125rem; overflow-x: auto;
+      }
+      .record-tab {
+        display: flex; align-items: center; gap: 4px;
+        padding: 0 0.75rem; height: 100%; white-space: nowrap;
+        color: #706e6b; text-decoration: none;
+        border-bottom: 3px solid transparent; cursor: pointer;
+      }
+      .record-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .record-tab__close {
+        background: none; border: none; color: #706e6b; cursor: pointer;
+        font-size: 0.625rem; padding: 0; margin-left: 4px;
+        display: flex; align-items: center;
+      }
+      .record-tab__close svg { width: 10px; height: 10px; fill: #706e6b; }
+      .record-tab__edited { color: #706e6b; }
+
+      /* ===== ページヘッダー ===== */
+      .page-header-card {
+        background: #fff; border: 1px solid #d8dde6;
+        border-radius: 4px; margin: 0.75rem; padding: 1rem 1.25rem;
+      }
+      .page-header__top {
+        display: flex; justify-content: space-between; align-items: flex-start;
+      }
+      .page-header__record { display: flex; align-items: center; gap: 0.75rem; }
+      .page-header__icon {
+        width: 40px; height: 40px; border-radius: 6px;
+        background: #7F8DE1; display: flex; align-items: center;
+        justify-content: center; flex-shrink: 0;
+      }
+      .page-header__icon svg { width: 24px; height: 24px; fill: #fff; }
+      .page-header__id { font-size: 0.75rem; color: #706e6b; }
+      .page-header__title { font-size: 1.125rem; font-weight: 700; color: #181818; }
+      .page-header__actions { display: flex; align-items: center; gap: 0; flex-shrink: 0; }
+      .page-header__actions .slds-button_neutral,
+      .page-header__actions .slds-button_outline-brand { border-radius: 0; margin-left: -1px; }
+      .page-header__actions .slds-button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+      .page-header__actions .slds-button:last-child { border-radius: 0 4px 4px 0; }
+      .page-header__actions .slds-button_brand { border-radius: 0 4px 4px 0; margin-left: -1px; }
+
+      /* ===== オーダー情報行 ===== */
+      .order-info {
+        display: flex; gap: 2rem; margin-top: 0.75rem; padding-left: 52px;
+        align-items: flex-start;
+      }
+      .order-info__label { font-size: 0.6875rem; color: #706e6b; }
+      .order-info__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+      .order-info__value a { color: #0070d2; text-decoration: none; }
+
+      /* ===== 割引属性: タグ入力方式 ===== */
+      .discount-attr-row {
+        margin-top: 0.75rem;
+        padding-left: 52px;
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+      }
+      .tag-field {
+        flex: 1;
+        max-width: 380px;
+      }
+      .tag-field__label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+        margin-bottom: 4px;
+      }
+      .tag-field__input-area {
+        position: relative;
+      }
+
+      /* 入力風コンテナ */
+      .tag-input {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 4px 32px 4px 8px;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        min-height: 34px;
+        background: #fff;
+        align-items: center;
+        cursor: text;
+        transition: border-color 0.1s;
+      }
+      .tag-input:focus-within {
+        border-color: #0070d2;
+        box-shadow: 0 0 3px rgba(0,112,210,0.3);
+      }
+      .tag-input--readonly {
+        background: #f3f3f3;
+        border-color: #e5e5e5;
+        cursor: default;
+      }
+      .tag-input--readonly:focus-within {
+        border-color: #e5e5e5;
+        box-shadow: none;
+      }
+
+      /* ドロップダウンアロー */
+      .tag-field__arrow {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px; height: 16px;
+        pointer-events: none;
+      }
+      .tag-field__arrow svg { width: 16px; height: 16px; fill: #706e6b; }
+
+      /* タグ（ピル） */
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #0070d2;
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 2px 6px 2px 10px;
+        border-radius: 3px;
+        white-space: nowrap;
+      }
+      .tag-item--auto {
+        background: #706e6b;
+      }
+      .tag-item__remove {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        padding: 0 2px;
+        display: flex;
+        align-items: center;
+      }
+      .tag-item__remove:hover { color: #fff; }
+      .tag-item__lock {
+        display: flex; align-items: center;
+        padding: 0 2px;
+      }
+      .tag-item__lock svg { width: 10px; height: 10px; fill: rgba(255,255,255,0.8); }
+
+      /* ドロップダウンリスト */
+      .tag-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 100;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .tag-dropdown.is-open { display: block; }
+      .tag-dropdown__item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 12px; font-size: 0.8125rem; color: #181818;
+        cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+      }
+      .tag-dropdown__item:hover { background: #f3f3f3; }
+      .tag-dropdown__item--selected { background: #e8f4fd; }
+      .tag-dropdown__item input[type="checkbox"] { accent-color: #0070d2; width: 14px; height: 14px; }
+
+      /* ===== テーブル ===== */
+      .main-content { padding: 0.75rem; }
+      .section-card {
+        background: #fff; border: 1px solid #d8dde6;
+        border-radius: 4px; margin-bottom: 0.75rem;
+      }
+      .section-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.75rem 1rem; cursor: pointer;
+      }
+      .section-header__left { display: flex; align-items: center; gap: 0.5rem; }
+      .section-header__toggle { width: 16px; height: 16px; color: #706e6b; }
+      .section-header__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+      .section-header__right { display: flex; align-items: center; gap: 0.5rem; }
+      .data-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+      .data-table thead th {
+        padding: 8px 12px; text-align: left; font-weight: 600;
+        color: #181818; border-bottom: 1px solid #d8dde6;
+        background: #fafaf9; white-space: nowrap;
+      }
+      .data-table tbody td {
+        padding: 8px 12px; border-bottom: 1px solid #e5e5e5;
+        color: #181818; vertical-align: middle;
+      }
+      .data-table tbody tr:hover { background: #f3f3f3; }
+      .data-table a { color: #0070d2; text-decoration: none; }
+      .course-list { list-style: none; padding: 0; margin: 0; font-size: 0.8125rem; }
+      .course-list li { line-height: 1.5; }
+      .course-list li::before { content: "\2022 "; color: #181818; }
+      .th-content { display: flex; align-items: center; gap: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- バリアントラベル -->
+      <div class="variant-label">
+        Variant B: タグ入力フィールド方式
+        <span class="variant-label__sub">SFマルチセレクト風。手動=青タグ＋ドロップダウン / 自動=グレータグのReadOnlyフィールド</span>
+      </div>
+
+      <!-- ===== グローバルヘッダー ===== -->
+      <div class="sf-global-header">
+        <div class="sf-global-header__left">
+          <div class="sf-global-header__logo">
+            <svg viewBox="0 0 48 32" width="32" height="22" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.1 6.2c1.7-1.8 4.1-2.9 6.8-2.9 3.3 0 6.2 1.7 7.9 4.3 1.4-.6 3-.9 4.7-.9 6.2 0 11.2 5 11.2 11.2S45.7 29 39.5 29c-.9 0-1.8-.1-2.6-.3-1.4 2.3-3.9 3.8-6.8 3.8-1.5 0-2.9-.4-4.1-1.1-1.5 2.9-4.6 4.8-8.1 4.8-4.1 0-7.6-2.7-8.8-6.5-.7.2-1.5.3-2.3.3-4.3 0-7.8-3.5-7.8-7.8 0-3.1 1.7-5.7 4.1-7.2-.4-1.1-.7-2.4-.7-3.7C2.4 4.9 7.4 0 13.4 0c3 0 5.7 1.2 7.6 3.2l-.9 3z" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="sf-global-header__search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          検索...
+        </div>
+        <div class="sf-global-header__right">
+          <div class="sf-global-header__partners">Partners</div>
+          <button title="設定"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+          <button title="通知"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+          <div class="sf-global-header__avatar">T</div>
+        </div>
+      </div>
+
+      <!-- ===== グローバルナビゲーション ===== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="Manabieユーザー管理">Manabieユーザー管...</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="ユーザー"><span class="slds-truncate">ユーザー</span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="在籍状態"><span class="slds-truncate">在籍状態</span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="学校"><span class="slds-truncate">学校</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ===== レコードタブバー ===== -->
+      <div class="record-tabs">
+        <a href="#" class="record-tab">
+          <span class="record-tab__edited">*</span> ODG-540275 | オーダー
+          <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+        </a>
+        <a href="#" class="record-tab is-active">
+          <span class="record-tab__edited">*</span> オーダーグループ内商品...
+          <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+        </a>
+      </div>
+
+      <!-- ===== ページヘッダーカード ===== -->
+      <div class="page-header-card">
+        <div class="page-header__top">
+          <div class="page-header__record">
+            <div class="page-header__icon">
+              <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="page-header__id">ODG-540275</div>
+              <div class="page-header__title">商品追加・変更</div>
+            </div>
+          </div>
+          <div class="page-header__actions">
+            <button class="slds-button slds-button_outline-brand">商品追加</button>
+            <button class="slds-button slds-button_neutral">最大割引を適用</button>
+            <button class="slds-button slds-button_neutral">変更を破棄して戻る</button>
+            <button class="slds-button slds-button_brand">保存</button>
+          </div>
+        </div>
+
+        <!-- オーダー情報 -->
+        <div class="order-info">
+          <div class="order-info__item">
+            <div class="order-info__label">オーダー番号</div>
+            <div class="order-info__value">ODG-540275</div>
+          </div>
+          <div class="order-info__item">
+            <div class="order-info__label">生徒</div>
+            <div class="order-info__value"><a href="#">テスト 太郎</a></div>
+          </div>
+        </div>
+
+        <!-- ★ 割引属性フィールド（Variant B: タグ入力） -->
+        <div class="discount-attr-row">
+          <!-- 手動属性 -->
+          <div class="tag-field">
+            <div class="tag-field__label">割引属性（手動）</div>
+            <div class="tag-field__input-area">
+              <div class="tag-input" id="manualTagInput" onclick="openManualDropdown()">
+                <span class="tag-item">
+                  兄弟割引適用対象
+                  <button class="tag-item__remove" onclick="event.stopPropagation(); removeTag(this)">
+                    <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                  </button>
+                </span>
+                <span class="tag-item">
+                  社員割引適用対象
+                  <button class="tag-item__remove" onclick="event.stopPropagation(); removeTag(this)">
+                    <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                  </button>
+                </span>
+              </div>
+              <div class="tag-field__arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="tag-dropdown" id="manualDropdown">
+                <button class="tag-dropdown__item tag-dropdown__item--selected">
+                  <input type="checkbox" checked /> 兄弟割引適用対象
+                </button>
+                <button class="tag-dropdown__item tag-dropdown__item--selected">
+                  <input type="checkbox" checked /> 社員割引適用対象
+                </button>
+                <button class="tag-dropdown__item" onclick="addTag('紹介割引適用対象')">
+                  <input type="checkbox" /> 紹介割引適用対象
+                </button>
+                <button class="tag-dropdown__item" onclick="addTag('特待生割引適用対象')">
+                  <input type="checkbox" /> 特待生割引適用対象
+                </button>
+                <button class="tag-dropdown__item" onclick="addTag('早期入会割引適用対象')">
+                  <input type="checkbox" /> 早期入会割引適用対象
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 自動属性 -->
+          <div class="tag-field">
+            <div class="tag-field__label">割引属性（自動） <svg style="width:10px;height:10px;fill:#706e6b;vertical-align:middle;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div>
+            <div class="tag-field__input-area">
+              <div class="tag-input tag-input--readonly">
+                <span class="tag-item tag-item--auto">
+                  在籍期間割引対象
+                  <span class="tag-item__lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+                </span>
+                <span class="tag-item tag-item--auto">
+                  複数コース割引対象
+                  <span class="tag-item__lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== メインコンテンツ ===== -->
+      <div class="main-content">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-header__left">
+              <svg class="section-header__toggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              <span class="section-header__title">オーダー内商品</span>
+            </div>
+            <div class="section-header__right">
+              <button class="slds-button slds-button_neutral slds-button_small">編集</button>
+              <button class="slds-button slds-button_neutral slds-button_small">削除</button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:32px;"><input type="checkbox" /></th>
+                <th><div class="th-content">拠点</div></th>
+                <th><div class="th-content">年度</div></th>
+                <th><div class="th-content">名称</div></th>
+                <th><div class="th-content">提供コース</div></th>
+                <th><div class="th-content">タイプ</div></th>
+                <th><div class="th-content">割引</div></th>
+                <th><div class="th-content">開始日</div></th>
+                <th><div class="th-content">終了日</div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td><a href="#">オーダーテスト用教室</a></td>
+                <td><a href="#">2025 (正)</a></td>
+                <td><a href="#">2025小6継続個別コー...</a></td>
+                <td>
+                  <ul class="course-list">
+                    <li>(1/週) [2025_test] 小6社会</li>
+                    <li>(1/週) [2025_test] 小6理科</li>
+                  </ul>
+                </td>
+                <td>新規</td>
+                <td></td>
+                <td>2026/03/01</td>
+                <td>2026/03/31</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td><a href="#">オーダーテスト用教室</a></td>
+                <td><a href="#">2025 (正)</a></td>
+                <td><a href="#">入会費</a></td>
+                <td></td>
+                <td>新規</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      function removeTag(btn) {
+        btn.closest('.tag-item').remove();
+      }
+      function openManualDropdown() {
+        document.getElementById('manualDropdown').classList.toggle('is-open');
+      }
+      function addTag(name) {
+        var container = document.getElementById('manualTagInput');
+        var tag = document.createElement('span');
+        tag.className = 'tag-item';
+        tag.innerHTML = name + ' <button class="tag-item__remove" onclick="event.stopPropagation(); removeTag(this)">'
+          + '<svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>';
+        container.appendChild(tag);
+      }
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.tag-field__input-area')) {
+          document.querySelectorAll('.tag-dropdown').forEach(function(d) { d.classList.remove('is-open'); });
+        }
+      });
+    </script>
+  </body>
+</html>

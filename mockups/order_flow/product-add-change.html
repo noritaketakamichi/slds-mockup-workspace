@@ -212,6 +212,136 @@
         white-space: nowrap;
       }
 
+      /* ===== 割引属性: コンパクト表示 ===== */
+      .discount-attr-compact {
+        margin-top: 0.75rem;
+        padding-left: 52px;
+      }
+      .discount-attr-compact__label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+        margin-bottom: 4px;
+      }
+      .discount-attr-compact__row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .compact-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 12px;
+        white-space: nowrap;
+      }
+      .compact-pill--manual {
+        background: #e8f4fd;
+        color: #0070d2;
+      }
+      .compact-pill--auto {
+        background: #f0f0f0;
+        color: #706e6b;
+      }
+      .compact-pill__lock svg {
+        width: 10px; height: 10px; fill: #706e6b;
+      }
+      .compact-edit-btn {
+        background: none;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        color: #0070d2;
+        font-size: 0.75rem;
+        padding: 2px 10px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .compact-edit-btn:hover {
+        background: #f0f8ff;
+        border-color: #0070d2;
+      }
+      .compact-edit-btn svg { width: 12px; height: 12px; fill: #0070d2; }
+      .attr-separator {
+        width: 1px;
+        height: 18px;
+        background: #d8dde6;
+        margin: 0 4px;
+      }
+
+      /* ===== 割引属性: 展開パネル ===== */
+      .discount-attr-panel {
+        display: none;
+        margin-top: 0.75rem;
+        padding-left: 52px;
+        padding-right: 1.25rem;
+      }
+      .discount-attr-panel.is-open { display: block; }
+      .attr-panel-card {
+        background: #fafaf9;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 1rem;
+      }
+      .attr-panel-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+      .attr-panel-card__title {
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: #181818;
+      }
+      .attr-panel-card__close {
+        background: none; border: none; color: #706e6b;
+        cursor: pointer; padding: 4px;
+        display: flex; align-items: center;
+      }
+      .attr-panel-card__close:hover { color: #181818; }
+      .attr-panel-card__close svg { width: 14px; height: 14px; fill: currentColor; }
+      .attr-panel-body {
+        display: flex;
+        gap: 2rem;
+      }
+      .attr-panel-column {
+        flex: 1;
+      }
+      .attr-panel-column__title {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: #706e6b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .attr-panel-column__title svg { width: 12px; height: 12px; fill: #706e6b; }
+      .attr-panel-list {
+        list-style: none; padding: 0; margin: 0;
+      }
+      .attr-panel-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 5px 0; font-size: 0.8125rem; color: #181818;
+      }
+      .attr-panel-item input[type="checkbox"] {
+        accent-color: #0070d2; width: 15px; height: 15px;
+      }
+      .attr-panel-item--disabled { color: #706e6b; }
+      .attr-panel-item--disabled input { accent-color: #706e6b; }
+      .attr-panel-lock svg { width: 10px; height: 10px; fill: #706e6b; margin-left: 2px; }
+      .attr-panel-actions {
+        margin-top: 0.75rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+
       /* ===== フッター ===== */
       .sf-footer {
         display: flex; align-items: center; padding: 0.375rem 0.75rem;
@@ -341,6 +471,98 @@
           <div class="order-info__item">
             <div class="order-info__label">生徒</div>
             <div class="order-info__value"><a href="student-detail.html">テスト 太郎</a></div>
+          </div>
+        </div>
+
+        <!-- ★ 割引属性: コンパクト表示 -->
+        <div class="discount-attr-compact">
+          <div class="discount-attr-compact__label">割引属性</div>
+          <div class="discount-attr-compact__row" id="compactPillRow">
+            <!-- 手動属性ピル -->
+            <span class="compact-pill compact-pill--manual" data-attr="兄弟割引適用対象">兄弟割引適用対象</span>
+            <span class="compact-pill compact-pill--manual" data-attr="社員割引適用対象">社員割引適用対象</span>
+
+            <div class="attr-separator"></div>
+
+            <!-- 自動属性ピル -->
+            <span class="compact-pill compact-pill--auto">
+              在籍期間割引対象
+              <span class="compact-pill__lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+            </span>
+            <span class="compact-pill compact-pill--auto">
+              複数コース割引対象
+              <span class="compact-pill__lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+            </span>
+
+            <!-- 編集ボタン -->
+            <button class="compact-edit-btn" id="btnEditAttr" onclick="toggleAttrPanel()">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              編集
+            </button>
+          </div>
+        </div>
+
+        <!-- ★ 割引属性: 展開パネル -->
+        <div class="discount-attr-panel" id="attrPanel">
+          <div class="attr-panel-card">
+            <div class="attr-panel-card__header">
+              <span class="attr-panel-card__title">割引属性の編集</span>
+              <button class="attr-panel-card__close" onclick="toggleAttrPanel()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            </div>
+            <div class="attr-panel-body">
+              <!-- 手動属性 -->
+              <div class="attr-panel-column">
+                <div class="attr-panel-column__title">
+                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                  手動で設定する属性
+                </div>
+                <ul class="attr-panel-list" id="manualAttrList">
+                  <li class="attr-panel-item">
+                    <input type="checkbox" checked data-attr="兄弟割引適用対象" /> 兄弟割引適用対象
+                  </li>
+                  <li class="attr-panel-item">
+                    <input type="checkbox" checked data-attr="社員割引適用対象" /> 社員割引適用対象
+                  </li>
+                  <li class="attr-panel-item">
+                    <input type="checkbox" data-attr="紹介割引適用対象" /> 紹介割引適用対象
+                  </li>
+                  <li class="attr-panel-item">
+                    <input type="checkbox" data-attr="特待生割引適用対象" /> 特待生割引適用対象
+                  </li>
+                  <li class="attr-panel-item">
+                    <input type="checkbox" data-attr="早期入会割引適用対象" /> 早期入会割引適用対象
+                  </li>
+                </ul>
+              </div>
+
+              <!-- 自動属性 -->
+              <div class="attr-panel-column">
+                <div class="attr-panel-column__title">
+                  <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                  システムが自動設定（閲覧のみ）
+                </div>
+                <ul class="attr-panel-list">
+                  <li class="attr-panel-item attr-panel-item--disabled">
+                    <input type="checkbox" checked disabled /> 在籍期間割引対象
+                    <span class="attr-panel-lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+                  </li>
+                  <li class="attr-panel-item attr-panel-item--disabled">
+                    <input type="checkbox" checked disabled /> 複数コース割引対象
+                    <span class="attr-panel-lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+                  </li>
+                  <li class="attr-panel-item attr-panel-item--disabled">
+                    <input type="checkbox" disabled /> キャンペーン割引対象
+                    <span class="attr-panel-lock"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="attr-panel-actions">
+              <button class="slds-button slds-button_neutral" onclick="cancelAttrPanel()">キャンセル</button>
+              <button class="slds-button slds-button_brand" onclick="applyAttrPanel()">適用</button>
+            </div>
           </div>
         </div>
       </div>
@@ -620,6 +842,34 @@
           window.location.href = url;
         }
       };
+
+      // ===== 割引属性パネル =====
+      function toggleAttrPanel() {
+        document.getElementById('attrPanel').classList.toggle('is-open');
+      }
+
+      function cancelAttrPanel() {
+        document.getElementById('attrPanel').classList.remove('is-open');
+      }
+
+      function applyAttrPanel() {
+        var row = document.getElementById('compactPillRow');
+        // 既存の手動ピルを削除
+        row.querySelectorAll('.compact-pill--manual').forEach(function(p) { p.remove(); });
+        // チェック済みの手動属性からピルを再生成
+        var separator = row.querySelector('.attr-separator');
+        var checkboxes = document.querySelectorAll('#manualAttrList input[type="checkbox"]');
+        checkboxes.forEach(function(cb) {
+          if (cb.checked) {
+            var pill = document.createElement('span');
+            pill.className = 'compact-pill compact-pill--manual';
+            pill.setAttribute('data-attr', cb.getAttribute('data-attr'));
+            pill.textContent = cb.getAttribute('data-attr');
+            row.insertBefore(pill, separator);
+          }
+        });
+        document.getElementById('attrPanel').classList.remove('is-open');
+      }
 
       // ===== モード判定 =====
       (function() {
