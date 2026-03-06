@@ -396,7 +396,7 @@
 
           <!-- フッター -->
           <div class="modal-footer">
-            <button class="slds-button slds-button_neutral" id="btnCancel">キャンセル</button>
+            <button class="slds-button slds-button_neutral" id="btnSkip">スキップ</button>
             <button class="slds-button slds-button_brand" id="btnNext">次へ</button>
           </div>
 
@@ -430,6 +430,9 @@
         btnCancel: function() {
           // 生徒詳細画面に戻る
           window.location.href = 'student-detail.html';
+        },
+        btnSkip: function() {
+          window.location.href = 'product-add-change.html?mode=skip';
         },
         btnNext: function() {
           var checked = document.querySelectorAll('.product-checkbox:checked').length;

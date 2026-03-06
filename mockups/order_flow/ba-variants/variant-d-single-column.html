@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant D: 1カラム統合</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+    .page-wrap { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
+    .variant-label {
+      font-size: 0.75rem; color: #706e6b; margin-bottom: 0.5rem;
+      padding: 0.375rem 0.75rem; background: #fff; border: 1px solid #d8dde6;
+      border-radius: 4px; display: inline-block;
+    }
+    .section-card {
+      background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+    }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem;
+    }
+    .section-header__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+
+    /* ===== Single Column Panel ===== */
+    .sc-panel { padding: 0.5rem 0.75rem; }
+    .sc-card {
+      border: 1px solid #d8dde6; border-radius: 5px;
+      padding: 0.5rem 0.75rem; margin-bottom: 0.5rem;
+      box-sizing: border-box;
+    }
+    .sc-card:last-child { margin-bottom: 0; }
+    .sc-card--new { border-left: 4px solid #04844b; background: #f4fbf7; }
+    .sc-card--change { border-left: 4px solid #0070d2; background: #f0f7ff; }
+    .sc-card--cancel { border-left: 4px solid #c23934; background: #fef6f5; }
+
+    .sc-badge {
+      display: inline-block; padding: 1px 8px; border-radius: 10px;
+      font-size: 0.625rem; font-weight: 700; color: #fff;
+      margin-right: 5px; vertical-align: middle;
+    }
+    .sc-badge--new { background: #04844b; }
+    .sc-badge--change { background: #0070d2; }
+    .sc-badge--cancel { background: #c23934; }
+
+    .sc-product-name {
+      font-weight: 700; font-size: 0.8125rem; color: #181818;
+      margin-bottom: 0.375rem; line-height: 1.3;
+    }
+
+    /* フィールド横並び */
+    .sc-fields {
+      display: flex; flex-wrap: wrap; gap: 0.125rem 1rem; font-size: 0.75rem;
+    }
+    .sc-field { display: flex; align-items: baseline; gap: 0.25rem; white-space: nowrap; }
+    .sc-field__label { color: #706e6b; font-weight: 600; font-size: 0.6875rem; }
+    .sc-field__label::after { content: ":"; }
+    .sc-field__value { color: #181818; font-size: 0.75rem; }
+
+    /* コースなどリスト */
+    .sc-inline-list { display: flex; align-items: baseline; gap: 0.25rem; font-size: 0.75rem; flex-wrap: wrap; }
+    .sc-inline-list__label { color: #706e6b; font-weight: 600; font-size: 0.6875rem; flex-shrink: 0; }
+    .sc-inline-list__label::after { content: ":"; }
+    .sc-inline-list__items { display: flex; flex-wrap: wrap; gap: 0 0.375rem; font-size: 0.75rem; color: #181818; }
+    .sc-inline-list__items span::after { content: ","; color: #b0adab; }
+    .sc-inline-list__items span:last-child::after { content: ""; }
+
+    /* diff表示: カード内で旧→新をインラインで */
+    .sc-diff-row {
+      display: flex; align-items: baseline; gap: 0.25rem;
+      font-size: 0.75rem; flex-wrap: wrap;
+    }
+    .sc-diff-row__label { color: #706e6b; font-weight: 600; font-size: 0.6875rem; flex-shrink: 0; }
+    .sc-diff-row__label::after { content: ":"; }
+    .sc-diff--old { color: #c23934; text-decoration: line-through; font-size: 0.75rem; }
+    .sc-diff--arrow { color: #b0adab; font-size: 0.75rem; margin: 0 2px; }
+    .sc-diff--new { color: #0070d2; font-weight: 600; font-size: 0.75rem; }
+    .sc-diff--cancel { color: #c23934; font-weight: 600; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+<div class="slds-scope">
+  <div class="page-wrap">
+    <div class="variant-label">Variant D: 1カラム統合 — 各カード内で差分をインライン表示。最もコンパクト。</div>
+
+    <div class="section-card" style="margin-top:0.5rem;">
+      <div class="section-header">
+        <span class="section-header__title">オーダー商品 (3)</span>
+      </div>
+      <div class="sc-panel">
+
+        <!-- 1. 新規: 入会費 -->
+        <div class="sc-card sc-card--new">
+          <div class="sc-product-name"><span class="sc-badge sc-badge--new">新規</span>入会費</div>
+          <div class="sc-fields">
+            <div class="sc-field"><span class="sc-field__label">商品タイプ</span><span class="sc-field__value">費用</span></div>
+            <div class="sc-field"><span class="sc-field__label">割引</span><span class="sc-field__value" style="color:#b0adab">—</span></div>
+            <div class="sc-field"><span class="sc-field__label">開始日</span><span class="sc-field__value">2026/03/01</span></div>
+          </div>
+        </div>
+
+        <!-- 2. 変更: コース商品 (差分をインライン表示) -->
+        <div class="sc-card sc-card--change">
+          <div class="sc-product-name"><span class="sc-badge sc-badge--change">変更</span>2025小6継続個別コース商品テスト</div>
+          <div class="sc-diff-row" style="margin-bottom:0.25rem;">
+            <span class="sc-diff-row__label">コース</span>
+            <span class="sc-diff--old">[2025_test] 小6社会 (1/週), [2025_test] 小6英語 (1/週)</span>
+            <span class="sc-diff--arrow">→</span>
+            <span class="sc-diff--new">[2025_test] 小6社会 (2/週), [2025_test] 小6理科 (1/週)</span>
+          </div>
+          <div class="sc-fields">
+            <div class="sc-field"><span class="sc-field__label">割引</span><span class="sc-field__value">兄弟割引</span></div>
+            <div class="sc-field"><span class="sc-field__label">変更日</span><span class="sc-field__value sc-diff--new">2026/03/05</span></div>
+            <div class="sc-field"><span class="sc-field__label">終了日</span><span class="sc-field__value">2026/03/31</span></div>
+          </div>
+        </div>
+
+        <!-- 3. キャンセル: 教科書 -->
+        <div class="sc-card sc-card--cancel">
+          <div class="sc-product-name"><span class="sc-badge sc-badge--cancel">キャンセル</span>中1 英語 教科書</div>
+          <div class="sc-fields">
+            <div class="sc-field"><span class="sc-field__label">商品タイプ</span><span class="sc-field__value">教材</span></div>
+            <div class="sc-field"><span class="sc-field__label">割引</span><span class="sc-field__value" style="color:#b0adab">—</span></div>
+            <div class="sc-field"><span class="sc-field__label">開始日</span><span class="sc-field__value">2025/04/01</span></div>
+            <div class="sc-field"><span class="sc-field__label">キャンセル日</span><span class="sc-field__value sc-diff--cancel">2026/03/05</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

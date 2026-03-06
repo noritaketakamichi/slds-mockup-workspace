@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant B: 適用前 → 適用後</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+    .page-wrap { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
+    .variant-label {
+      font-size: 0.75rem; color: #706e6b; margin-bottom: 0.5rem;
+      padding: 0.375rem 0.75rem; background: #fff; border: 1px solid #d8dde6;
+      border-radius: 4px; display: inline-block;
+    }
+    .section-card {
+      background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+    }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem;
+    }
+    .section-header__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+
+    /* ===== BA Panel ===== */
+    .ba-panel { padding: 0.5rem 0.75rem; }
+    .ba-col-headers { display: flex; align-items: center; margin-bottom: 0.5rem; }
+    .ba-col-header {
+      flex: 1; text-align: center; padding: 0.25rem 0;
+      font-size: 0.6875rem; font-weight: 700; color: #706e6b;
+      letter-spacing: 0.05em; border: 1px solid #d8dde6;
+      border-radius: 12px; background: #fafaf9;
+    }
+    .ba-col-header-spacer { width: 32px; flex-shrink: 0; }
+
+    .ba-row { display: flex; align-items: stretch; margin-bottom: 0.5rem; }
+    .ba-row:last-child { margin-bottom: 0; }
+    .ba-col { flex: 1; min-width: 0; display: flex; }
+    .ba-arrow-col {
+      width: 32px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ba-arrow-col svg { width: 18px; height: 18px; fill: #b0adab; }
+
+    .ba-card {
+      flex: 1; border: 1px solid #d8dde6; border-radius: 5px;
+      padding: 0.5rem 0.75rem; background: #fff; box-sizing: border-box;
+    }
+    .ba-card--new { border-left: 4px solid #04844b; background: #f4fbf7; }
+    .ba-card--change { border-left: 4px solid #0070d2; background: #f0f7ff; }
+    .ba-card--cancel { border-left: 4px solid #c23934; background: #fef6f5; }
+    .ba-card--before { border-left: 4px solid #939393; background: #fafaf9; }
+    .ba-card--empty {
+      flex: 1; border: 2px dashed #d8dde6; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      color: #b0adab; font-size: 0.8125rem; background: #fafaf9; box-sizing: border-box;
+    }
+
+    .ba-badge {
+      display: inline-block; padding: 1px 8px; border-radius: 10px;
+      font-size: 0.625rem; font-weight: 700; color: #fff;
+      margin-right: 5px; vertical-align: middle;
+    }
+    .ba-badge--new { background: #04844b; }
+    .ba-badge--change { background: #0070d2; }
+    .ba-badge--cancel { background: #c23934; }
+
+    .ba-product-name {
+      font-weight: 700; font-size: 0.8125rem; color: #181818;
+      margin-bottom: 0.375rem; line-height: 1.3;
+    }
+    .ba-fields {
+      display: flex; flex-wrap: wrap; gap: 0.125rem 1rem; font-size: 0.75rem;
+    }
+    .ba-field { display: flex; align-items: baseline; gap: 0.25rem; white-space: nowrap; }
+    .ba-field__label { color: #706e6b; font-weight: 600; font-size: 0.6875rem; }
+    .ba-field__label::after { content: ":"; }
+    .ba-field__value { color: #181818; font-size: 0.75rem; }
+
+    .ba-inline-list { display: flex; align-items: baseline; gap: 0.25rem; font-size: 0.75rem; flex-wrap: wrap; }
+    .ba-inline-list__label { color: #706e6b; font-weight: 600; font-size: 0.6875rem; flex-shrink: 0; }
+    .ba-inline-list__label::after { content: ":"; }
+    .ba-inline-list__items { display: flex; flex-wrap: wrap; gap: 0 0.375rem; font-size: 0.75rem; color: #181818; }
+    .ba-inline-list__items span::after { content: ","; color: #b0adab; }
+    .ba-inline-list__items span:last-child::after { content: ""; }
+
+    .ba-diff--added { color: #0070d2; font-weight: 600; }
+    .ba-diff--removed { color: #c23934; text-decoration: line-through; }
+    .ba-separator { border: none; border-top: 1px dashed #e5e5e5; margin: 0 0 0.5rem 0; }
+  </style>
+</head>
+<body>
+<div class="slds-scope">
+  <div class="page-wrap">
+    <div class="variant-label">Variant B: 「適用前」 → 「適用後」</div>
+
+    <div class="section-card" style="margin-top:0.5rem;">
+      <div class="section-header">
+        <span class="section-header__title">オーダー商品 (3)</span>
+      </div>
+      <div class="ba-panel">
+
+        <div class="ba-col-headers">
+          <div class="ba-col-header">適用前</div>
+          <div class="ba-col-header-spacer"></div>
+          <div class="ba-col-header">適用後</div>
+        </div>
+
+        <!-- 1. 新規 -->
+        <div class="ba-row">
+          <div class="ba-col"><div class="ba-card--empty">なし</div></div>
+          <div class="ba-arrow-col"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+          <div class="ba-col">
+            <div class="ba-card ba-card--new">
+              <div class="ba-product-name"><span class="ba-badge ba-badge--new">新規</span>入会費</div>
+              <div class="ba-fields">
+                <div class="ba-field"><span class="ba-field__label">商品タイプ</span><span class="ba-field__value">費用</span></div>
+                <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value" style="color:#b0adab">—</span></div>
+                <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2026/03/01</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="ba-separator">
+
+        <!-- 2. 変更 -->
+        <div class="ba-row">
+          <div class="ba-col">
+            <div class="ba-card ba-card--before">
+              <div class="ba-product-name">2025小6継続個別コース商品テスト</div>
+              <div class="ba-inline-list" style="margin-bottom:0.25rem;">
+                <span class="ba-inline-list__label">コース</span>
+                <div class="ba-inline-list__items">
+                  <span>[2025_test] 小6社会 (1/週)</span>
+                  <span class="ba-diff--removed">[2025_test] 小6英語 (1/週)</span>
+                </div>
+              </div>
+              <div class="ba-fields">
+                <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value">兄弟割引</span></div>
+                <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2026/02/01</span></div>
+                <div class="ba-field"><span class="ba-field__label">終了日</span><span class="ba-field__value">2026/03/31</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-arrow-col"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+          <div class="ba-col">
+            <div class="ba-card ba-card--change">
+              <div class="ba-product-name"><span class="ba-badge ba-badge--change">変更</span>2025小6継続個別コース商品テスト</div>
+              <div class="ba-inline-list" style="margin-bottom:0.25rem;">
+                <span class="ba-inline-list__label">コース</span>
+                <div class="ba-inline-list__items">
+                  <span class="ba-diff--added">[2025_test] 小6社会 (2/週)</span>
+                  <span class="ba-diff--added">[2025_test] 小6理科 (1/週)</span>
+                </div>
+              </div>
+              <div class="ba-fields">
+                <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value">兄弟割引</span></div>
+                <div class="ba-field"><span class="ba-field__label">変更日</span><span class="ba-field__value ba-diff--added">2026/03/05</span></div>
+                <div class="ba-field"><span class="ba-field__label">終了日</span><span class="ba-field__value">2026/03/31</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="ba-separator">
+
+        <!-- 3. キャンセル -->
+        <div class="ba-row">
+          <div class="ba-col">
+            <div class="ba-card ba-card--before">
+              <div class="ba-product-name">中1 英語 教科書</div>
+              <div class="ba-fields">
+                <div class="ba-field"><span class="ba-field__label">商品タイプ</span><span class="ba-field__value">教材</span></div>
+                <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value" style="color:#b0adab">—</span></div>
+                <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2025/04/01</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-arrow-col"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+          <div class="ba-col">
+            <div class="ba-card ba-card--cancel">
+              <div class="ba-product-name"><span class="ba-badge ba-badge--cancel">キャンセル</span>中1 英語 教科書</div>
+              <div class="ba-fields">
+                <div class="ba-field"><span class="ba-field__label">商品タイプ</span><span class="ba-field__value">教材</span></div>
+                <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value" style="color:#b0adab">—</span></div>
+                <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2025/04/01</span></div>
+                <div class="ba-field"><span class="ba-field__label">キャンセル日</span><span class="ba-field__value" style="color:#c23934;font-weight:600">2026/03/05</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

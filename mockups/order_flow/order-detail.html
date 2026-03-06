@@ -257,6 +257,91 @@
         border: none; outline: none; font-size: 0.75rem; width: 80px;
       }
 
+      /* ===== Before/After 比較パネル ===== */
+      .ba-panel { padding: 0.5rem 0.75rem; }
+
+      .ba-row { display: flex; align-items: stretch; margin-bottom: 0.5rem; }
+      .ba-row:last-child { margin-bottom: 0; }
+      /* 新規はフル幅 */
+      .ba-row--full { display: block; }
+      .ba-col { flex: 1; min-width: 0; display: flex; }
+      .ba-arrow-col {
+        width: 32px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .ba-arrow-col svg { width: 18px; height: 18px; fill: #b0adab; }
+
+      .ba-card {
+        flex: 1; border: 1px solid #d8dde6; border-radius: 5px;
+        padding: 0.5rem 0.75rem; background: #fff; box-sizing: border-box;
+      }
+      .ba-card--new { border-left: 4px solid #04844b; background: #f4fbf7; }
+      .ba-card--change { border-left: 4px solid #0070d2; background: #f0f7ff; }
+      .ba-card--cancel { border-left: 4px solid #c23934; background: #fef6f5; }
+      .ba-card--before { border-left: 4px solid #939393; background: #fafaf9; }
+
+      .ba-badge {
+        display: inline-block; padding: 1px 8px; border-radius: 10px;
+        font-size: 0.625rem; font-weight: 700; color: #fff;
+        margin-right: 5px; vertical-align: middle;
+      }
+      .ba-badge--new { background: #04844b; }
+      .ba-badge--change { background: #0070d2; }
+      .ba-badge--cancel { background: #c23934; }
+      .ba-badge--before { background: #939393; }
+
+      .ba-product-name {
+        font-weight: 700; font-size: 0.8125rem; color: #181818;
+        margin-bottom: 0.375rem; line-height: 1.3;
+      }
+
+      /* グリッドレイアウト: フィールドを横並びに */
+      .ba-fields {
+        display: flex; flex-wrap: wrap; gap: 0.125rem 1rem;
+        font-size: 0.75rem;
+      }
+      .ba-field {
+        display: flex; align-items: baseline; gap: 0.25rem;
+        white-space: nowrap;
+      }
+      .ba-field__label {
+        color: #706e6b; font-weight: 600; font-size: 0.6875rem;
+      }
+      .ba-field__label::after { content: ":"; }
+      .ba-field__value { color: #181818; font-size: 0.75rem; }
+
+      /* コースなどリスト項目を1行カンマ区切りで */
+      .ba-inline-list {
+        display: flex; align-items: baseline; gap: 0.25rem;
+        font-size: 0.75rem; flex-wrap: wrap;
+      }
+      .ba-inline-list__label {
+        color: #706e6b; font-weight: 600; font-size: 0.6875rem;
+        flex-shrink: 0;
+      }
+      .ba-inline-list__label::after { content: ":"; }
+      .ba-inline-list__items {
+        display: flex; flex-wrap: wrap; gap: 0 0.375rem;
+        font-size: 0.75rem; color: #181818;
+      }
+      .ba-inline-list__items span::after { content: ","; color: #b0adab; }
+      .ba-inline-list__items span:last-child::after { content: ""; }
+
+      .ba-diff--added { color: #0070d2; font-weight: 600; }
+      .ba-diff--added-highlight {
+        color: #0070d2; font-weight: 600;
+        background: #d4edfc; padding: 1px 6px; border-radius: 3px;
+      }
+      .ba-diff--changed {
+        color: #0070d2; font-weight: 700;
+        background: #d4edfc; padding: 0 4px; border-radius: 3px;
+      }
+      .ba-diff--removed { color: #c23934; text-decoration: line-through; }
+
+      .ba-separator {
+        border: none; border-top: 1px dashed #e5e5e5; margin: 0 0 0.5rem 0;
+      }
+
       /* ===== フッター ===== */
       .sf-footer {
         display: flex; align-items: center; padding: 0.375rem 0.75rem;
@@ -368,12 +453,9 @@
             </div>
           </div>
           <div class="highlights-panel__actions">
-            <button class="slds-button slds-button_neutral" id="btnFollow">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b" style="margin-right:4px;vertical-align:middle;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-              フォローする
-            </button>
-            <button class="slds-button slds-button_outline-brand" id="btnAddChange">商品追加・変更</button>
-            <button class="slds-button slds-button_neutral" id="btnSubmit">提出</button>
+            <button class="slds-button slds-button_neutral" id="btnBackToStudent">生徒画面に戻る</button>
+            <button class="slds-button slds-button_outline-brand" id="btnSubmit">提出</button>
+            <button class="slds-button slds-button_neutral" id="btnOrderChange">オーダー内容変更</button>
             <button class="slds-button slds-button_neutral" id="btnCustomInvoice">カスタム請求項目追加・変更</button>
           </div>
         </div>
@@ -422,65 +504,105 @@
         <!-- ===== 左カラム ===== -->
         <div class="record-body__left">
 
-          <!-- オーダー商品 (2) -->
+          <!-- オーダー商品 (3) — Before / After 比較ビュー -->
           <div class="section-card">
             <div class="section-header" onclick="toggleSection('order-items')">
               <div class="section-header__left">
                 <svg class="section-header__toggle" id="toggle-order-items" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M7 10l5 5 5-5z"/>
                 </svg>
-                <span class="section-header__title">オーダー商品 (2)</span>
+                <span class="section-header__title">オーダー商品 (3)</span>
               </div>
               <div class="section-header__right">
-                <span class="section-header__note">2 個の項目 ・ 数秒前 に更新されました。</span>
+                <span class="section-header__note">3 個の項目 ・ 数秒前 に更新されました。</span>
                 <button class="slds-button slds-button_icon slds-button_icon-border" title="更新">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
                 </button>
               </div>
             </div>
             <div id="body-order-items">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th><div class="th-content">商品 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">オーダーグ... <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">拠点 <svg width="8" height="8" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 14l5-5 5 5z"/></svg></div></th>
-                    <th><div class="th-content">開始日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">終了日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">変更日 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">年度 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                    <th><div class="th-content">提供コース <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a href="#">2025小6継続個別コー...</a></td>
-                    <td>新規</td>
-                    <td><a href="#">オーダーテスト...</a></td>
-                    <td>2026/03/01 0:00</td>
-                    <td>2026/03/31 23:...</td>
-                    <td></td>
-                    <td><a href="#">2025 (正)</a></td>
-                    <td>
-                      <ul class="course-list">
-                        <li>(1) [2025_test] 小6社会</li>
-                        <li>(1) [2025_test] 小6理科</li>
-                      </ul>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="#">入会費</a></td>
-                    <td>新規</td>
-                    <td><a href="#">オーダーテスト...</a></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><a href="#">2025 (正)</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <a href="#" class="view-all-link">すべて表示</a>
+              <div class="ba-panel">
+
+                <!-- ===== 1. 新規追加: 小6継続クラス受講（フル幅） ===== -->
+                <div class="ba-row ba-row--full">
+                  <div class="ba-card ba-card--new">
+                    <div class="ba-product-name"><span class="ba-badge ba-badge--new">新規</span>小6継続クラス受講</div>
+                    <div class="ba-inline-list" style="margin-bottom:0.25rem;">
+                      <span class="ba-inline-list__label">コース</span>
+                      <div class="ba-inline-list__items">
+                        <span>小6国語 (1/週)</span>
+                        <span>小6算数 (2/週)</span>
+                        <span>小6理科 (1/週)</span>
+                      </div>
+                    </div>
+                    <div class="ba-fields">
+                      <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value">2026/04: キャンペーン割引 ｜ 2026/05〜: 社員割, 兄弟割</span></div>
+                      <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2026/04/01</span></div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="ba-separator">
+
+                <!-- ===== 2. 変更: 2025小6継続個別コース商品テスト ===== -->
+                <div class="ba-row">
+                  <div class="ba-col">
+                    <div class="ba-card ba-card--before">
+                      <div class="ba-product-name"><span class="ba-badge ba-badge--before">変更前</span>2025小6継続個別コース商品テスト</div>
+                      <div class="ba-inline-list" style="margin-bottom:0.25rem;">
+                        <span class="ba-inline-list__label">コース</span>
+                        <div class="ba-inline-list__items">
+                          <span>小6社会 (1/週)</span>
+                          <span class="ba-diff--removed">小6英語 (1/週)</span>
+                        </div>
+                      </div>
+                      <div class="ba-fields">
+                        <div class="ba-field"><span class="ba-field__label">割引</span><span class="ba-field__value">兄弟割引</span></div>
+                        <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2026/02/01</span></div>
+                        <div class="ba-field"><span class="ba-field__label">終了日</span><span class="ba-field__value">2026/03/31</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ba-arrow-col"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+                  <div class="ba-col">
+                    <div class="ba-card ba-card--change">
+                      <div class="ba-product-name"><span class="ba-badge ba-badge--change">変更</span>2025小6継続個別コース商品テスト</div>
+                      <div class="ba-inline-list" style="margin-bottom:0.25rem;">
+                        <span class="ba-inline-list__label">コース</span>
+                        <div class="ba-inline-list__items">
+                          <span>小6社会 (<span class="ba-diff--changed">2/週</span>)</span>
+                          <span class="ba-diff--added-highlight">小6理科 (1/週)</span>
+                        </div>
+                      </div>
+                      <div class="ba-fields">
+                        <div class="ba-field"><span class="ba-field__label">変更日</span><span class="ba-field__value ba-diff--added">2026/03/05</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="ba-separator">
+
+                <!-- ===== 3. キャンセル: 中1 英語 教科書 ===== -->
+                <div class="ba-row">
+                  <div class="ba-col">
+                    <div class="ba-card ba-card--before">
+                      <div class="ba-product-name"><span class="ba-badge ba-badge--before">変更前</span>中1 英語 教科書</div>
+                      <div class="ba-fields">
+                        <div class="ba-field"><span class="ba-field__label">開始日</span><span class="ba-field__value">2025/04/01</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ba-arrow-col"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+                  <div class="ba-col">
+                    <div class="ba-card ba-card--cancel">
+                      <div class="ba-product-name"><span class="ba-badge ba-badge--cancel">キャンセル</span>中1 英語 教科書</div>
+                      <div class="ba-fields">
+                        <div class="ba-field"><span class="ba-field__label">終了日</span><span class="ba-field__value" style="color:#c23934;font-weight:600">2026/03/05</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /.ba-panel -->
             </div>
           </div>
 
@@ -658,9 +780,9 @@
 
       // ===== ボタンハンドラ =====
       var buttonHandlers = {
-        btnFollow: function() { console.log('フォローする clicked'); },
-        btnAddChange: function() { MockupRouter.navigateTo('product-add-change.html'); },
+        btnBackToStudent: function() { MockupRouter.navigateTo('student-detail.html'); },
         btnSubmit: function() { console.log('提出 clicked'); },
+        btnOrderChange: function() { MockupRouter.navigateTo('product-add-change.html'); },
         btnCustomInvoice: function() { console.log('カスタム請求項目追加・変更 clicked'); }
       };
 

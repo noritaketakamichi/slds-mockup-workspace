@@ -481,15 +481,40 @@
         }
       }
 
+      // ===== モード判定 =====
+      var params = new URLSearchParams(window.location.search);
+      var isChangeMode = params.get('mode') === 'change';
+
+      if (isChangeMode) {
+        // 入会費セクションを非表示
+        var admissionSection = document.getElementById('section-admission');
+        if (admissionSection) admissionSection.style.display = 'none';
+
+        // コース商品のタイトルを [変更] に変更
+        var courseTitle = document.querySelector('#section-course .product-section__title');
+        if (courseTitle) courseTitle.innerHTML = '<span class="badge-new">[変更]</span> 2025小6継続個別コース商品テスト';
+
+        // 開始日・終了日をプリフィル
+        var courseBody = document.getElementById('body-course');
+        if (courseBody) {
+          var inputs = courseBody.querySelectorAll('.field-row .field-input-with-icon input');
+          // inputs[0]=変更日, inputs[1]=開始日, inputs[2]=終了日
+          if (inputs[1]) inputs[1].value = '2026/02/01';
+          if (inputs[2]) inputs[2].value = '2026/03/31';
+        }
+
+        // スロットラベルをコマ数に変更
+        var slotLabel = document.querySelector('.slot-area__label');
+        if (slotLabel) slotLabel.textContent = '最大のコマ数 = 4';
+      }
+
       // ===== ボタンハンドラ =====
       var buttonHandlers = {
         btnCancel: function() {
-          // 商品追加・変更画面に戻る
-          window.location.href = 'product-add-change.html';
+          window.location.href = isChangeMode ? 'product-add-change.html?mode=change' : 'product-add-change.html';
         },
         btnExecute: function() {
-          // 商品追加・変更画面へ遷移
-          window.location.href = 'product-add-change.html';
+          window.location.href = isChangeMode ? 'product-add-change.html?mode=changed' : 'product-add-change.html';
         }
       };
 
@@ -504,7 +529,7 @@
           window.location.href = url;
         },
         goBack: function() {
-          window.location.href = 'product-add-change.html';
+          window.location.href = isChangeMode ? 'product-add-change.html?mode=change' : 'product-add-change.html';
         }
       };
     </script>
