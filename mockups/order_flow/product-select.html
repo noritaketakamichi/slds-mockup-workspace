@@ -70,6 +70,7 @@
       }
       .filter-field {
         flex: 1;
+        position: relative;
       }
       .filter-field__label {
         font-size: 0.75rem;
@@ -163,6 +164,107 @@
         width: 16px;
         height: 16px;
       }
+
+      /* ===== タグフィルター（ドロップダウンマルチセレクト） ===== */
+      .tag-multiselect {
+        margin-bottom: 0.75rem;
+        position: relative;
+      }
+      .tag-multiselect__label {
+        font-size: 0.75rem;
+        color: #181818;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .tag-multiselect__input {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 4px 28px 4px 8px;
+        min-height: 32px;
+        background: #fff;
+        cursor: pointer;
+        position: relative;
+      }
+      .tag-multiselect__input:hover {
+        border-color: #0070d2;
+      }
+      .tag-multiselect__placeholder {
+        font-size: 0.8125rem;
+        color: #b0adab;
+      }
+      .tag-multiselect__chevron {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .tag-pill-selected {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #eef4ff;
+        border: 1px solid #b9daf5;
+        border-radius: 3px;
+        padding: 2px 8px;
+        font-size: 0.8125rem;
+        color: #0070d2;
+      }
+      .tag-pill-selected__icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background: #7b848d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tag-pill-selected__icon svg { width: 10px; height: 10px; fill: #fff; }
+      .tag-pill-selected__remove {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #0070d2;
+        padding: 0;
+        margin-left: 2px;
+        display: flex;
+        align-items: center;
+      }
+      .tag-pill-selected__remove svg { width: 12px; height: 12px; fill: #0070d2; }
+      .tag-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 2px);
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 10;
+        max-height: 160px;
+        overflow-y: auto;
+      }
+      .tag-dropdown.is-open { display: block; }
+      .tag-dropdown__item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: 0.8125rem;
+        color: #181818;
+        cursor: pointer;
+      }
+      .tag-dropdown__item:hover { background: #f3f3f3; }
+      .tag-dropdown__item input[type="checkbox"] {
+        accent-color: #0070d2;
+        width: 16px;
+        height: 16px;
+      }
+      .tag-dropdown__item--checked { background: #eef4ff; }
 
       /* ===== 検索バー ===== */
       .search-bar {
@@ -276,23 +378,31 @@
             <div class="filter-row">
               <div class="filter-field">
                 <label class="filter-field__label"><span class="required">*</span>年度</label>
-                <div class="pill-input">
-                  <span class="pill">
+                <div class="pill-input" id="yearPillInput" style="flex-wrap: wrap; gap: 4px; cursor: pointer; position: relative;">
+                  <span class="pill" data-year-pill="2025">
                     <span class="pill__icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>
-                    2025 (正)
-                    <button class="pill__remove" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+                    2025
+                    <button class="pill__remove" data-year-remove="2025" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
                   </span>
+                  <svg class="tag-multiselect__chevron" width="14" height="14" viewBox="0 0 24 24" fill="#706e6b" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="tag-dropdown" id="yearDropdown">
+                  <label class="tag-dropdown__item tag-dropdown__item--checked">
+                    <input type="checkbox" class="year-checkbox" data-year="2025" checked> 2025
+                  </label>
+                  <label class="tag-dropdown__item">
+                    <input type="checkbox" class="year-checkbox" data-year="2026"> 2026
+                  </label>
                 </div>
               </div>
               <div class="filter-field">
                 <label class="filter-field__label"><span class="required">*</span>拠点</label>
-                <div class="pill-input">
-                  <span class="pill">
-                    <span class="pill__icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></span>
-                    オーダーテスト用教室
-                    <button class="pill__remove" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-                  </span>
-                </div>
+                <select class="filter-select" id="locationFilter">
+                  <option value="" disabled>拠点を選択...</option>
+                  <option value="order-test" selected>オーダーテスト用教室</option>
+                  <option value="shibuya">渋谷教室</option>
+                  <option value="shinjuku">新宿教室</option>
+                </select>
               </div>
             </div>
 
@@ -322,6 +432,29 @@
               <label class="checkbox-item"><input type="checkbox"> 季節講習商品のみ表示</label>
             </div>
 
+            <!-- 商品タグ -->
+            <div class="tag-multiselect" id="tagMultiselect">
+              <label class="tag-multiselect__label">商品タグ</label>
+              <div class="tag-multiselect__input" id="tagInput">
+                <span class="tag-multiselect__placeholder" id="tagPlaceholder">タグを選択...</span>
+                <svg class="tag-multiselect__chevron" width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="tag-dropdown" id="tagDropdown">
+                <label class="tag-dropdown__item">
+                  <input type="checkbox" class="tag-checkbox" data-tag="入会金"> 入会金
+                </label>
+                <label class="tag-dropdown__item">
+                  <input type="checkbox" class="tag-checkbox" data-tag="授業料"> 授業料
+                </label>
+                <label class="tag-dropdown__item">
+                  <input type="checkbox" class="tag-checkbox" data-tag="教材費"> 教材費
+                </label>
+                <label class="tag-dropdown__item">
+                  <input type="checkbox" class="tag-checkbox" data-tag="管理費"> 管理費
+                </label>
+              </div>
+            </div>
+
             <!-- 検索 -->
             <div class="search-bar">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#b0adab"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -345,50 +478,77 @@
                 </tr>
               </thead>
               <tbody id="productTableBody">
-                <tr>
+                <tr data-year="2025">
                   <td><input type="checkbox" class="product-checkbox" /></td>
                   <td class="row-num">1</td>
-                  <td><a href="#">2025小6 継続個別コース商品テスト</a></td>
+                  <td><a href="#">2025中1 継続個別コース商品テスト</a></td>
                   <td>コース商品</td>
                   <td>継続商品</td>
                   <td><a href="#">オーダーテスト用教室</a></td>
-                  <td><a href="#">2025 (正)</a></td>
+                  <td><a href="#">2025</a></td>
                 </tr>
-                <tr>
+                <tr data-year="2025">
                   <td><input type="checkbox" class="product-checkbox" /></td>
                   <td class="row-num">2</td>
                   <td><a href="#">入会費</a></td>
                   <td>費用</td>
                   <td>単発商品</td>
                   <td><a href="#">オーダーテスト用教室</a></td>
-                  <td><a href="#">2025 (正)</a></td>
+                  <td><a href="#">2025</a></td>
                 </tr>
-                <tr>
+                <tr data-year="2025">
                   <td><input type="checkbox" class="product-checkbox" /></td>
                   <td class="row-num">3</td>
                   <td><a href="#">中1 英語 教科書</a></td>
                   <td>教材</td>
                   <td>単発商品</td>
                   <td><a href="#">オーダーテスト用教室</a></td>
-                  <td><a href="#">2025 (正)</a></td>
+                  <td><a href="#">2025</a></td>
                 </tr>
-                <tr>
+                <tr data-year="2025">
                   <td><input type="checkbox" class="product-checkbox" /></td>
                   <td class="row-num">4</td>
                   <td><a href="#">中1 数学 教科書</a></td>
                   <td>教材</td>
                   <td>単発商品</td>
                   <td><a href="#">オーダーテスト用教室</a></td>
-                  <td><a href="#">2025 (正)</a></td>
+                  <td><a href="#">2025</a></td>
                 </tr>
-                <tr>
+                <tr data-year="2026" style="display:none;">
                   <td><input type="checkbox" class="product-checkbox" /></td>
                   <td class="row-num">5</td>
-                  <td><a href="#">中1 国語 教科書</a></td>
+                  <td><a href="#">2026中2 継続個別コース商品テスト</a></td>
+                  <td>コース商品</td>
+                  <td>継続商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2026</a></td>
+                </tr>
+                <tr data-year="2026" style="display:none;">
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">6</td>
+                  <td><a href="#">中2 英語 教科書</a></td>
                   <td>教材</td>
                   <td>単発商品</td>
                   <td><a href="#">オーダーテスト用教室</a></td>
-                  <td><a href="#">2026 (正)</a></td>
+                  <td><a href="#">2026</a></td>
+                </tr>
+                <tr data-year="2026" style="display:none;">
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">7</td>
+                  <td><a href="#">中2 数学 教科書</a></td>
+                  <td>教材</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2026</a></td>
+                </tr>
+                <tr data-year="2026" style="display:none;">
+                  <td><input type="checkbox" class="product-checkbox" /></td>
+                  <td class="row-num">8</td>
+                  <td><a href="#">中2 国語 教科書</a></td>
+                  <td>教材</td>
+                  <td>単発商品</td>
+                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">2026</a></td>
                 </tr>
               </tbody>
             </table>
@@ -449,6 +609,155 @@
         var el = document.getElementById(id);
         if (el) el.addEventListener('click', buttonHandlers[id]);
       });
+
+      // ===== 年度フィルター =====
+      var yearPillInput = document.getElementById('yearPillInput');
+      var yearDropdown = document.getElementById('yearDropdown');
+
+      yearPillInput.addEventListener('click', function(e) {
+        if (e.target.closest('[data-year-remove]')) return;
+        yearDropdown.classList.toggle('is-open');
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!yearPillInput.parentElement.contains(e.target)) {
+          yearDropdown.classList.remove('is-open');
+        }
+      });
+
+      document.querySelectorAll('.year-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          renderYearPills();
+          filterByYear();
+        });
+      });
+
+      function renderYearPills() {
+        yearPillInput.querySelectorAll('[data-year-pill]').forEach(function(p) { p.remove(); });
+        var chevron = yearPillInput.querySelector('.tag-multiselect__chevron');
+
+        document.querySelectorAll('.year-checkbox').forEach(function(cb) {
+          var item = cb.closest('.tag-dropdown__item');
+          if (cb.checked) {
+            item.classList.add('tag-dropdown__item--checked');
+            var pill = document.createElement('span');
+            pill.className = 'pill';
+            pill.setAttribute('data-year-pill', cb.dataset.year);
+            pill.innerHTML =
+              '<span class="pill__icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span>'
+              + cb.dataset.year
+              + '<button class="pill__remove" data-year-remove="' + cb.dataset.year + '" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>';
+            yearPillInput.insertBefore(pill, chevron);
+            pill.querySelector('[data-year-remove]').addEventListener('click', function(e) {
+              e.stopPropagation();
+              var yr = this.dataset.yearRemove;
+              var checkbox = document.querySelector('.year-checkbox[data-year="' + yr + '"]');
+              if (checkbox) { checkbox.checked = false; }
+              renderYearPills();
+              filterByYear();
+            });
+          } else {
+            item.classList.remove('tag-dropdown__item--checked');
+          }
+        });
+      }
+
+      function filterByYear() {
+        var selectedYears = [];
+        document.querySelectorAll('.year-checkbox:checked').forEach(function(cb) {
+          selectedYears.push(cb.dataset.year);
+        });
+        var rows = document.querySelectorAll('#productTableBody tr[data-year]');
+        var visibleIndex = 0;
+        rows.forEach(function(row) {
+          if (selectedYears.length === 0 || selectedYears.indexOf(row.dataset.year) !== -1) {
+            row.style.display = '';
+            visibleIndex++;
+            row.querySelector('.row-num').textContent = visibleIndex;
+          } else {
+            row.style.display = 'none';
+            // チェック解除
+            var cb = row.querySelector('.product-checkbox');
+            if (cb) cb.checked = false;
+          }
+        });
+        updateSelectCount();
+      }
+
+      // ピルの×ボタン（初期表示の2025ピル）
+      document.querySelectorAll('[data-year-remove]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var yr = this.dataset.yearRemove;
+          var checkbox = document.querySelector('.year-checkbox[data-year="' + yr + '"]');
+          if (checkbox) { checkbox.checked = false; }
+          renderYearPills();
+          filterByYear();
+        });
+      });
+
+      // ===== タグフィルター =====
+      var tagInput = document.getElementById('tagInput');
+      var tagDropdown = document.getElementById('tagDropdown');
+      var tagPlaceholder = document.getElementById('tagPlaceholder');
+
+      // ドロップダウン開閉
+      tagInput.addEventListener('click', function(e) {
+        if (e.target.closest('.tag-pill-selected__remove')) return;
+        tagDropdown.classList.toggle('is-open');
+      });
+
+      // 外側クリックで閉じる
+      document.addEventListener('click', function(e) {
+        if (!document.getElementById('tagMultiselect').contains(e.target)) {
+          tagDropdown.classList.remove('is-open');
+        }
+      });
+
+      // タグ選択・解除
+      document.querySelectorAll('.tag-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          renderSelectedTags();
+        });
+      });
+
+      function renderSelectedTags() {
+        // 既存ピルを削除
+        tagInput.querySelectorAll('.tag-pill-selected').forEach(function(p) { p.remove(); });
+
+        var selected = document.querySelectorAll('.tag-checkbox:checked');
+        tagPlaceholder.style.display = selected.length > 0 ? 'none' : '';
+
+        // ドロップダウンアイテムのハイライト更新
+        document.querySelectorAll('.tag-dropdown__item').forEach(function(item) {
+          var cb = item.querySelector('.tag-checkbox');
+          if (cb.checked) {
+            item.classList.add('tag-dropdown__item--checked');
+          } else {
+            item.classList.remove('tag-dropdown__item--checked');
+          }
+        });
+
+        // ピルを追加
+        selected.forEach(function(cb) {
+          var pill = document.createElement('span');
+          pill.className = 'tag-pill-selected';
+          pill.innerHTML =
+            '<span class="tag-pill-selected__icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></span>' +
+            cb.dataset.tag +
+            '<button class="tag-pill-selected__remove" title="削除" data-tag="' + cb.dataset.tag + '"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>';
+          tagInput.insertBefore(pill, tagInput.querySelector('.tag-multiselect__chevron'));
+
+          // ×ボタンでピル削除
+          pill.querySelector('.tag-pill-selected__remove').addEventListener('click', function(e) {
+            e.stopPropagation();
+            var tag = this.dataset.tag;
+            var checkbox = document.querySelector('.tag-checkbox[data-tag="' + tag + '"]');
+            if (checkbox) { checkbox.checked = false; }
+            renderSelectedTags();
+          });
+        });
+      }
 
       // ===== 画面遷移ユーティリティ =====
       var MockupRouter = {

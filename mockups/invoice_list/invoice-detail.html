@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IV-603579 | 請求書</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .record-page { background: #f3f3f3; padding: 0.75rem; }
+
+      /* グローバルヘッダー */
+      .global-header {
+        background: #032D60;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        gap: 1rem;
+      }
+      .global-header__logo svg { height: 22px; fill: #fff; }
+      .global-header__search {
+        flex: 1;
+        max-width: 480px;
+        margin: 0 auto;
+      }
+      .global-header__search input {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 5px 12px;
+        font-size: 0.8125rem;
+        outline: none;
+      }
+      .global-header__search input::placeholder { color: rgba(255,255,255,0.6); }
+      .global-header__right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .global-header__right svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.8); }
+      .global-header__avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #5eb5ef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .global-header__avatar svg { width: 16px; height: 16px; fill: #fff; }
+
+      /* 右カラム詳細パネルのフィールド */
+      .detail-field { border-bottom: 1px solid #e5e5e5; padding: 0.5rem 0; display: flex; justify-content: space-between; align-items: flex-start; }
+      .detail-field:last-child { border-bottom: none; }
+      .detail-field__label { font-size: 0.75rem; color: #706e6b; }
+      .detail-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+      .detail-field__edit { flex-shrink: 0; margin-left: 0.5rem; }
+      .detail-field__edit svg { width: 12px; height: 12px; fill: #706e6b; cursor: pointer; }
+
+      /* 金額強調 */
+      .amount-highlight { font-size: 1rem; font-weight: 700; }
+
+      /* バッジ */
+      .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .status-badge--draft { background: #e5e5e5; color: #706e6b; }
+      .status-badge--sent { background: #d4edfc; color: #0070d2; }
+      .status-badge--paid { background: #d4f0d4; color: #2e844a; }
+      .status-badge--overdue { background: #fdd; color: #c23934; }
+
+      /* アクションボタン群 */
+      .highlights-panel__actions {
+        display: flex;
+        gap: 0;
+      }
+      .highlights-panel__actions .slds-button {
+        border-radius: 0;
+        margin-left: -1px;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        padding: 0 0.75rem;
+        height: 30px;
+        line-height: 30px;
+      }
+      .highlights-panel__actions .slds-button:first-child {
+        border-radius: 4px 0 0 4px;
+        margin-left: 0;
+      }
+      .highlights-panel__actions .slds-button:last-child {
+        border-radius: 0 4px 4px 0;
+      }
+
+      /* テーブル */
+      .slds-table th, .slds-table td { font-size: 0.8125rem; }
+      .slds-table th { background: #fafaf9; }
+      .slds-table a { color: #0070d2; text-decoration: none; }
+      .slds-table a:hover { text-decoration: underline; }
+
+      /* 関連リスト折りたたみ */
+      .related-list-collapsed .slds-card__body,
+      .related-list-collapsed .slds-card__footer { display: none; }
+
+      /* 請求項目の内容（箇条書き） */
+      .item-content-list { margin: 2px 0 0 1rem; padding: 0; font-size: 0.75rem; color: #444; list-style: disc; }
+      .item-content-list li { line-height: 1.4; }
+
+      /* セクション折りたたみ */
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+        padding: 0.5rem 0;
+      }
+      .section-header svg { width: 12px; height: 12px; fill: #706e6b; transition: transform 0.2s; }
+      .section-header.is-collapsed svg { transform: rotate(-90deg); }
+
+      /* 履歴テーブル */
+      .history-table { width: 100%; border-collapse: collapse; }
+      .history-table td { font-size: 0.8125rem; padding: 0.4rem 0.5rem; border-bottom: 1px solid #e5e5e5; }
+      .history-table a { color: #0070d2; text-decoration: none; }
+      .history-table a:hover { text-decoration: underline; }
+
+      /* サマリーカード */
+      .summary-section { padding: 0.5rem 0; }
+      .summary-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 0.8125rem; }
+
+      /* ===== モーダル ===== */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        background: rgba(0,0,0,0.5);
+      }
+      .modal-container {
+        position: fixed;
+        inset: 0;
+        z-index: 9001;
+        display: none;
+        flex-direction: column;
+        background: #fff;
+      }
+      .modal-container.is-open,
+      .modal-backdrop.is-open { display: flex; }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid #d8dde6;
+        flex-shrink: 0;
+      }
+      .modal-header__title { font-size: 1.1rem; font-weight: 700; }
+      .modal-header__close {
+        background: none; border: none; cursor: pointer; padding: 4px;
+      }
+      .modal-header__close svg { width: 20px; height: 20px; fill: #706e6b; }
+      .modal-body { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-top: 1px solid #d8dde6;
+        flex-shrink: 0;
+      }
+
+      /* モーダル内サマリーカード */
+      .modal-summary {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .modal-summary__card {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+      }
+      .modal-summary__dot {
+        width: 10px; height: 10px; border-radius: 50%;
+      }
+      .modal-summary__dot--current { background: #0070d2; }
+      .modal-summary__dot--selected { background: #f28b00; }
+      .modal-summary__dot--new { background: #4bc076; }
+      .modal-summary__amount { font-size: 1.25rem; font-weight: 700; margin-left: 0.25rem; }
+
+      /* チップ（選択済みタグ） */
+      .chip-container { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem; }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e5e5e5;
+        border: 1px solid #d8dde6;
+        border-radius: 3px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        color: #181818;
+      }
+      .chip__remove {
+        background: none; border: none; cursor: pointer; padding: 0; line-height: 1;
+        font-size: 0.7rem; color: #706e6b;
+      }
+      .chip__remove:hover { color: #c23934; }
+
+      /* モーダルテーブルのチェック行 */
+      .modal-table tr.is-selected { background: #f0f8ff; }
+      .modal-table .row-check-icon { width: 16px; height: 16px; }
+      .modal-table .row-check-icon--checked { fill: #0070d2; }
+      .modal-table .row-check-icon--unchecked { fill: #d8dde6; }
+
+      /* ===== トースト ===== */
+      .toast-container {
+        position: fixed;
+        top: 48px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10000;
+        display: none;
+      }
+      .toast-container.is-visible { display: block; }
+      .slds-notify--toast {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #04844b;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.8125rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        white-space: nowrap;
+      }
+      .toast-container .toast-icon svg { width: 18px; height: 18px; fill: #fff; }
+      .toast-container .toast-close {
+        background: none; border: none; cursor: pointer; padding: 2px; margin-left: 0.5rem;
+      }
+      .toast-container .toast-close svg { width: 14px; height: 14px; fill: rgba(255,255,255,0.8); }
+
+      /* ===== 行アクションドロップダウン ===== */
+      .row-action-cell { position: relative; width: 40px; text-align: center; }
+      .row-action-btn {
+        background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+        width: 26px; height: 26px; cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+      }
+      .row-action-btn:hover { background: #f3f3f3; }
+      .row-action-btn svg { width: 12px; height: 12px; fill: #706e6b; }
+      .row-action-dropdown {
+        display: none;
+        position: absolute;
+        right: 0; top: 100%;
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 8000;
+        min-width: 160px;
+        padding: 4px 0;
+      }
+      .row-action-dropdown.is-open { display: block; }
+      .row-action-dropdown__item {
+        display: block; width: 100%; text-align: left;
+        background: none; border: none; cursor: pointer;
+        padding: 6px 12px; font-size: 0.8125rem; color: #181818;
+      }
+      .row-action-dropdown__item:hover { background: #f3f3f3; }
+      .row-action-dropdown__item--danger { color: #c23934; }
+
+      /* ===== 確認ダイアログ ===== */
+      .confirm-backdrop {
+        display: none; position: fixed; inset: 0; z-index: 9500; background: rgba(0,0,0,0.5);
+        align-items: center; justify-content: center;
+      }
+      .confirm-backdrop.is-open { display: flex; }
+      .confirm-dialog {
+        background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        width: 440px; max-width: 90vw;
+      }
+      .confirm-dialog__header {
+        padding: 1rem 1.5rem 0.5rem;
+        font-size: 1.1rem; font-weight: 700; text-align: center;
+      }
+      .confirm-dialog__body {
+        padding: 0.75rem 1.5rem 1.5rem;
+        font-size: 0.875rem; color: #444; text-align: center;
+      }
+      .confirm-dialog__footer {
+        display: flex; justify-content: center; gap: 0.5rem;
+        padding: 0 1.5rem 1.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ========================================================
+           1. グローバルヘッダー
+           ======================================================== -->
+      <div class="global-header">
+        <div class="global-header__logo">
+          <svg viewBox="0 0 100 70" width="28" height="20">
+            <path d="M45 5C35 5 27 12 25 22 18 18 10 22 8 30 2 32 0 38 2 44c2 6 8 10 14 10h56c6 0 12-4 14-10 2-6 0-12-4-16-6-4-14-6-20-2C58 14 52 5 45 5z" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="global-header__search">
+          <input type="text" placeholder="Search Salesforce" />
+        </div>
+        <div class="global-header__right">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 002 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.6 3.6 0 0112 15.6z"/></svg>
+          <div class="global-header__avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           2. グローバルナビゲーション
+           ======================================================== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="App Launcher">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="Manabie請求書管理">Manabie請求書管理</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="invoice-list.html" class="slds-context-bar__label-action" title="請求書"><span class="slds-truncate" title="請求書">請求書</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="決済情報"><span class="slds-truncate" title="決済情報">決済情報</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="銀行口座/クレジットカード情報"><span class="slds-truncate" title="銀行口座/クレジットカード情報">銀行口座/クレジットカード情報</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="銀行マスター"><span class="slds-truncate" title="銀行マスター">銀行マスター</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="銀行支店マスター"><span class="slds-truncate" title="銀行支店マスター">銀行支店マスター</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="会社側の銀行口座"><span class="slds-truncate" title="会社側の銀行口座">会社側の銀行口座</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="請求検索"><span class="slds-truncate" title="請求検索">請求検索</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="一括消込"><span class="slds-truncate" title="一括消込">一括消込</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="決済一括作成ジョブ"><span class="slds-truncate" title="決済一括作成ジョブ">決済一括作成ジョブ</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="請求書一括作成スケジュール"><span class="slds-truncate" title="請求書一括作成スケジュール">請求書一括作成スケジュール</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="返金対象項目"><span class="slds-truncate" title="返金対象項目">返金対象項目</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="さらに表示"><span class="slds-truncate" title="さらに表示">さらに表示</span><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:4px;"><path d="M7 10l5 5 5-5z"/></svg></a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ========================================================
+           3. レコードヘッダー / Highlights Panel
+           ======================================================== -->
+      <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span style="background-color: #0070d2; border-radius: 4px; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center;">
+                  <svg viewBox="0 0 24 24" style="width:1.2rem; height:1.2rem; fill:#fff;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                      <span class="slds-page-header__name-meta">請求書</span>
+                      <span class="slds-page-header__title slds-truncate" title="IV-603579">IV-603579</span>
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <div class="highlights-panel__actions">
+                  <button class="slds-button slds-button_neutral">請求書確定</button>
+                  <button class="slds-button slds-button_neutral">請求書取消</button>
+                  <button class="slds-button slds-button_neutral">請求書PDFダウンロード</button>
+                  <button class="slds-button slds-button_brand" id="btn-add-bill-items" onclick="openAddBillItemsModal()" style="border-radius: 0; margin-left: -1px;">請求項目追加</button>
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション" style="border-radius: 0 4px 4px 0; margin-left: -1px; height: 30px; width: 30px;">
+                    <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ハイライト項目 -->
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+          <div class="slds-page-header__col-details">
+            <ul class="slds-page-header__detail-row">
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="ステータス">ステータス</p>
+                <p>確定前</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="タイプ">タイプ</p>
+                <p>自動作成</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="生徒">生徒</p>
+                <p><a href="#" style="color:#0070d2;">テスト テスト</a></p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="学年">学年</p>
+                <p>中1</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="ホーム教室">ホーム教室</p>
+                <p>オーダーテスト用教室</p>
+              </li>
+              <li class="slds-page-header__detail-block">
+                <p class="slds-text-title slds-truncate" title="作成者">作成者</p>
+                <p><span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:18px; height:18px; border-radius:50%; background:#5eb5ef; display:inline-flex; align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#fff;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><a href="#" style="color:#0070d2;">Manabie Admin</a></span>, 2026/03/10 0:01</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           4. Path コンポーネント（請求ステータス）
+           ======================================================== -->
+      <div class="slds-path" style="background: #fff; border-bottom: 1px solid #d8dde6;">
+        <div class="slds-grid slds-path__track">
+          <div class="slds-grid slds-path__scroller-container" style="flex: 1;">
+            <div class="slds-path__scroller" role="application">
+              <div class="slds-path__scroller_inner" role="tablist">
+                <ul class="slds-path__nav" role="presentation">
+                  <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="0" aria-selected="true">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">確定前</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">確定</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">一部決済完了</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">決済完了</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">回収不能</span>
+                    </a>
+                  </li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-path__link" role="tab" tabindex="-1">
+                      <span class="slds-path__stage"><span style="font-size:0.55rem;"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span>
+                      <span class="slds-path__title">取消済</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           5. レコードページ本体（2カラム）
+           ======================================================== -->
+      <div class="record-page">
+        <div class="slds-grid slds-gutters">
+
+          <!-- ===== 左カラム: 関連リスト群 ===== -->
+          <div class="slds-col slds-size_8-of-12">
+
+            <!-- 関連リスト: 請求項目 (8) -->
+            <article class="slds-card slds-m-bottom_small" id="relatedList-invoiceItems">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #0070d2; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>請求項目 (8)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">8 items &middot; Sorted by 請求項目番号</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#706e6b;"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th scope="col" style="width: 40px;">
+                        <div class="slds-truncate" title="#">#</div>
+                      </th>
+                      <th scope="col" style="width: 120px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求項目番号">請求項目番号</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="内容">内容</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width: 120px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求項目確定日">請求項目確定日 &uarr;</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width: 70px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="割引">割引</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width: 60px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="税">税</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width: 100px; text-align: right;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                            <span class="slds-truncate" title="金額">金額</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width: 40px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">1</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417717</a></div></td>
+                      <td><div class="slds-truncate">入会費</div></td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;5,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417718</a></div></td>
+                      <td>
+                        <div>2025小6 継続期別コース商品テスト - February 2026 (請求割合: 1/1)</div>
+                        <ul class="item-content-list">
+                          <li>(1/回) [2025_test] 小6社会</li>
+                          <li>(1/回) [2025_test] 小6算数</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;44,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">3</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417719</a></div></td>
+                      <td>
+                        <div>2025小6 継続期別コース商品テスト - March 2026 (請求割合: 1/1)</div>
+                        <ul class="item-content-list">
+                          <li>(1/回) [2025_test] 小6社会</li>
+                          <li>(1/回) [2025_test] 小6算数</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;44,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">4</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417720</a></div></td>
+                      <td>
+                        <div>中1 英語 教科別コース_demomai - 2026_02 (請求割合: 1/1)</div>
+                        <ul class="item-content-list">
+                          <li>[2025_test] 中1数学</li>
+                          <li>[2025_test] 中1国語_demomai</li>
+                          <li>[2025_test] 中1英語_demomai</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;2,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">5</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417721</a></div></td>
+                      <td>
+                        <div>中1 英語・国語・数学 通年コース_demomai - 2026_03 (請求割合: 1/1)</div>
+                        <ul class="item-content-list">
+                          <li>[2025_test] 中1数学_demomai</li>
+                          <li>[2025_test] 中1国語_demomai</li>
+                          <li>[2025_test] 中1英語_demomai</li>
+                          <li>[2025_test] 中1英語_demomai</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;45,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">6</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417722</a></div></td>
+                      <td>
+                        <div>中1 英語・国語・数学 通年コース_demomai - 2026_03 (請求割合: 1/1)</div>
+                        <ul class="item-content-list">
+                          <li>[2025_test] 中1数学_demomai</li>
+                          <li>[2025_test] 中1国語_demomai</li>
+                          <li>[2025_test] 中1英語_demomai</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;45,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">7</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417723</a></div></td>
+                      <td><div class="slds-truncate">中1国語（教材）_demomai</div></td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">0%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;10,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">8</div></td>
+                      <td><div class="slds-truncate"><a href="#">BLN-1417724</a></div></td>
+                      <td><div class="slds-truncate">中1数学（教材）_demomai</div></td>
+                      <td><div class="slds-truncate">2026/03/05</div></td>
+                      <td><div class="slds-truncate">--</div></td>
+                      <td><div class="slds-truncate">10%</div></td>
+                      <td><div class="slds-truncate" style="text-align:right;">&yen;10,000</div></td>
+                      <td class="row-action-cell"><button class="row-action-btn" onclick="toggleRowAction(event, this)"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button><div class="row-action-dropdown"><button class="row-action-dropdown__item row-action-dropdown__item--danger" onclick="openRemoveConfirm(this)">請求項目削除</button></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 請求書調整額 (0) -->
+            <article class="slds-card slds-m-bottom_small related-list-collapsed" id="relatedList-adjustments">
+              <div class="slds-card__header slds-grid" onclick="toggleRelatedList('relatedList-adjustments')" style="cursor:pointer;">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #f28b00; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>請求書調整額 (0)</span>
+                    </h2>
+                  </div>
+                </header>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div style="text-align:center; color:#706e6b; font-size:0.8125rem; padding: 1rem 0;">
+                  項目はありません
+                </div>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 決済情報 (0) -->
+            <article class="slds-card slds-m-bottom_small related-list-collapsed" id="relatedList-payments">
+              <div class="slds-card__header slds-grid" onclick="toggleRelatedList('relatedList-payments')" style="cursor:pointer;">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #4bc076; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>決済情報 (0)</span>
+                    </h2>
+                  </div>
+                </header>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div style="text-align:center; color:#706e6b; font-size:0.8125rem; padding: 1rem 0;">
+                  項目はありません
+                </div>
+              </div>
+            </article>
+
+
+            <!-- 関連リスト: 返金対象項目 (0) -->
+            <article class="slds-card slds-m-bottom_small related-list-collapsed" id="relatedList-refunds">
+              <div class="slds-card__header slds-grid" onclick="toggleRelatedList('relatedList-refunds')" style="cursor:pointer;">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #e56798; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M12.5 6.9c1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-.53.12-1.03.31-1.48.54l1.47 1.47c.41-.17.91-.27 1.51-.27zM5.33 4.06L4.06 5.33 7.5 8.77c0 2.08 1.56 3.21 3.91 3.91l3.51 3.51c-.34.48-1.14.91-2.42.91-2.06 0-2.87-.92-2.98-2.1H7.32c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.39-.28 2.58-1.08 3.22-2.15l2.72 2.72 1.27-1.27L5.33 4.06z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>返金対象項目 (0)</span>
+                    </h2>
+                  </div>
+                </header>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div style="text-align:center; color:#706e6b; font-size:0.8125rem; padding: 1rem 0;">
+                  項目はありません
+                </div>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 請求項目変更履歴 (0) -->
+            <article class="slds-card slds-m-bottom_small" id="relatedList-billItemHistory">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #9050e9; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span id="billItemHistoryTitle">請求項目変更履歴 (0)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak" id="billItemHistorySubtitle">0 items</p>
+                  </div>
+                </header>
+                <div class="slds-no-flex" style="display:flex; gap:4px;">
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="テーブル設定">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#706e6b;"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.6 3.6 0 0112 15.6z"/></svg>
+                  </button>
+                  <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#706e6b;"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-card__body" id="billItemHistoryBody">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="アクション">アクション</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="説明">説明</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求項目">請求項目</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="text-align:right;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                            <span class="slds-truncate" title="金額">金額</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="変更者">変更者</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="変更日時">変更日時</span>
+                            <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="billItemHistoryTbody">
+                    <!-- JS が動的に追加 -->
+                  </tbody>
+                </table>
+                <div style="text-align:center; padding: 0.5rem 0;">
+                  <a href="#" style="color:#0070d2; font-size:0.8125rem;">すべて表示</a>
+                </div>
+              </div>
+            </article>
+
+            <!-- 関連リスト: 請求書の履歴 (2) -->
+            <article class="slds-card slds-m-bottom_small" id="relatedList-history">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                    <span style="background-color: #62b7ed; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                      <svg viewBox="0 0 24 24" style="width:0.85rem; height:0.85rem; fill:#fff;"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>請求書の履歴 (2)</span>
+                    </h2>
+                  </div>
+                </header>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <td style="font-size:0.75rem; color:#706e6b; font-weight:600; padding-bottom:0.5rem;">日付</td>
+                      <td style="font-size:0.75rem; color:#706e6b; font-weight:600; padding-bottom:0.5rem;">項目</td>
+                      <td style="font-size:0.75rem; color:#706e6b; font-weight:600; padding-bottom:0.5rem;">ユーザー</td>
+                      <td style="font-size:0.75rem; color:#706e6b; font-weight:600; padding-bottom:0.5rem;">元の値</td>
+                      <td style="font-size:0.75rem; color:#706e6b; font-weight:600; padding-bottom:0.5rem;">新しい値</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>2026/03/10 0:01</td>
+                      <td>作成</td>
+                      <td><a href="#">Manabie Admin</a></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>2026/03/10 0:01</td>
+                      <td>請求書メールテンプレート</td>
+                      <td><a href="#">Manabie Admin</a></td>
+                      <td></td>
+                      <td>テスト請求書メールテンプレート</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="text-align:center; padding: 0.5rem 0;">
+                  <a href="#" style="color:#0070d2; font-size:0.8125rem;">すべて表示</a>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- ===== 右カラム: 詳細パネル ===== -->
+          <div class="slds-col slds-size_4-of-12">
+            <article class="slds-card">
+              <div class="slds-card__body slds-p-around_none">
+
+                <!-- タブ: 概要 | 活動 | Chatter -->
+                <div class="slds-tabs_default">
+                  <ul class="slds-tabs_default__nav" role="tablist">
+                    <li class="slds-tabs_default__item slds-is-active" role="presentation" data-tab="overview">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="0" aria-selected="true">概要</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation" data-tab="activity">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">活動</a>
+                    </li>
+                    <li class="slds-tabs_default__item" role="presentation" data-tab="chatter">
+                      <a class="slds-tabs_default__link" role="tab" tabindex="-1">Chatter</a>
+                    </li>
+                  </ul>
+
+                  <!-- 概要タブ -->
+                  <div class="slds-tabs_default__content slds-show" role="tabpanel" id="tab-overview">
+                    <div class="slds-p-horizontal_medium slds-p-vertical_x-small">
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">ステータス</div>
+                          <div class="detail-field__value">確定前</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">タイプ</div>
+                          <div class="detail-field__value">自動作成</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">小計</div>
+                          <div class="detail-field__value">&yen;205,000</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">税 (0% 内税)</div>
+                          <div class="detail-field__value">&yen;0</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">税 (10% 内税)</div>
+                          <div class="detail-field__value">&yen;17,727</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">請求書調整額</div>
+                          <div class="detail-field__value">&yen;0</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">合計</div>
+                          <div class="detail-field__value">&yen;205,000</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">支払済金額</div>
+                          <div class="detail-field__value">&yen;0</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">支払い合計金額</div>
+                          <div class="detail-field__value">&yen;0</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">未割当残高</div>
+                          <div class="detail-field__value">&yen;205,000</div>
+                        </div>
+                      </div>
+
+                      <div class="detail-field">
+                        <div>
+                          <div class="detail-field__label">未割当残高</div>
+                          <div class="detail-field__value">&yen;205,000</div>
+                        </div>
+                      </div>
+
+                      <!-- その他情報セクション -->
+                      <div style="margin-top: 0.75rem;">
+                        <div class="section-header" onclick="toggleSection('other-info')">
+                          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                          <span style="font-size:0.8125rem; font-weight:600; color:#181818;">その他情報</span>
+                        </div>
+                        <div id="other-info">
+                          <div class="detail-field">
+                            <div>
+                              <div class="detail-field__label">消込日</div>
+                              <div class="detail-field__value"></div>
+                            </div>
+                            <div class="detail-field__edit">
+                              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </div>
+                          </div>
+
+                          <div class="detail-field">
+                            <div>
+                              <div class="detail-field__label">備考</div>
+                              <div class="detail-field__value"></div>
+                            </div>
+                            <div class="detail-field__edit">
+                              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </div>
+                          </div>
+
+                          <div class="detail-field">
+                            <div>
+                              <div class="detail-field__label">請求書メールテンプレート</div>
+                              <div class="detail-field__value"><a href="#" style="color:#0070d2;">テスト請求書メールテンプレート</a></div>
+                            </div>
+                            <div class="detail-field__edit">
+                              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================
+         請求項目削除 確認ダイアログ
+         ======================================================== -->
+    <div class="confirm-backdrop" id="removeConfirmBackdrop">
+      <div class="confirm-dialog">
+        <div class="confirm-dialog__header">請求項目の削除</div>
+        <div class="confirm-dialog__body">この請求項目を削除してもよろしいですか？</div>
+        <div class="confirm-dialog__footer">
+          <button class="slds-button slds-button_neutral" onclick="closeRemoveConfirm()">キャンセル</button>
+          <button class="slds-button slds-button_brand" onclick="confirmRemoveBillItem()">削除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         トースト通知
+         ======================================================== -->
+    <div class="toast-container" id="toast">
+      <div class="slds-notify--toast">
+        <span class="toast-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </span>
+        <span id="toastMessage">請求項目の追加に成功しました。</span>
+        <button class="toast-close" onclick="hideToast()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         請求項目追加モーダル
+         ======================================================== -->
+    <div class="modal-backdrop" id="addBillItemsBackdrop"></div>
+    <div class="modal-container" id="addBillItemsModal">
+      <!-- ヘッダー -->
+      <div class="modal-header">
+        <span class="modal-header__title">請求項目追加</span>
+        <button class="modal-header__close" onclick="closeAddBillItemsModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <!-- ボディ -->
+      <div class="modal-body">
+        <!-- サマリーカード -->
+        <div class="modal-summary">
+          <div class="modal-summary__card">
+            <span class="modal-summary__dot modal-summary__dot--current"></span>
+            <span>現在の合計</span>
+            <span class="modal-summary__amount" id="modalCurrentTotal">&yen;205,000</span>
+          </div>
+          <div class="modal-summary__card">
+            <span class="modal-summary__dot modal-summary__dot--selected"></span>
+            <span>選択項目の合計</span>
+            <span class="modal-summary__amount" id="modalSelectedTotal">&yen;0</span>
+          </div>
+          <div class="modal-summary__card">
+            <span class="modal-summary__dot modal-summary__dot--new"></span>
+            <span>新しい合計</span>
+            <span class="modal-summary__amount" style="color:#4bc076;" id="modalNewTotal">&yen;205,000</span>
+          </div>
+        </div>
+
+        <!-- 保留中を表示 -->
+        <div style="margin-bottom: 0.75rem; display:flex; align-items:center; justify-content:space-between;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.8125rem; color:#706e6b;">
+            <input type="checkbox" id="showPendingCheckbox" /> 保留中を表示
+          </label>
+          <button class="slds-button slds-button_outline-brand" style="font-size:0.75rem; height:28px; line-height:28px; padding:0 0.75rem;" onclick="refreshBillingItems()">
+            <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor; margin-right:4px;"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            請求項目を更新
+          </button>
+        </div>
+
+        <!-- 選択済みチップ -->
+        <div class="chip-container" id="selectedChips"></div>
+        <div style="font-size:0.75rem; color:#706e6b; margin-bottom:0.5rem;" id="selectedCountLabel">0 件選択中</div>
+
+        <!-- 請求項目テーブル -->
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout modal-table" id="billingItemsTable">
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th scope="col" style="width:40px;"></th>
+              <th scope="col" style="width:110px;">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="請求項目名">請求項目名</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+              <th scope="col">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="請求項目">請求項目</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+              <th scope="col" style="width:90px;">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="請求ステータス">請求ステータス</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+              <th scope="col" style="width:110px;">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="請求日">請求日 &uarr;</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+              <th scope="col" style="width:130px;">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="教室">教室</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+              <th scope="col" style="width:100px; text-align:right;">
+                <a class="slds-th__action slds-text-link_reset" href="#">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                    <span class="slds-truncate" title="金額">金額</span>
+                    <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="billingItemsTbody">
+            <!-- JS が動的に生成 -->
+          </tbody>
+        </table>
+      </div>
+      <!-- フッター -->
+      <div class="modal-footer">
+        <button class="slds-button slds-button_neutral" onclick="closeAddBillItemsModal()">キャンセル</button>
+        <button class="slds-button slds-button_brand" id="modalSaveBtn" onclick="saveBillItems()">保存</button>
+      </div>
+    </div>
+
+    <script>
+      /* ============================================
+         基本ユーティリティ
+         ============================================ */
+      const MockupRouter = {
+        navigateTo(url) { window.location.href = url; },
+        showModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; },
+        hideModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+      };
+
+      function toggleRelatedList(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('related-list-collapsed');
+      }
+
+      function toggleSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = el.style.display === 'none' ? '' : 'none';
+          const header = el.previousElementSibling;
+          if (header) header.classList.toggle('is-collapsed');
+        }
+      }
+
+      // タブ切り替え
+      document.querySelectorAll('.slds-tabs_default__nav li').forEach(tab => {
+        tab.addEventListener('click', function() {
+          this.closest('.slds-tabs_default__nav').querySelectorAll('li').forEach(t => t.classList.remove('slds-is-active'));
+          this.classList.add('slds-is-active');
+        });
+      });
+
+      /* ============================================
+         請求項目追加モーダル
+         ============================================ */
+      const CURRENT_TOTAL = 205000;
+
+      // モーダル用の請求項目データ
+      const billingItems = [
+        { id: 'BL-01', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 110000 },
+        { id: 'BL-02', name: '関連商品01', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+        { id: 'BL-03', name: '関連商品02', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: -5000 },
+        { id: 'BL-04', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: -5000 },
+        { id: 'BL-05', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+        { id: 'BL-06', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+        { id: 'BL-07', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+        { id: 'BL-08', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+        { id: 'BL-09', name: 'スロットベースパッケージA', status: '請求済', date: '2026/03/05', location: 'オーダーテスト用教室', amount: 10000 },
+      ];
+
+      let selectedItems = new Set();
+
+      function formatYen(n) {
+        const prefix = n < 0 ? '-' : '';
+        return prefix + '\u00a5' + Math.abs(n).toLocaleString();
+      }
+
+      function openAddBillItemsModal() {
+        selectedItems.clear();
+        renderBillingItemsTable();
+        updateModalSummary();
+        document.getElementById('addBillItemsModal').classList.add('is-open');
+        document.getElementById('addBillItemsBackdrop').classList.add('is-open');
+      }
+
+      function closeAddBillItemsModal() {
+        document.getElementById('addBillItemsModal').classList.remove('is-open');
+        document.getElementById('addBillItemsBackdrop').classList.remove('is-open');
+      }
+
+      function renderBillingItemsTable() {
+        const tbody = document.getElementById('billingItemsTbody');
+        tbody.innerHTML = billingItems.map(item => {
+          const checked = selectedItems.has(item.id);
+          return '<tr class="slds-hint-parent' + (checked ? ' is-selected' : '') + '" data-id="' + item.id + '" onclick="toggleBillingItem(\'' + item.id + '\')" style="cursor:pointer;">' +
+            '<td style="text-align:center;">' +
+              (checked
+                ? '<svg class="row-check-icon row-check-icon--checked" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'
+                : '<svg class="row-check-icon row-check-icon--unchecked" viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>'
+              ) +
+            '</td>' +
+            '<td><div class="slds-truncate"><a href="#" onclick="event.stopPropagation();" style="color:#0070d2;">' + item.id + '</a></div></td>' +
+            '<td><div class="slds-truncate">' + item.name + '</div></td>' +
+            '<td><div class="slds-truncate">' + item.status + '</div></td>' +
+            '<td><div class="slds-truncate">' + item.date + '</div></td>' +
+            '<td><div class="slds-truncate"><a href="#" onclick="event.stopPropagation();" style="color:#0070d2;">' + item.location + '</a></div></td>' +
+            '<td><div class="slds-truncate" style="text-align:right;">' + formatYen(item.amount) + '</div></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function toggleBillingItem(id) {
+        if (selectedItems.has(id)) {
+          selectedItems.delete(id);
+        } else {
+          selectedItems.add(id);
+        }
+        renderBillingItemsTable();
+        updateModalSummary();
+      }
+
+      function removeChip(id) {
+        selectedItems.delete(id);
+        renderBillingItemsTable();
+        updateModalSummary();
+      }
+
+      function updateModalSummary() {
+        // 選択合計
+        let selectedTotal = 0;
+        billingItems.forEach(item => {
+          if (selectedItems.has(item.id)) selectedTotal += item.amount;
+        });
+        const newTotal = CURRENT_TOTAL + selectedTotal;
+
+        document.getElementById('modalSelectedTotal').textContent = formatYen(selectedTotal);
+        document.getElementById('modalNewTotal').textContent = formatYen(newTotal);
+
+        // チップ
+        const chipContainer = document.getElementById('selectedChips');
+        chipContainer.innerHTML = Array.from(selectedItems).map(id =>
+          '<span class="chip">' + id + ' <button class="chip__remove" onclick="event.stopPropagation(); removeChip(\'' + id + '\')">x</button></span>'
+        ).join('');
+
+        // 件数
+        document.getElementById('selectedCountLabel').textContent = selectedItems.size + ' 件選択中';
+      }
+
+      function refreshBillingItems() {
+        // リフレッシュ模擬 — テーブルを再描画するだけ
+        renderBillingItemsTable();
+      }
+
+      /* ============================================
+         保存処理
+         ============================================ */
+      function saveBillItems() {
+        if (selectedItems.size === 0) {
+          closeAddBillItemsModal();
+          return;
+        }
+
+        const addedIds = Array.from(selectedItems);
+        const addedItems = billingItems.filter(i => addedIds.includes(i.id));
+
+        // 1. 請求項目テーブルに行を追加
+        const invoiceItemsTbody = document.querySelector('#relatedList-invoiceItems tbody');
+        const existingRows = invoiceItemsTbody.querySelectorAll('tr').length;
+        addedItems.forEach((item, idx) => {
+          const rowNum = existingRows + idx + 1;
+          const newId = 'BLN-' + (1417724 + idx + 1);
+          const tr = document.createElement('tr');
+          tr.className = 'slds-hint-parent';
+          tr.style.background = '#f0f8ff';
+          tr.innerHTML =
+            '<td><div class="slds-truncate">' + rowNum + '</div></td>' +
+            '<td><div class="slds-truncate"><a href="#">' + newId + '</a></div></td>' +
+            '<td><div class="slds-truncate">' + item.name + '</div></td>' +
+            '<td><div class="slds-truncate">' + item.date + '</div></td>' +
+            '<td><div class="slds-truncate">--</div></td>' +
+            '<td><div class="slds-truncate">10%</div></td>' +
+            '<td><div class="slds-truncate" style="text-align:right;">' + formatYen(item.amount) + '</div></td>';
+          invoiceItemsTbody.appendChild(tr);
+        });
+
+        // 2. 請求項目ヘッダーの件数を更新
+        const newCount = existingRows + addedItems.length;
+        document.querySelector('#relatedList-invoiceItems .slds-card__header-title span').textContent = '請求項目 (' + newCount + ')';
+        document.querySelector('#relatedList-invoiceItems .slds-text-body_small').textContent = newCount + ' items \u00b7 Sorted by 請求項目番号';
+
+        // 3. 請求項目変更履歴に行を追加
+        const histTbody = document.getElementById('billItemHistoryTbody');
+        const now = new Date();
+        const nowStr = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        addedItems.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'slds-hint-parent';
+          tr.innerHTML =
+            '<td><div class="slds-truncate">追加</div></td>' +
+            '<td><div class="slds-truncate">' + item.name + '</div></td>' +
+            '<td><div class="slds-truncate"><a href="#">' + item.id + '</a></div></td>' +
+            '<td><div class="slds-truncate" style="text-align:right;">' + formatYen(item.amount) + '</div></td>' +
+            '<td><div class="slds-truncate"><a href="#">Manabie Admin</a></div></td>' +
+            '<td><div class="slds-truncate">' + nowStr + '</div></td>';
+          histTbody.appendChild(tr);
+        });
+        document.getElementById('billItemHistoryTitle').textContent = '請求項目変更履歴 (' + addedItems.length + ')';
+        document.getElementById('billItemHistorySubtitle').textContent = addedItems.length + ' items \u00b7 数秒前に更新されました';
+
+        // 4. 右カラムの合計金額を更新
+        let selectedTotal = 0;
+        addedItems.forEach(i => selectedTotal += i.amount);
+        const newTotal = CURRENT_TOTAL + selectedTotal;
+        const totalStr = formatYen(newTotal);
+        const detailValues = document.querySelectorAll('#tab-overview .detail-field__value');
+        detailValues.forEach(el => {
+          if (el.textContent.includes('205,000')) {
+            el.textContent = totalStr;
+          }
+        });
+
+        // 5. モーダル閉じる → トースト表示
+        closeAddBillItemsModal();
+        showToast('請求項目の追加に成功しました。');
+      }
+
+      /* ============================================
+         トースト
+         ============================================ */
+      function showToast(msg) {
+        document.getElementById('toastMessage').textContent = msg;
+        const el = document.getElementById('toast');
+        el.classList.add('is-visible');
+        setTimeout(() => el.classList.remove('is-visible'), 5000);
+      }
+      function hideToast() {
+        document.getElementById('toast').classList.remove('is-visible');
+      }
+
+      /* ============================================
+         行アクション ドロップダウン
+         ============================================ */
+      let activeDropdown = null;
+
+      function toggleRowAction(event, btn) {
+        event.stopPropagation();
+        const dropdown = btn.nextElementSibling;
+        // 他のドロップダウンを閉じる
+        closeAllDropdowns();
+        if (dropdown) {
+          dropdown.classList.toggle('is-open');
+          activeDropdown = dropdown.classList.contains('is-open') ? dropdown : null;
+        }
+      }
+
+      function closeAllDropdowns() {
+        document.querySelectorAll('.row-action-dropdown.is-open').forEach(d => d.classList.remove('is-open'));
+        activeDropdown = null;
+      }
+
+      // ページ内クリックでドロップダウンを閉じる
+      document.addEventListener('click', function() {
+        closeAllDropdowns();
+      });
+
+      /* ============================================
+         請求項目削除 確認ダイアログ
+         ============================================ */
+      let removeTargetRow = null;
+
+      function openRemoveConfirm(btn) {
+        closeAllDropdowns();
+        // btn → dropdown → td → tr
+        removeTargetRow = btn.closest('tr');
+        document.getElementById('removeConfirmBackdrop').classList.add('is-open');
+      }
+
+      function closeRemoveConfirm() {
+        document.getElementById('removeConfirmBackdrop').classList.remove('is-open');
+        removeTargetRow = null;
+      }
+
+      function confirmRemoveBillItem() {
+        if (!removeTargetRow) { closeRemoveConfirm(); return; }
+
+        // 行から情報を取得
+        const cells = removeTargetRow.querySelectorAll('td');
+        const itemId = cells[1] ? cells[1].textContent.trim() : '';
+        const itemName = cells[2] ? cells[2].textContent.trim() : '';
+
+        // 行を削除
+        removeTargetRow.remove();
+
+        // 行番号を振り直す
+        const tbody = document.querySelector('#relatedList-invoiceItems tbody');
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach((row, idx) => {
+          const firstCell = row.querySelector('td:first-child div');
+          if (firstCell) firstCell.textContent = idx + 1;
+        });
+
+        // ヘッダーの件数を更新
+        const newCount = rows.length;
+        document.querySelector('#relatedList-invoiceItems .slds-card__header-title span').textContent = '請求項目 (' + newCount + ')';
+        document.querySelector('#relatedList-invoiceItems .slds-text-body_small').textContent = newCount + ' items \u00b7 Sorted by 請求項目番号';
+
+        // 請求項目変更履歴に「削除」を追加
+        const histTbody = document.getElementById('billItemHistoryTbody');
+        const now = new Date();
+        const nowStr = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        const tr = document.createElement('tr');
+        tr.className = 'slds-hint-parent';
+        tr.innerHTML =
+          '<td><div class="slds-truncate">削除</div></td>' +
+          '<td><div class="slds-truncate">' + itemName + '</div></td>' +
+          '<td><div class="slds-truncate"><a href="#">' + itemId + '</a></div></td>' +
+          '<td><div class="slds-truncate" style="text-align:right;"></div></td>' +
+          '<td><div class="slds-truncate"><a href="#">Manabie Admin</a></div></td>' +
+          '<td><div class="slds-truncate">' + nowStr + '</div></td>';
+        histTbody.appendChild(tr);
+
+        // 変更履歴の件数更新
+        const histCount = histTbody.querySelectorAll('tr').length;
+        document.getElementById('billItemHistoryTitle').textContent = '請求項目変更履歴 (' + histCount + ')';
+        document.getElementById('billItemHistorySubtitle').textContent = histCount + ' items \u00b7 数秒前に更新されました';
+
+        closeRemoveConfirm();
+        showToast('請求項目を削除しました。');
+      }
+    </script>
+  </body>
+</html>
