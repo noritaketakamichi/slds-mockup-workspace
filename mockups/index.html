@@ -89,9 +89,8 @@
         </div>
         <div class="flow-card__body">
           <div class="flow-card__title"><a href="enrollment_flow/index.html">入会フロー</a></div>
-          <div class="flow-card__desc">生徒の入会申請から商品選択、オーダーグループ編集、割引設定までの一連のフロー。3つの割引オプションバリアントあり。</div>
+          <div class="flow-card__desc">生徒の入会申請から商品選択、オーダーグループ編集、割引設定までの一連のフロー。</div>
           <div class="flow-card__pages">
-            <a class="flow-card__page-link" href="enrollment_flow/index.html">Option Index</a>
             <a class="flow-card__page-link" href="enrollment_flow/student-detail.html">生徒詳細</a>
             <a class="flow-card__page-link" href="enrollment_flow/application-detail.html">申請詳細</a>
             <a class="flow-card__page-link" href="enrollment_flow/product-select.html">商品選択</a>
@@ -108,7 +107,7 @@
         </div>
         <div class="flow-card__body">
           <div class="flow-card__title"><a href="order_flow/student-detail.html">オーダーフロー</a></div>
-          <div class="flow-card__desc">既存生徒への商品追加・変更オーダーフロー。BA比較バリアント、タグフィルタバリアント、割引属性バリアントを含む。</div>
+          <div class="flow-card__desc">既存生徒への商品追加・変更オーダーフロー。</div>
           <div class="flow-card__pages">
             <a class="flow-card__page-link" href="order_flow/student-detail.html">生徒詳細</a>
             <a class="flow-card__page-link" href="order_flow/product-select.html">商品選択</a>
@@ -177,6 +176,76 @@
         <div class="flow-card__body">
           <div class="flow-card__title"><a href="invoice-detail.html">請求書レコード詳細</a></div>
           <div class="flow-card__desc">請求書(IV-2026-00589)のレコード詳細画面。請求明細、入金履歴、受講スケジュール等の関連リストを含む。</div>
+        </div>
+      </div>
+
+      <!-- ===== その他（検討バリアント・参考） ===== -->
+      <div class="section-title">その他（検討バリアント・参考）</div>
+
+      <!-- 入会フロー: 割引オプションバリアント -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#7f8de1;">
+          <svg viewBox="0 0 24 24"><path d="M12 6V4H5C3.9 4 3 4.9 3 6v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8h-7V6h-2zm-2 12H5v-2h5v2zm0-4H5v-2h5v2zm0-4H5V8h5v2zm9 8h-7v-2h7v2zm0-4h-7v-2h7v2z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="enrollment_flow/index.html">入会フロー: 割引オプションバリアント</a></div>
+          <div class="flow-card__desc">割引設定の3つのUI案を比較検討。各オプションは完全な画面遷移フロー付き。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="enrollment_flow/option-a/student-detail.html">Option A: マルチタグ割引</a>
+            <a class="flow-card__page-link" href="enrollment_flow/option-b/student-detail.html">Option B: ウォーターフォール</a>
+            <a class="flow-card__page-link" href="enrollment_flow/option-c/student-detail.html">Option C: 自動検出+予測カード</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- オーダーフロー: BA比較バリアント -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#f28b00;">
+          <svg viewBox="0 0 24 24"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zM5 3h14c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title">オーダーフロー: BA比較バリアント</div>
+          <div class="flow-card__desc">Before/After比較UIの4つのバリアント。商品変更時の差分表示方式を比較検討。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="order_flow/ba-variants/variant-a-current-after.html">A: Current/After</a>
+            <a class="flow-card__page-link" href="order_flow/ba-variants/variant-b-before-after.html">B: Before/After</a>
+            <a class="flow-card__page-link" href="order_flow/ba-variants/variant-c-badge-only.html">C: Badge Only</a>
+            <a class="flow-card__page-link" href="order_flow/ba-variants/variant-d-single-column.html">D: Single Column</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- オーダーフロー: タグフィルタバリアント -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#f28b00;">
+          <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title">オーダーフロー: タグフィルタバリアント</div>
+          <div class="flow-card__desc">商品選択画面のタグフィルタUIの4つのバリアント。商品の絞り込み方式を比較検討。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="order_flow/tag-filter-variants/variant-a-pill-toggle.html">A: Pill Toggle</a>
+            <a class="flow-card__page-link" href="order_flow/tag-filter-variants/variant-b-dropdown-multi.html">B: Dropdown Multi</a>
+            <a class="flow-card__page-link" href="order_flow/tag-filter-variants/variant-c-side-panel.html">C: Side Panel</a>
+            <a class="flow-card__page-link" href="order_flow/tag-filter-variants/variant-d-search-integrated.html">D: Search Integrated</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- オーダーフロー: 割引属性バリアント -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#f28b00;">
+          <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title">オーダーフロー: 割引属性バリアント</div>
+          <div class="flow-card__desc">商品追加変更画面の割引属性フィールドUIの4つのバリアント。割引属性の選択方式を比較検討。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="order_flow/discount-attr-variants/variant-a-dual-listbox.html">A: Dual Listbox</a>
+            <a class="flow-card__page-link" href="order_flow/discount-attr-variants/variant-b-tag-input.html">B: Tag Input</a>
+            <a class="flow-card__page-link" href="order_flow/discount-attr-variants/variant-c-section-card.html">C: Section Card</a>
+            <a class="flow-card__page-link" href="order_flow/discount-attr-variants/variant-d-compact-expand.html">D: Compact Expand</a>
+          </div>
         </div>
       </div>
 
