@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SLDS Mockups - Home</title>
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .header {
+        background: #032D60;
+        padding: 1.5rem 2rem;
+        color: #fff;
+      }
+      .header h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem; }
+      .header p { font-size: 0.875rem; color: rgba(255,255,255,0.7); margin: 0; }
+      .container { max-width: 960px; margin: 1.5rem auto; padding: 0 1rem; }
+      .section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #706e6b;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin: 1.5rem 0 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #d8dde6;
+      }
+      .section-title:first-child { margin-top: 0; }
+      .flow-card {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 0.75rem;
+        transition: box-shadow 0.2s;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .flow-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+      .flow-card__icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .flow-card__icon svg { width: 1.25rem; height: 1.25rem; fill: #fff; }
+      .flow-card__body { flex: 1; min-width: 0; }
+      .flow-card__title { font-size: 1rem; font-weight: 700; color: #0070d2; margin-bottom: 0.25rem; }
+      .flow-card__title a { color: inherit; text-decoration: none; }
+      .flow-card__title a:hover { text-decoration: underline; }
+      .flow-card__desc { font-size: 0.8125rem; color: #706e6b; line-height: 1.5; }
+      .flow-card__pages {
+        font-size: 0.75rem;
+        color: #969492;
+        margin-top: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 0.5rem;
+      }
+      .flow-card__page-link {
+        color: #0070d2;
+        text-decoration: none;
+        padding: 1px 6px;
+        border-radius: 3px;
+        background: #f0f7ff;
+      }
+      .flow-card__page-link:hover { background: #d4edfc; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>SLDS Mockups</h1>
+      <p>Salesforce Lightning Design System UI Mockups</p>
+    </div>
+
+    <div class="container">
+
+      <!-- ===== フロー系モックアップ ===== -->
+      <div class="section-title">Flows</div>
+
+      <!-- 入会フロー -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#7f8de1;">
+          <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="enrollment_flow/index.html">入会フロー</a></div>
+          <div class="flow-card__desc">生徒の入会申請から商品選択、オーダーグループ編集、割引設定までの一連のフロー。3つの割引オプションバリアントあり。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="enrollment_flow/index.html">Option Index</a>
+            <a class="flow-card__page-link" href="enrollment_flow/student-detail.html">生徒詳細</a>
+            <a class="flow-card__page-link" href="enrollment_flow/application-detail.html">申請詳細</a>
+            <a class="flow-card__page-link" href="enrollment_flow/product-select.html">商品選択</a>
+            <a class="flow-card__page-link" href="enrollment_flow/order-group-edit.html">OG編集</a>
+            <a class="flow-card__page-link" href="enrollment_flow/product-add-change.html">商品追加変更</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- オーダーフロー -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#f28b00;">
+          <svg viewBox="0 0 24 24"><path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="order_flow/student-detail.html">オーダーフロー</a></div>
+          <div class="flow-card__desc">既存生徒への商品追加・変更オーダーフロー。BA比較バリアント、タグフィルタバリアント、割引属性バリアントを含む。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="order_flow/student-detail.html">生徒詳細</a>
+            <a class="flow-card__page-link" href="order_flow/product-select.html">商品選択</a>
+            <a class="flow-card__page-link" href="order_flow/order-group-edit.html">OG編集</a>
+            <a class="flow-card__page-link" href="order_flow/product-add-change.html">商品追加変更</a>
+            <a class="flow-card__page-link" href="order_flow/order-detail.html">オーダー詳細</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 返金フロー -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#c23934;">
+          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="refund_flow/creditnote-list.html">返金フロー</a></div>
+          <div class="flow-card__desc">返金対象項目の一覧表示と詳細画面。一括返金処理、請求書充当、返金実行の状態管理を含む。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="refund_flow/creditnote-list.html">返金対象項目一覧</a>
+            <a class="flow-card__page-link" href="refund_flow/refund-item-detail.html">返金対象項目詳細</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 一覧系モックアップ ===== -->
+      <div class="section-title">List Views</div>
+
+      <!-- 請求書一覧 -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#e56798;">
+          <svg viewBox="0 0 24 24"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v20l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5zM19 19.09H5V4.91h14v14.18zM6 15h12v2H6zm0-4h12v2H6zm0-4h12v2H6z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="invoice_list/invoice-list.html">請求書一覧</a></div>
+          <div class="flow-card__desc">請求書のリストビュー。ステータス別フィルタ、金額表示、請求書詳細への遷移を含む。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="invoice_list/invoice-list.html">請求書一覧</a>
+            <a class="flow-card__page-link" href="invoice_list/invoice-detail.html">請求書詳細</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 未回収一覧 -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#ff9a3c;">
+          <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="uncollected_flow/uncollected-list.html">未回収一覧</a></div>
+          <div class="flow-card__desc">未回収請求のリストビュー。未入金状態の請求を一覧表示。</div>
+          <div class="flow-card__pages">
+            <a class="flow-card__page-link" href="uncollected_flow/uncollected-list.html">未回収一覧</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 単体レコード詳細 ===== -->
+      <div class="section-title">Record Detail Pages</div>
+
+      <!-- 請求書詳細 -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#e56798;">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="invoice-detail.html">請求書レコード詳細</a></div>
+          <div class="flow-card__desc">請求書(IV-2026-00589)のレコード詳細画面。請求明細、入金履歴、受講スケジュール等の関連リストを含む。</div>
+        </div>
+      </div>
+
+      <!-- 配送計画詳細 -->
+      <div class="flow-card">
+        <div class="flow-card__icon" style="background:#4bc076;">
+          <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM20 9.5l2.46 3.5H17V9.5h3zm-2 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <div class="flow-card__body">
+          <div class="flow-card__title"><a href="delivery-plan-detail.html">配送計画レコード詳細</a></div>
+          <div class="flow-card__desc">配送計画のレコード詳細画面。配送スケジュール、配送先情報等を含む。</div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

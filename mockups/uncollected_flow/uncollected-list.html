@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manabie請求書管理 - 未収処理対象</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* グローバルヘッダー */
+      .global-header {
+        background: #032D60;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        gap: 1rem;
+      }
+      .global-header__logo svg { height: 22px; fill: #fff; }
+      .global-header__search {
+        flex: 1;
+        max-width: 480px;
+        margin: 0 auto;
+      }
+      .global-header__search input {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 5px 12px;
+        font-size: 0.8125rem;
+        outline: none;
+      }
+      .global-header__search input::placeholder { color: rgba(255,255,255,0.6); }
+      .global-header__right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .global-header__right svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.8); }
+      .global-header__avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #5eb5ef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .global-header__avatar svg { width: 16px; height: 16px; fill: #fff; }
+
+      /* リストビュー */
+      .listview-toolbar {
+        background: #fff;
+        border-bottom: 1px solid #d8dde6;
+        padding: 0.5rem 0.75rem;
+      }
+      .listview-toolbar__row1 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+      }
+      .listview-toolbar__left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+      .listview-toolbar__obj-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        background: #0070d2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .listview-toolbar__obj-icon svg { width: 18px; height: 18px; fill: #fff; }
+      .listview-toolbar__obj-label {
+        font-size: 0.6875rem;
+        color: #706e6b;
+      }
+      .listview-toolbar__title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #181818;
+      }
+      .listview-toolbar__pin {
+        margin-left: 0.25rem;
+        cursor: pointer;
+      }
+      .listview-toolbar__pin svg { width: 14px; height: 14px; fill: #706e6b; }
+      .listview-toolbar__right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+      /* アクションボタン群 */
+      .listview-toolbar__action-buttons {
+        display: flex;
+        gap: 0;
+        margin-right: 0.75rem;
+      }
+      .listview-toolbar__action-buttons .slds-button {
+        border-radius: 0;
+        margin-left: -1px;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        padding: 0 0.75rem;
+        height: 30px;
+        line-height: 30px;
+      }
+      .listview-toolbar__action-buttons .slds-button:first-child {
+        border-radius: 4px 0 0 4px;
+        margin-left: 0;
+      }
+      .listview-toolbar__action-buttons .slds-button:last-child {
+        border-radius: 0 4px 4px 0;
+      }
+      .listview-toolbar__row2 {
+        font-size: 0.75rem;
+        color: #706e6b;
+      }
+
+      /* テーブルカスタム */
+      .slds-table th, .slds-table td {
+        font-size: 0.8125rem;
+        white-space: nowrap;
+      }
+      .slds-table th {
+        background: #fafaf9;
+      }
+      .slds-table .amount-col {
+        text-align: right;
+      }
+
+      /* ステータスバッジ */
+      .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+      }
+      .status-badge--confirmed { background: #d4f0d4; color: #2e844a; }
+      .status-badge--expired { background: #fef3cd; color: #8a6d3b; }
+      .status-badge--failed { background: #fdd; color: #c23934; }
+
+      /* リンク色 */
+      .slds-table a { color: #0070d2; text-decoration: none; }
+      .slds-table a:hover { text-decoration: underline; }
+
+      /* ページコンテナ */
+      .list-page-container { padding: 0; }
+
+      /* カラム幅 */
+      .col-narrow { width: 50px; }
+      .col-checkbox { width: 40px; text-align: center; }
+
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ========================================================
+           1. グローバルヘッダー
+           ======================================================== -->
+      <div class="global-header">
+        <div class="global-header__logo">
+          <svg viewBox="0 0 100 70" width="28" height="20">
+            <path d="M45 5C35 5 27 12 25 22 18 18 10 22 8 30 2 32 0 38 2 44c2 6 8 10 14 10h56c6 0 12-4 14-10 2-6 0-12-4-16-6-4-14-6-20-2C58 14 52 5 45 5z" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="global-header__search">
+          <input type="text" placeholder="Search Salesforce" />
+        </div>
+        <div class="global-header__right">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 002 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.6 3.6 0 0112 15.6z"/></svg>
+          <div class="global-header__avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           2. グローバルナビゲーション
+           ======================================================== -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="App Launcher">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="Manabie請求書管理">Manabie請求書管理</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid">
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="ホーム"><span class="slds-truncate" title="ホーム">ホーム</span></a>
+            </li>
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="#" class="slds-context-bar__label-action" title="請求書"><span class="slds-truncate" title="請求書">請求書</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="入金管理"><span class="slds-truncate" title="入金管理">入金管理</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="未収金レポート"><span class="slds-truncate" title="未収金レポート">未収金レポート</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="生徒"><span class="slds-truncate" title="生徒">生徒</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="保護者"><span class="slds-truncate" title="保護者">保護者</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="オーダー"><span class="slds-truncate" title="オーダー">オーダー</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="商品"><span class="slds-truncate" title="商品">商品</span></a>
+            </li>
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="データインポート"><span class="slds-truncate" title="データインポート">データインポート</span></a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ========================================================
+           3. リストビューツールバー
+           ======================================================== -->
+      <div class="listview-toolbar">
+        <!-- 上段: タイトル + アクションボタン + 検索 + アイコン群 -->
+        <div class="listview-toolbar__row1">
+          <div class="listview-toolbar__left">
+            <div class="listview-toolbar__obj-icon">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <div>
+              <div class="listview-toolbar__obj-label">請求書</div>
+              <div style="display:flex; align-items:center; gap:0.25rem;">
+                <span class="listview-toolbar__title">未収処理対象</span>
+                <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#706e6b; cursor:pointer;"><path d="M7 10l5 5 5-5z"/></svg>
+                <span class="listview-toolbar__pin">
+                  <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="listview-toolbar__right">
+            <!-- アクションボタン群 -->
+            <div class="listview-toolbar__action-buttons">
+              <button class="slds-button slds-button_neutral">一括請求書確定</button>
+              <button class="slds-button slds-button_neutral">一括再請求</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 下段: フィルター情報 + レコード数 -->
+        <div class="listview-toolbar__row2">
+          50+ 個の項目 &middot; 並び替え基準: 請求書番号 &middot; 検索条件: ステータス = 確定済, 最新の支払いのステータス &middot; 21分前 に更新されました
+        </div>
+      </div>
+
+
+      <!-- ========================================================
+           4. データテーブル
+           ======================================================== -->
+      <div class="list-page-container">
+        <div style="overflow-x: auto;">
+          <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout" style="min-width: 1600px;">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="col-checkbox" scope="col">
+                  <div class="slds-th__action">
+                    <span class="slds-checkbox">
+                      <input type="checkbox" id="selectAll" />
+                      <label class="slds-checkbox__label" for="selectAll">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                      </label>
+                    </span>
+                  </div>
+                </th>
+                <th class="col-narrow" scope="col">
+                  <div class="slds-truncate" title="#">#</div>
+                </th>
+                <th scope="col" style="width: 130px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="請求書番号">請求書番号</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 120px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="生徒名">生徒名</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 65px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="学年">学年</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 100px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="在籍教室">在籍教室</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 110px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" style="justify-content:flex-end;">
+                      <span class="slds-truncate" title="請求金額">請求金額</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 80px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="ステータス">ステータス</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 100px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="確定日">確定日</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 150px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="最新の支払いのステータス">最新の支払いのステータス</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 160px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="最新の支払いの決済方法">最新の支払いの決済方法</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 100px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="支払期日">支払期日</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 120px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="支払い者名">支払い者名</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 100px;">
+                  <a class="slds-th__action slds-text-link_reset" href="#">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="作成日">作成日</span>
+                      <svg viewBox="0 0 24 24" style="width:10px; height:10px; fill:#706e6b; margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </a>
+                </th>
+                <th scope="col" style="width: 50px;">
+                  <div class="slds-truncate" title=""></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row1" /><label class="slds-checkbox__label" for="row1"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">1</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178582</a></div></td>
+                <td><div class="slds-truncate"><a href="#">田中 陽太</a></div></td>
+                <td><div class="slds-truncate">中2</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;18,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">田中 美香</a></div></td>
+                <td><div class="slds-truncate">2025/08/20</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 2: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row2" /><label class="slds-checkbox__label" for="row2"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">2</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178583</a></div></td>
+                <td><div class="slds-truncate"><a href="#">佐藤 結衣</a></div></td>
+                <td><div class="slds-truncate">小5</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;12,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">佐藤 恵子</a></div></td>
+                <td><div class="slds-truncate">2025/08/20</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 3: コンビニ支払い → 期限切れ -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row3" /><label class="slds-checkbox__label" for="row3"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">3</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178584</a></div></td>
+                <td><div class="slds-truncate"><a href="#">鈴木 蓮</a></div></td>
+                <td><div class="slds-truncate">中3</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;22,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--expired">期限切れ</span></div></td>
+                <td><div class="slds-truncate">コンビニ支払い</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">鈴木 幸子</a></div></td>
+                <td><div class="slds-truncate">2025/08/21</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 4: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row4" /><label class="slds-checkbox__label" for="row4"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">4</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178585</a></div></td>
+                <td><div class="slds-truncate"><a href="#">高橋 美咲</a></div></td>
+                <td><div class="slds-truncate">小3</div></td>
+                <td><div class="slds-truncate">新宿校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;15,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">高橋 裕美</a></div></td>
+                <td><div class="slds-truncate">2025/08/21</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 5: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row5" /><label class="slds-checkbox__label" for="row5"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">5</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178586</a></div></td>
+                <td><div class="slds-truncate"><a href="#">渡辺 大翔</a></div></td>
+                <td><div class="slds-truncate">中1</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">渡辺 由美</a></div></td>
+                <td><div class="slds-truncate">2025/08/22</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 6: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row6" /><label class="slds-checkbox__label" for="row6"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">6</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178587</a></div></td>
+                <td><div class="slds-truncate"><a href="#">伊藤 さくら</a></div></td>
+                <td><div class="slds-truncate">小6</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;20,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">伊藤 真由美</a></div></td>
+                <td><div class="slds-truncate">2025/08/22</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 7: コンビニ支払い → 期限切れ -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row7" /><label class="slds-checkbox__label" for="row7"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">7</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178588</a></div></td>
+                <td><div class="slds-truncate"><a href="#">中村 翔太</a></div></td>
+                <td><div class="slds-truncate">中2</div></td>
+                <td><div class="slds-truncate">新宿校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;16,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--expired">期限切れ</span></div></td>
+                <td><div class="slds-truncate">コンビニ支払い</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">中村 和子</a></div></td>
+                <td><div class="slds-truncate">2025/08/23</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 8: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row8" /><label class="slds-checkbox__label" for="row8"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">8</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178589</a></div></td>
+                <td><div class="slds-truncate"><a href="#">山本 凛</a></div></td>
+                <td><div class="slds-truncate">小1</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;10,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">山本 智恵</a></div></td>
+                <td><div class="slds-truncate">2025/08/23</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 9: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row9" /><label class="slds-checkbox__label" for="row9"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">9</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178590</a></div></td>
+                <td><div class="slds-truncate"><a href="#">小林 悠人</a></div></td>
+                <td><div class="slds-truncate">中1</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">小林 京子</a></div></td>
+                <td><div class="slds-truncate">2025/08/25</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 10: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row10" /><label class="slds-checkbox__label" for="row10"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">10</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178591</a></div></td>
+                <td><div class="slds-truncate"><a href="#">松本 葵</a></div></td>
+                <td><div class="slds-truncate">小4</div></td>
+                <td><div class="slds-truncate">新宿校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">松本 直美</a></div></td>
+                <td><div class="slds-truncate">2025/08/25</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 11: コンビニ支払い → 期限切れ -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row11" /><label class="slds-checkbox__label" for="row11"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">11</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178592</a></div></td>
+                <td><div class="slds-truncate"><a href="#">井上 優奈</a></div></td>
+                <td><div class="slds-truncate">小2</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--expired">期限切れ</span></div></td>
+                <td><div class="slds-truncate">コンビニ支払い</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">井上 千恵</a></div></td>
+                <td><div class="slds-truncate">2025/08/26</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 12: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row12" /><label class="slds-checkbox__label" for="row12"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">12</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178593</a></div></td>
+                <td><div class="slds-truncate"><a href="#">木村 颯太</a></div></td>
+                <td><div class="slds-truncate">中3</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;18,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">木村 洋子</a></div></td>
+                <td><div class="slds-truncate">2025/08/26</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 13: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row13" /><label class="slds-checkbox__label" for="row13"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">13</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178594</a></div></td>
+                <td><div class="slds-truncate"><a href="#">吉田 ひなた</a></div></td>
+                <td><div class="slds-truncate">小5</div></td>
+                <td><div class="slds-truncate">新宿校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">吉田 美穂</a></div></td>
+                <td><div class="slds-truncate">2025/08/27</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 14: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row14" /><label class="slds-checkbox__label" for="row14"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">14</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178595</a></div></td>
+                <td><div class="slds-truncate"><a href="#">清水 悠馬</a></div></td>
+                <td><div class="slds-truncate">中2</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">清水 弘子</a></div></td>
+                <td><div class="slds-truncate">2025/08/27</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 15: コンビニ支払い → 期限切れ -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row15" /><label class="slds-checkbox__label" for="row15"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">15</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178596</a></div></td>
+                <td><div class="slds-truncate"><a href="#">加藤 美月</a></div></td>
+                <td><div class="slds-truncate">小3</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;8,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--expired">期限切れ</span></div></td>
+                <td><div class="slds-truncate">コンビニ支払い</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">加藤 節子</a></div></td>
+                <td><div class="slds-truncate">2025/08/28</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 16: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row16" /><label class="slds-checkbox__label" for="row16"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">16</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178597</a></div></td>
+                <td><div class="slds-truncate"><a href="#">山田 湊</a></div></td>
+                <td><div class="slds-truncate">中1</div></td>
+                <td><div class="slds-truncate">新宿校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">山田 良子</a></div></td>
+                <td><div class="slds-truncate">2025/08/28</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 17: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row17" /><label class="slds-checkbox__label" for="row17"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">17</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178598</a></div></td>
+                <td><div class="slds-truncate"><a href="#">佐々木 陽菜</a></div></td>
+                <td><div class="slds-truncate">小6</div></td>
+                <td><div class="slds-truncate">渋谷本校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">佐々木 正子</a></div></td>
+                <td><div class="slds-truncate">2025/08/29</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+              <!-- Row 18: 口座振替 → 失敗 -->
+              <tr class="slds-hint-parent">
+                <td class="col-checkbox"><span class="slds-checkbox"><input type="checkbox" id="row18" /><label class="slds-checkbox__label" for="row18"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></span></td>
+                <td><div class="slds-truncate">18</div></td>
+                <td><div class="slds-truncate"><a href="../invoice-detail.html">IV-178599</a></div></td>
+                <td><div class="slds-truncate"><a href="#">藤田 蒼</a></div></td>
+                <td><div class="slds-truncate">中3</div></td>
+                <td><div class="slds-truncate">池袋校</div></td>
+                <td><div class="slds-truncate amount-col">&yen;14,000</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--confirmed">確定済</span></div></td>
+                <td><div class="slds-truncate">2025/09/01</div></td>
+                <td><div class="slds-truncate"><span class="status-badge status-badge--failed">失敗</span></div></td>
+                <td><div class="slds-truncate">口座振替</div></td>
+                <td><div class="slds-truncate">2025/09/27</div></td>
+                <td><div class="slds-truncate"><a href="#">藤田 絵里</a></div></td>
+                <td><div class="slds-truncate">2025/08/29</div></td>
+                <td><button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" title="アクション"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:#706e6b;"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const MockupRouter = {
+        navigateTo(url) { console.log('Navigate to:', url); },
+        showModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; },
+        hideModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+      };
+
+      document.getElementById('selectAll').addEventListener('change', function() {
+        const checked = this.checked;
+        document.querySelectorAll('tbody .slds-checkbox input[type="checkbox"]').forEach(cb => {
+          cb.checked = checked;
+        });
+      });
+    </script>
+  </body>
+</html>
