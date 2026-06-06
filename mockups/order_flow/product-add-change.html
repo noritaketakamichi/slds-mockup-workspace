@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>商品追加・変更 | ODG-540275</title>
+    <title>商品追加・変更 | ODG-70674</title>
     <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
     <style>
       body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
@@ -433,7 +433,7 @@
       <!-- ===== レコードタブバー ===== -->
       <div class="record-tabs">
         <a href="order-detail.html" class="record-tab">
-          <span class="record-tab__edited">*</span> ODG-540275 | オーダー
+          <span class="record-tab__edited">*</span> ODG-70674 | オーダー
           <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </a>
         <a href="#" class="record-tab is-active">
@@ -450,7 +450,7 @@
               <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </div>
             <div>
-              <div class="page-header__id">ODG-540275</div>
+              <div class="page-header__id">ODG-70674</div>
               <div class="page-header__title">商品追加・変更</div>
             </div>
           </div>
@@ -466,11 +466,11 @@
         <div class="order-info">
           <div class="order-info__item">
             <div class="order-info__label">オーダー番号</div>
-            <div class="order-info__value">ODG-540275</div>
+            <div class="order-info__value">ODG-70674</div>
           </div>
           <div class="order-info__item">
             <div class="order-info__label">生徒</div>
-            <div class="order-info__value"><a href="student-detail.html">テスト 太郎</a></div>
+            <div class="order-info__value"><a href="student-product-list.html">高道 デモ生徒</a></div>
           </div>
         </div>
 
@@ -712,11 +712,6 @@
               <span class="section-header__title">オーダー済商品</span>
             </div>
             <div class="section-header__right">
-              <div class="checkbox-row" style="padding: 0;">
-                <label style="display: flex; align-items: center; gap: 4px; font-size: 0.8125rem; color: #181818; cursor: pointer;">
-                  <input type="checkbox" checked style="accent-color: #0070d2; width: 16px; height: 16px;" /> 単発商品を表示
-                </label>
-              </div>
               <button class="slds-button slds-button_neutral slds-button_small" id="btnProductChange" disabled>商品情報変更</button>
               <button class="slds-button slds-button_neutral slds-button_small" id="btnProductCancel" disabled>商品キャンセル</button>
             </div>
@@ -879,30 +874,32 @@
         var orderedBody = document.getElementById('ordered-products-body');
         var emptyOrderMsg = '<tr><td colspan="10" style="text-align: center; color: #706e6b; padding: 2rem;">オーダー内商品はありません</td></tr>';
 
-        // 変更モード用のオーダー済商品データ（6件）
+        // 変更モード用のオーダー済商品データ（生徒詳細に表示されている通年契約）
         var changeOrderedRows = ''
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">入会費</a></td><td>提供中</td><td></td><td></td><td></td><td></td><td>単発</td><td>--</td></tr>'
+          + '<td><a href="#">[集団]東京校</a></td><td><a href="#">2026</a></td>'
+          + '<td><a href="#">2026年度 中2本科</a></td><td>提供中</td>'
+          + '<td><ul class="course-list"><li>本科 中2標準</li></ul></td>'
+          + '<td>兄弟割引</td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>'
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">2025中1継続個別コース...</a></td><td>提供中</td>'
-          + '<td><ul class="course-list"><li>(1/週) [2025_test] 中1社会</li><li>(1/週) [2025_test] 中1理科</li></ul></td>'
-          + '<td></td><td>2026/02/01</td><td>2026/03/31</td><td>継続</td><td>--</td></tr>'
+          + '<td><a href="#">[集団]東京校</a></td><td><a href="#">2026</a></td>'
+          + '<td><a href="#">2026年度 英数国コース</a></td><td>提供中</td>'
+          + '<td><ul class="course-list"><li>英語 中2</li><li>数学 中2</li><li>国語 中2</li></ul></td>'
+          + '<td></td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>'
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">中1 英語 教科書</a></td><td>提供中</td><td></td><td></td><td></td><td></td><td>単発</td><td>--</td></tr>'
+          + '<td><a href="#">[集団]東京校</a></td><td><a href="#">2026</a></td>'
+          + '<td><a href="#">2026年度 理社追加パック</a></td><td>提供中</td>'
+          + '<td><ul class="course-list"><li>理科 中2</li><li>社会 中2</li></ul></td>'
+          + '<td>セット割引</td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>'
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">中1_英語・国語・数学通...</a></td><td>提供中</td>'
-          + '<td><ul class="course-list"><li>[2025_test] 中1数学_der</li><li>[2025_test] 中1国語_der</li><li>[2025_test] 中1英語_der</li></ul></td>'
-          + '<td></td><td>2026/02/01</td><td>2026/03/31</td><td>継続</td><td>--</td></tr>'
+          + '<td><a href="#">個別新宿校</a></td><td><a href="#">2026</a></td>'
+          + '<td><a href="#">2026年度 個別指導ライト</a></td><td>提供中</td>'
+          + '<td><ul class="course-list"><li>個別指導 中2</li></ul></td>'
+          + '<td>長期継続割引</td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>'
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">中1国語（教材）_demomai</a></td><td>提供中</td><td></td><td></td><td></td><td></td><td>単発</td><td>--</td></tr>'
-          + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
-          + '<td><a href="#">中1数学（教材）_demomai</a></td><td>提供中</td><td></td><td></td><td></td><td></td><td>単発</td><td>--</td></tr>';
+          + '<td><a href="#">[集団]東京校</a></td><td><a href="#">2026</a></td>'
+          + '<td><a href="#">2026年度 自習室利用</a></td><td>提供中</td>'
+          + '<td></td><td></td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>';
 
         // 変更後のオーダー内商品（1件）
         var changedOrderRow = '<tr>'
@@ -915,25 +912,31 @@
         if (mode === 'skip') {
           orderBody.innerHTML = emptyOrderMsg;
         } else if (mode === 'change') {
-          // 商品変更の初期状態: オーダー内商品は空、オーダー済商品は6件
+          // 商品変更の初期状態: オーダー内商品は空、オーダー済商品は通年契約のみ
           orderBody.innerHTML = emptyOrderMsg;
           orderedBody.innerHTML = changeOrderedRows;
         } else if (mode === 'changed') {
-          // 商品変更の実行後: オーダー内商品に変更後1件、オーダー済商品は6件
+          // 商品変更の実行後: オーダー内商品に変更後1件、オーダー済商品は通年契約のみ
           orderBody.innerHTML = changedOrderRow;
           orderedBody.innerHTML = changeOrderedRows;
         }
 
-        // オーダー済商品の「商品情報変更」「商品キャンセル」ボタンを常に有効化
         var btnChange = document.getElementById('btnProductChange');
         var btnCancel = document.getElementById('btnProductCancel');
+        function refreshOrderedProductActions() {
+          var checked = document.querySelectorAll('.ordered-product-checkbox:checked').length > 0;
+          if (btnChange) btnChange.disabled = !checked;
+          if (btnCancel) btnCancel.disabled = !checked;
+        }
+        document.querySelectorAll('.ordered-product-checkbox').forEach(function(cb) {
+          cb.addEventListener('change', refreshOrderedProductActions);
+        });
         if (btnChange) {
-          btnChange.disabled = false;
           btnChange.addEventListener('click', function() {
             MockupRouter.navigateTo('order-group-edit.html?mode=change');
           });
         }
-        if (btnCancel) btnCancel.disabled = false;
+        refreshOrderedProductActions();
       })();
     </script>
   </body>
