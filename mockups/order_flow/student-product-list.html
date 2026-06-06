@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>高道 デモ生徒 | ユーザー</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+
+      /* ===== グローバルヘッダー ===== */
+      .sf-global-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #032D60;
+        height: 40px;
+        padding: 0 0.75rem;
+      }
+      .sf-global-header__left { display: flex; align-items: center; gap: 0.5rem; }
+      .sf-global-header__logo svg { width: 32px; height: 22px; }
+      .sf-global-header__search {
+        display: flex;
+        align-items: center;
+        background: rgba(255,255,255,0.15);
+        border-radius: 4px;
+        padding: 4px 12px;
+        min-width: 260px;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8125rem;
+      }
+      .sf-global-header__search svg { margin-right: 6px; opacity: 0.7; }
+      .sf-global-header__right { display: flex; align-items: center; gap: 4px; }
+      .sf-global-header__right button {
+        background: none; border: none; color: rgba(255,255,255,0.8);
+        cursor: pointer; width: 28px; height: 28px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.875rem; border-radius: 4px;
+      }
+      .sf-global-header__right button:hover { background: rgba(255,255,255,0.1); }
+      .sf-global-header__right button svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.8); }
+      .sf-global-header__partners {
+        background: #0070d2; color: #fff; font-size: 0.6875rem; font-weight: 600;
+        padding: 2px 10px; border-radius: 3px; margin-right: 6px; white-space: nowrap;
+      }
+      .sf-global-header__avatar {
+        width: 26px; height: 26px; border-radius: 50%; background: #4BC076;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 0.75rem; font-weight: 600; margin-left: 4px;
+      }
+
+      /* ===== ナビタブのドロップダウン矢印 ===== */
+      .nav-tab-with-arrow { display: flex; align-items: center; gap: 2px; }
+      .nav-arrow { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-left: 2px; }
+      .slds-context-bar__item.slds-is-active .slds-context-bar__label-action { border-bottom: 3px solid #fff; }
+
+      /* ===== Highlights Panel ===== */
+      .highlights-panel {
+        background: #fff; border-bottom: 1px solid #d8dde6; padding: 0.75rem 1rem;
+      }
+      .highlights-panel__top { display: flex; justify-content: space-between; align-items: flex-start; }
+      .highlights-panel__record { display: flex; align-items: center; gap: 0.75rem; }
+      .highlights-panel__icon {
+        width: 40px; height: 40px; border-radius: 6px; background: #7F8DE1;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .highlights-panel__icon svg { width: 24px; height: 24px; fill: #fff; }
+      .highlights-panel__label { font-size: 0.6875rem; color: #706e6b; }
+      .highlights-panel__name { font-size: 1.125rem; font-weight: 700; color: #181818; }
+      .highlights-panel__actions { display: flex; align-items: center; gap: 0; flex-shrink: 0; }
+      .highlights-panel__actions .slds-button_icon-border { margin-right: 0.5rem; }
+      .highlights-panel__actions .slds-button_neutral,
+      .highlights-panel__actions .slds-button_outline-brand {
+        border-radius: 0; margin-left: -1px;
+      }
+      .highlights-panel__actions .slds-button_neutral:first-of-type { border-radius: 4px 0 0 4px; margin-left: 0; }
+      .highlights-panel__actions .slds-button_icon-border-filled { border-radius: 0 4px 4px 0; margin-left: -1px; }
+      .highlights-panel__actions > .slds-button_icon-border + .slds-button_neutral { border-radius: 4px 0 0 4px; margin-left: 0; }
+      .highlights-panel__actions .actions-more:last-child .slds-button_neutral { border-radius: 0 4px 4px 0; }
+      .actions-more { position: relative; display: inline-flex; }
+      .actions-more__menu {
+        display: none; position: absolute; top: 32px; right: 0; min-width: 176px;
+        background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.16); z-index: 20; padding: 0.25rem 0;
+      }
+      .actions-more.is-open .actions-more__menu { display: block; }
+      .actions-more__item {
+        display: block; padding: 0.5rem 0.75rem; color: #181818; text-decoration: none;
+        font-size: 0.8125rem; white-space: nowrap;
+      }
+      .actions-more__item:hover { background: #f3f3f3; text-decoration: none; }
+      .highlights-panel__fields {
+        display: flex; gap: 1.5rem; margin-top: 0.75rem; padding-left: 52px; flex-wrap: wrap;
+      }
+      .highlights-field { min-width: 80px; }
+      .highlights-field__label { font-size: 0.6875rem; color: #706e6b; }
+      .highlights-field__value { font-size: 0.8125rem; color: #181818; margin-top: 2px; }
+      .highlights-field__check svg { width: 16px; height: 16px; fill: #2e844a; }
+
+      /* ===== レコード本体 ===== */
+      .record-body {
+        display: flex; gap: 0.75rem; padding: 0.75rem; background: #f3f3f3; min-height: 600px;
+      }
+      .record-body__left { flex: 0 0 72%; max-width: 72%; }
+      .record-body__right { flex: 1; min-width: 0; max-width: 28%; }
+
+      /* ===== 左カラム - タブ付きカード ===== */
+      .detail-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; }
+      .detail-tabs {
+        display: flex; align-items: center; border-bottom: 1px solid #d8dde6;
+        padding: 0 0.5rem; overflow: visible; position: relative; z-index: 12;
+      }
+      .detail-tabs__list { display: flex; list-style: none; margin: 0; padding: 0; overflow: visible; }
+      .detail-tab {
+        padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: #706e6b; cursor: pointer;
+        white-space: nowrap; border-bottom: 3px solid transparent; text-decoration: none; display: block;
+      }
+      .detail-tab:hover { color: #005fb2; }
+      .detail-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .detail-tab--with-tooltip {
+        display: inline-flex; align-items: center; gap: 0.25rem;
+      }
+      .detail-tab__info {
+        position: relative; display: inline-flex; align-items: center; justify-content: center;
+        width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+      }
+      .detail-tab__info svg { width: 14px; height: 14px; fill: #005fb2; }
+      .detail-tab__info:hover::before,
+      .detail-tab__info:focus::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 0.15rem);
+        transform: translateX(-50%);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #032d60;
+        z-index: 30;
+      }
+      .detail-tab__info:hover::after,
+      .detail-tab__info:focus::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: -3.6rem;
+        bottom: calc(100% + 0.7rem);
+        width: 320px;
+        padding: 0.6rem 0.75rem;
+        background: #032d60;
+        color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.28);
+        font-size: 0.75rem;
+        line-height: 1.45;
+        white-space: normal;
+        font-weight: 700;
+        z-index: 30;
+      }
+      .detail-tabs__more {
+        margin-left: auto; padding: 0.625rem 0.5rem; font-size: 0.8125rem; color: #706e6b;
+        cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 2px;
+      }
+      .table-header-info {
+        position: relative; display: inline-flex; align-items: center; justify-content: center;
+        width: 14px; height: 14px; margin-left: 0.25rem; flex-shrink: 0;
+      }
+      .table-header-info svg { width: 14px; height: 14px; fill: #005fb2; }
+      .table-header-info:hover::before,
+      .table-header-info:focus::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 0.15rem);
+        transform: translateX(-50%);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #032d60;
+        z-index: 40;
+      }
+      .table-header-info:hover::after,
+      .table-header-info:focus::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 0.7rem);
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 0.6rem 0.75rem;
+        background: #032d60;
+        color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.28);
+        font-size: 0.75rem;
+        line-height: 1.45;
+        white-space: normal;
+        font-weight: 700;
+        z-index: 40;
+      }
+
+      /* ===== 改善ポイント説明ドロワー ===== */
+      .improvement-trigger {
+        position: fixed;
+        right: 0;
+        top: 46%;
+        transform: translateY(-50%);
+        z-index: 80;
+        border-radius: 6px 0 0 6px;
+        border-right: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        letter-spacing: 0;
+        min-height: 118px;
+      }
+      .improvement-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 7, 7, 0);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.24s ease, background 0.24s ease;
+        z-index: 90;
+      }
+      .improvement-backdrop.is-open {
+        background: rgba(8, 7, 7, 0.18);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .improvement-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(480px, 92vw);
+        background: #fff;
+        border-left: 1px solid #d8dde6;
+        box-shadow: -8px 0 24px rgba(0,0,0,0.18);
+        transform: translateX(100%);
+        transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1);
+        z-index: 91;
+        display: flex;
+        flex-direction: column;
+      }
+      .improvement-drawer.is-open { transform: translateX(0); }
+      .improvement-drawer__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #d8dde6;
+        background: #f3f3f3;
+      }
+      .improvement-drawer__eyebrow {
+        color: #706e6b;
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+      }
+      .improvement-drawer__title {
+        color: #181818;
+        font-size: 1.125rem;
+        font-weight: 700;
+      }
+      .improvement-drawer__close {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .improvement-drawer__close svg { width: 16px; height: 16px; fill: #706e6b; }
+      .improvement-drawer__body {
+        overflow-y: auto;
+        padding: 1rem 1.25rem 1.5rem;
+      }
+      .improvement-section {
+        border: 1px solid #d8dde6;
+        border-radius: 6px;
+        padding: 0.875rem;
+        margin-bottom: 0.75rem;
+        background: #fff;
+      }
+      .improvement-section__header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .improvement-section__num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #0176d3;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .improvement-section__title {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: #181818;
+      }
+      .improvement-section__text {
+        margin: 0;
+        color: #444;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+      }
+      .improvement-list {
+        margin: 0.375rem 0 0;
+        padding-left: 1rem;
+        color: #444;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+      }
+      .improvement-subsection {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e5e5e5;
+      }
+      .improvement-subsection__title {
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: #181818;
+        margin-bottom: 0.25rem;
+      }
+      body.has-improvement-drawer-open { overflow: hidden; }
+
+      /* ===== 関連リスト（生徒商品）===== */
+      .related-list { padding: 0.25rem 0 0; }
+      .related-list__header {
+        display: flex; align-items: center; padding: 0.75rem 1rem 0.5rem;
+      }
+      .related-list__icon {
+        width: 28px; height: 28px; border-radius: 4px; background: #6B7AE8;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 0.5rem;
+      }
+      .related-list__icon svg { width: 16px; height: 16px; fill: #fff; }
+      .related-list__titles { flex: 1; min-width: 0; }
+      .related-list__title { font-size: 0.875rem; font-weight: 700; color: #181818; }
+      .related-list__title a { color: #181818; text-decoration: none; }
+      .related-list__title a:hover { text-decoration: underline; }
+      .related-list__sortinfo { font-size: 0.6875rem; color: #706e6b; margin-top: 1px; }
+      .related-list__refresh {
+        background: none; border: 1px solid #d8dde6; border-radius: 4px;
+        width: 30px; height: 30px; cursor: pointer; color: #706e6b;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .related-list__refresh svg { width: 14px; height: 14px; fill: #706e6b; }
+      .student-product-filters {
+        display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        margin: 0 1rem 0.5rem; padding: 0.625rem 0.75rem;
+        background: #f7f9fb; border: 1px solid #e5e5e5; border-radius: 4px;
+      }
+      .student-product-filter {
+        display: flex; align-items: center; gap: 0.5rem; min-height: 30px;
+      }
+      .student-product-filter__label {
+        font-size: 0.75rem; color: #444; font-weight: 600; white-space: nowrap;
+      }
+      .year-filter {
+        position: relative;
+      }
+      .year-filter__button {
+        display: inline-flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+        min-width: 112px; height: 30px; padding: 0 0.75rem;
+      }
+      .year-filter__menu {
+        display: none; position: absolute; top: 34px; left: 0; z-index: 18;
+        min-width: 140px; background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.16); padding: 0.5rem 0.75rem;
+      }
+      .year-filter.is-open .year-filter__menu { display: block; }
+      .year-filter__option { display: flex; align-items: center; margin-bottom: 0.375rem; }
+      .year-filter__option:last-child { margin-bottom: 0; }
+      .type-filter {
+        display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+      }
+      .type-filter .slds-checkbox { display: inline-flex; align-items: center; }
+      .type-filter .slds-checkbox__label { display: inline-flex; align-items: center; }
+      .type-filter .slds-form-element__label { font-size: 0.75rem; color: #181818; }
+      .student-product-empty {
+        display: none; text-align: center; color: #706e6b; padding: 1.5rem;
+        border-top: 1px solid #e5e5e5; font-size: 0.8125rem;
+      }
+      .student-product-empty.is-visible { display: block; }
+
+      .related-list table { width: 100%; }
+      .related-list th, .related-list td { font-size: 0.8125rem; }
+      .related-list th { background: #fafaf9; }
+      .related-list .col-check { width: 36px; text-align: center; }
+      .related-list .col-check .slds-checkbox { display: inline-flex; }
+      .related-list .col-num { width: 32px; }
+      .related-list .col-date { width: 104px; }
+      .related-list .col-discount { width: 110px; }
+      .related-list .col-invoice-status { width: 128px; }
+      .related-list .col-amount { width: 112px; }
+      .related-list .col-source { width: 96px; }
+      .related-list .col-invoice { width: 104px; }
+      .related-list .col-closing { width: 104px; }
+      .related-list .col-confirmed-date { width: 104px; }
+      .related-list .col-billing-status { width: 124px; }
+      .related-list .col-application { width: 112px; }
+      .related-list .col-type { width: 96px; }
+      .related-list .col-status { width: 96px; }
+      .related-list .col-application-product { width: 180px; }
+      .related-list .amount-cell { text-align: right; font-variant-numeric: tabular-nums; }
+      .related-list tbody tr.is-selected > td { background: #f3f8ff; }
+      .invoice-status {
+        display: inline-flex; align-items: center; gap: 0.25rem;
+        font-size: 0.75rem; font-weight: 600;
+      }
+      .invoice-status svg { width: 14px; height: 14px; flex-shrink: 0; }
+      .invoice-status--done { color: #2e844a; }
+      .invoice-status--done svg { fill: #2e844a; }
+      .invoice-status--pending { color: #706e6b; }
+      .invoice-status--pending svg { fill: #706e6b; }
+      .billing-summary {
+        margin-top: 0.25rem; font-size: 0.8125rem; color: #181818;
+      }
+      .billing-summary strong {
+        font-size: 1rem; margin-left: 0.25rem; font-weight: 700;
+      }
+
+      /* 一括操作バー（複数選択時に表示） */
+      .bulk-bar {
+        display: none; align-items: center; gap: 0.75rem;
+        background: #eef4ff; border: 1px solid #c9d8f5; border-radius: 4px;
+        margin: 0 1rem 0.5rem; padding: 0.5rem 0.75rem;
+      }
+      .bulk-bar.is-visible { display: flex; }
+      .bulk-bar__count { font-size: 0.8125rem; font-weight: 600; color: #181818; }
+      .bulk-bar__actions { display: flex; gap: 0; }
+      .bulk-bar__actions .slds-button {
+        border-radius: 0; margin-left: -1px; font-size: 0.75rem;
+        height: 28px; line-height: 26px; padding: 0 0.75rem;
+      }
+      .bulk-bar__actions .slds-button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+      .bulk-bar__actions .slds-button:last-child { border-radius: 0 4px 4px 0; }
+      .bulk-bar__actions .bulk-bar__cancel { color: #c23934; }
+      .bulk-bar__actions .bulk-bar__cancel:hover { background: #fdecec; }
+      .bulk-bar__clear {
+        margin-left: auto; background: none; border: none;
+        color: #0070d2; font-size: 0.8125rem; cursor: pointer; padding: 0;
+      }
+      .bulk-bar__clear:hover { text-decoration: underline; }
+      .related-list a.cell-link { color: #0070d2; text-decoration: none; }
+      .related-list a.cell-link:hover { text-decoration: underline; }
+      .related-list .course-list { margin: 0; padding-left: 1rem; }
+      .related-list .course-list li { line-height: 1.4; }
+
+      /* ステータスバッジ */
+      .status-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.6875rem; font-weight: 600;
+      }
+      .status-badge--success { background: #d4f0d4; color: #2e844a; }
+      .status-badge--pending { background: #eaf5fe; color: #0176d3; }
+      .status-badge--draft { background: #f3f3f3; color: #444; }
+      .status-badge--warning { background: #fff1cc; color: #8c4b02; }
+      .status-badge--error { background: #fdecec; color: #ba0517; }
+      .status-badge--paid { background: #d4f0d4; color: #2e844a; }
+      .status-badge--invoiced { background: #ecebff; color: #403a93; }
+
+      .related-list__footer {
+        text-align: center; padding: 0.625rem; border-top: 1px solid #e5e5e5;
+      }
+      .related-list__footer a { color: #0070d2; text-decoration: none; font-size: 0.8125rem; }
+      .related-list__footer a:hover { text-decoration: underline; }
+
+      /* ===== 右カラム ===== */
+      .activity-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 0.75rem; }
+      .activity-tabs { display: flex; border-bottom: 1px solid #d8dde6; padding: 0 0.75rem; }
+      .activity-tab {
+        padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: #706e6b; cursor: pointer;
+        border-bottom: 3px solid transparent; text-decoration: none;
+      }
+      .activity-tab.is-active { color: #0070d2; border-bottom-color: #0070d2; font-weight: 600; }
+      .activity-body { padding: 0.75rem; }
+      .activity-actions { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+      .activity-action-btn { display: flex; align-items: center; gap: 0; }
+      .activity-action-btn__icon {
+        width: 32px; height: 32px; border-radius: 4px 0 0 4px; border: none;
+        display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff;
+      }
+      .activity-action-btn__dropdown {
+        width: 20px; height: 32px; border-radius: 0 4px 4px 0; border: none;
+        border-left: 1px solid rgba(255,255,255,0.3);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff;
+      }
+      .btn-phone .activity-action-btn__icon, .btn-phone .activity-action-btn__dropdown { background: #0070d2; }
+      .btn-email .activity-action-btn__icon, .btn-email .activity-action-btn__dropdown { background: #939393; }
+      .btn-task .activity-action-btn__icon, .btn-task .activity-action-btn__dropdown { background: #4BC076; }
+      .btn-event .activity-action-btn__icon, .btn-event .activity-action-btn__dropdown { background: #6B7AE8; }
+      .activity-filter {
+        font-size: 0.75rem; color: #706e6b; display: flex; align-items: center;
+        justify-content: flex-end; gap: 0.5rem; margin-bottom: 0.25rem;
+      }
+      .activity-filter__gear {
+        background: none; border: 1px solid #d8dde6; border-radius: 4px;
+        width: 24px; height: 24px; cursor: pointer; color: #706e6b;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .activity-links {
+        display: flex; justify-content: flex-end; gap: 0.25rem; font-size: 0.75rem; margin-bottom: 0.75rem;
+      }
+      .activity-links a { color: #0070d2; text-decoration: none; }
+      .activity-links a:hover { text-decoration: underline; }
+      .activity-links span { color: #706e6b; }
+      .upcoming-section { background: #f3f3f3; border-radius: 4px; padding: 0.625rem 0.75rem; margin-bottom: 0.5rem; }
+      .upcoming-section__header {
+        display: flex; align-items: center; cursor: pointer; font-size: 0.8125rem;
+        font-weight: 600; color: #181818; margin-bottom: 0.5rem;
+      }
+      .upcoming-section__toggle { width: 14px; height: 14px; margin-right: 0.375rem; color: #706e6b; }
+      .upcoming-section__body { text-align: center; font-size: 0.8125rem; color: #706e6b; padding: 0.5rem 0; line-height: 1.6; }
+      .upcoming-section__past {
+        font-size: 0.8125rem; color: #706e6b; text-align: center; padding: 0.5rem 0;
+        border-top: 1px solid #e5e5e5; line-height: 1.6;
+      }
+
+      /* ===== フッター ===== */
+      .sf-footer {
+        display: flex; align-items: center; padding: 0.375rem 0.75rem; font-size: 0.75rem;
+        color: #706e6b; background: #fff; border-top: 1px solid #d8dde6;
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+      }
+      .sf-footer a { color: #0070d2; text-decoration: none; }
+      .sf-footer__arrow { margin-right: 4px; font-size: 0.625rem; }
+
+      a.field-link { color: #0070d2; text-decoration: none; }
+      a.field-link:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ================================================================
+           1. グローバルヘッダー
+           ================================================================ -->
+      <div class="sf-global-header">
+        <div class="sf-global-header__left">
+          <div class="sf-global-header__logo">
+            <svg viewBox="0 0 48 32" width="32" height="22" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.1 6.2c1.7-1.8 4.1-2.9 6.8-2.9 3.3 0 6.2 1.7 7.9 4.3 1.4-.6 3-.9 4.7-.9 6.2 0 11.2 5 11.2 11.2S45.7 29 39.5 29c-.9 0-1.8-.1-2.6-.3-1.4 2.3-3.9 3.8-6.8 3.8-1.5 0-2.9-.4-4.1-1.1-1.5 2.9-4.6 4.8-8.1 4.8-4.1 0-7.6-2.7-8.8-6.5-.7.2-1.5.3-2.3.3-4.3 0-7.8-3.5-7.8-7.8 0-3.1 1.7-5.7 4.1-7.2-.4-1.1-.7-2.4-.7-3.7C2.4 4.9 7.4 0 13.4 0c3 0 5.7 1.2 7.6 3.2l-.9 3z" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="sf-global-header__search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          検索...
+        </div>
+        <div class="sf-global-header__right">
+          <div class="sf-global-header__partners">Partners</div>
+          <button title="印刷"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg></button>
+          <button title="お気に入り"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button>
+          <button title="ホーム"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
+          <button title="ヘルプ"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></button>
+          <button title="設定"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+          <button title="通知"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+          <div class="sf-global-header__avatar">M</div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           2. グローバルナビゲーション（収納アプリ）
+           ================================================================ -->
+      <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+          <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+            <div class="slds-context-bar__icon-action">
+              <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="アプリランチャー">
+                <span class="slds-icon-waffle">
+                  <span class="slds-r1"></span><span class="slds-r2"></span><span class="slds-r3"></span>
+                  <span class="slds-r4"></span><span class="slds-r5"></span><span class="slds-r6"></span>
+                  <span class="slds-r7"></span><span class="slds-r8"></span><span class="slds-r9"></span>
+                </span>
+              </button>
+            </div>
+            <span class="slds-context-bar__label-action slds-context-bar__app-name">
+              <span class="slds-truncate" title="収納">収納</span>
+            </span>
+          </div>
+        </div>
+        <nav class="slds-context-bar__secondary" role="navigation">
+          <ul class="slds-grid" id="globalNavTabs">
+            <li class="slds-context-bar__item">
+              <a href="#" class="slds-context-bar__label-action" title="ホーム"><span class="slds-truncate">ホーム</span></a>
+            </li>
+            <li class="slds-context-bar__item slds-is-active">
+              <a href="#" class="slds-context-bar__label-action" title="ユーザー">
+                <span class="nav-tab-with-arrow"><span class="slds-truncate">ユーザー</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span>
+              </a>
+            </li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="問合"><span class="nav-tab-with-arrow"><span class="slds-truncate">問合</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="申請"><span class="nav-tab-with-arrow"><span class="slds-truncate">申請</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="成績"><span class="nav-tab-with-arrow"><span class="slds-truncate">成績</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="オーダー"><span class="nav-tab-with-arrow"><span class="slds-truncate">オーダー</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="請求書管理"><span class="nav-tab-with-arrow"><span class="slds-truncate">請求書管理</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="レポート"><span class="nav-tab-with-arrow"><span class="slds-truncate">レポート</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="アクティビティイベント"><span class="nav-tab-with-arrow"><span class="slds-truncate">アクティビティイベント</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="一括消込"><span class="nav-tab-with-arrow"><span class="slds-truncate">一括消込</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="返金対象項目"><span class="nav-tab-with-arrow"><span class="slds-truncate">返金対象項目</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="さらに表示"><span class="nav-tab-with-arrow"><span class="slds-truncate">さらに表示</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ================================================================
+           3. Highlights Panel（レコードヘッダー）
+           ================================================================ -->
+      <div class="highlights-panel">
+        <div class="highlights-panel__top">
+          <div class="highlights-panel__record">
+            <div class="highlights-panel__icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff">
+                <path d="M12 12c2.7 0 4.8-2.2 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="highlights-panel__label">ユーザー</div>
+              <div class="highlights-panel__name">高道 デモ生徒</div>
+            </div>
+          </div>
+          <div class="highlights-panel__actions">
+            <button class="slds-button slds-button_icon slds-button_icon-border" title="ユーザー詳細">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#706e6b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </button>
+            <button class="slds-button slds-button_neutral" id="btnContractChange">契約変更</button>
+            <button class="slds-button slds-button_neutral" id="btnSeminarRegistration">講習登録</button>
+            <button class="slds-button slds-button_neutral" id="btnSingleItemRegistration">単品登録</button>
+            <div class="actions-more" id="enrollmentChangeActions">
+              <button class="slds-button slds-button_neutral" id="btnEnrollmentChange" aria-haspopup="true" aria-expanded="false">
+                在籍変更
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b" style="margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+              </button>
+              <div class="actions-more__menu" role="menu" aria-label="在籍変更">
+                <a href="#" class="actions-more__item" id="btnWithdrawal" role="menuitem">退会</a>
+                <a href="#" class="actions-more__item" id="btnLeaveOfAbsence" role="menuitem">休会</a>
+                <a href="#" class="actions-more__item" id="btnTransfer" role="menuitem">転籍</a>
+              </div>
+            </div>
+            <button class="slds-button slds-button_neutral" id="btnCreateInvoice">請求書作成</button>
+            <div class="actions-more" id="notificationActions">
+              <button class="slds-button slds-button_neutral" id="btnNotificationActions" aria-haspopup="true" aria-expanded="false">
+                通知・案内送信
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b" style="margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+              </button>
+              <div class="actions-more__menu" role="menu" aria-label="通知・案内送信">
+                <a href="#" class="actions-more__item" id="btnRequestBankAccount" role="menuitem">口座情報登録依頼</a>
+                <a href="#" class="actions-more__item" id="btnPasswordReset" role="menuitem">パスワード再発行</a>
+                <a href="#" class="actions-more__item" id="btnPersonalInfoForm" role="menuitem">個人情報登録フォーム</a>
+                <a href="#" class="actions-more__item" id="btnEmailVerification" role="menuitem">メールアドレス認証依頼</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="highlights-panel__fields">
+          <div class="highlights-field">
+            <div class="highlights-field__label">フリガナ</div>
+            <div class="highlights-field__value">タカミチ デモセイト</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">生徒番号</div>
+            <div class="highlights-field__value">000000001</div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">学年</div>
+            <div class="highlights-field__value"><a href="#" class="field-link">中2</a></div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">アプリのアクティブステータス</div>
+            <div class="highlights-field__value highlights-field__check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          </div>
+          <div class="highlights-field">
+            <div class="highlights-field__label">ホーム教室の在籍ステータス</div>
+            <div class="highlights-field__value">会員</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           4. レコードページ本体（2カラム）
+           ================================================================ -->
+      <div class="record-body">
+
+        <!-- ============ 左カラム: 詳細タブ ============ -->
+        <div class="record-body__left">
+          <div class="detail-card">
+            <!-- タブ -->
+            <div class="detail-tabs">
+              <ul class="detail-tabs__list" id="detailTabList">
+                <li>
+                  <a href="#" class="detail-tab detail-tab--with-tooltip" data-tab="detail">
+                    <span>詳細</span>
+                    <span class="detail-tab__info" data-tooltip="詳細タブには、生徒の個人情報に加えて、家族情報、クレジットカード情報、口座振替情報、紹介情報などを含む想定です。" title="詳細タブには、生徒の個人情報に加えて、家族情報、クレジットカード情報、口座振替情報、紹介情報などを含む想定です。" tabindex="0" aria-label="詳細タブの説明">
+                      <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-14C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V7h-2v4z"/></svg>
+                    </span>
+                  </a>
+                </li>
+                <li><a href="#" class="detail-tab" data-tab="inquiry">問合</a></li>
+                <li><a href="#" class="detail-tab is-active" data-tab="application-contract">申請・契約</a></li>
+                <li><a href="#" class="detail-tab" data-tab="billing-payment">請求・決済</a></li>
+                <li><a href="#" class="detail-tab" data-tab="course">受講コース</a></li>
+                <li><a href="#" class="detail-tab" data-tab="event">イベント</a></li>
+                <li><a href="#" class="detail-tab" data-tab="grade">成績</a></li>
+              </ul>
+            </div>
+
+            <!-- ===== 申請・契約タブ: 生徒商品 関連リスト ===== -->
+            <div id="tabContent-application-contract" class="tab-content">
+              <div class="related-list">
+                <!-- 関連リストヘッダー -->
+                <div class="related-list__header">
+                  <div class="related-list__icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                  </div>
+                  <div class="related-list__titles">
+                    <div class="related-list__title"><a href="#">生徒商品 (<span id="studentProductCount">5</span>)</a></div>
+                    <div class="related-list__sortinfo"><span id="studentProductSortInfo">5 個の項目 &middot; 年度: 2026 &middot; 表示対象: 通年契約 &middot; 5分前に更新されました</span></div>
+                  </div>
+                  <button class="related-list__refresh" title="リフレッシュ">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+
+                <div class="student-product-filters" aria-label="生徒商品の絞り込み">
+                  <div class="student-product-filter year-filter" id="yearFilter">
+                    <span class="student-product-filter__label">年度</span>
+                    <button class="slds-button slds-button_neutral year-filter__button" id="yearFilterButton" aria-haspopup="true" aria-expanded="false">
+                      <span id="yearFilterLabel">2026</span>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="year-filter__menu" role="menu" aria-label="年度を選択">
+                      <div class="year-filter__option">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" id="year2025" class="year-check" value="2025" />
+                          <label class="slds-checkbox__label" for="year2025">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">2025年</span>
+                          </label>
+                        </span>
+                      </div>
+                      <div class="year-filter__option">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" id="year2026" class="year-check" value="2026" checked />
+                          <label class="slds-checkbox__label" for="year2026">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">2026年</span>
+                          </label>
+                        </span>
+                      </div>
+                      <div class="year-filter__option">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" id="year2027" class="year-check" value="2027" />
+                          <label class="slds-checkbox__label" for="year2027">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">2027年</span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="student-product-filter">
+                    <span class="student-product-filter__label">表示対象</span>
+                    <div class="type-filter">
+                      <span class="slds-checkbox">
+                        <input type="checkbox" id="typeAnnual" class="type-check" value="annual" checked />
+                        <label class="slds-checkbox__label" for="typeAnnual">
+                          <span class="slds-checkbox_faux"></span>
+                          <span class="slds-form-element__label">通年契約</span>
+                        </label>
+                      </span>
+                      <span class="slds-checkbox">
+                        <input type="checkbox" id="typeSeminar" class="type-check" value="seminar" />
+                        <label class="slds-checkbox__label" for="typeSeminar">
+                          <span class="slds-checkbox_faux"></span>
+                          <span class="slds-form-element__label">講習</span>
+                        </label>
+                      </span>
+                      <span class="slds-checkbox">
+                        <input type="checkbox" id="typeSingle" class="type-check" value="single" />
+                        <label class="slds-checkbox__label" for="typeSingle">
+                          <span class="slds-checkbox_faux"></span>
+                          <span class="slds-form-element__label">単品</span>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 一括操作バー（複数選択時に表示） -->
+                <div class="bulk-bar" id="bulkBar">
+                  <span class="bulk-bar__count"><span id="bulkCount">0</span> 件を選択中</span>
+                  <div class="bulk-bar__actions">
+                    <button class="slds-button slds-button_neutral" id="bulkChange">変更</button>
+                    <button class="slds-button slds-button_neutral bulk-bar__cancel" id="bulkCancel">キャンセル</button>
+                  </div>
+                  <button class="bulk-bar__clear" id="bulkClear">選択を解除</button>
+                </div>
+
+                <!-- テーブル -->
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th class="col-check" scope="col">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" id="selectAll" />
+                          <label class="slds-checkbox__label" for="selectAll">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label slds-assistive-text">すべて選択</span>
+                          </label>
+                        </span>
+                      </th>
+                      <th class="col-num" scope="col"><div class="slds-truncate" title="#">#</div></th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="商品">商品</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="コース">コース</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th scope="col" style="width:88px;">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="拠点">拠点</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="開始日">開始日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="終了日">終了日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-discount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="割引">割引</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-invoice-status" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求書作成済">請求書作成済</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-source" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="生成元">生成元</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row1" data-name="2026年度 中2本科" />
+                          <label class="slds-checkbox__label" for="row1"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">1</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年度 中2本科</a></div></td>
+                      <td><div class="slds-truncate">本科 中2標準</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/04/01</div></td>
+                      <td><div class="slds-truncate">2027/03/31</div></td>
+                      <td><div class="slds-truncate">兄弟割引</div></td>
+                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row2" data-name="2026年度 英数国コース" />
+                          <label class="slds-checkbox__label" for="row2"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">2</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年度 英数国コース</a></div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>英語 中2</li>
+                          <li>数学 中2</li>
+                          <li>国語 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/04/01</div></td>
+                      <td><div class="slds-truncate">2027/03/31</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row3" data-name="2026年度 理社追加パック" />
+                          <label class="slds-checkbox__label" for="row3"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">3</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年度 理社追加パック</a></div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>理科 中2</li>
+                          <li>社会 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/04/01</div></td>
+                      <td><div class="slds-truncate">2027/03/31</div></td>
+                      <td><div class="slds-truncate">セット割引</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row4" data-name="2026年度 個別指導ライト" />
+                          <label class="slds-checkbox__label" for="row4"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">4</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年度 個別指導ライト</a></div></td>
+                      <td><div class="slds-truncate">個別指導 中2</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">個別新宿校</a></div></td>
+                      <td><div class="slds-truncate">2026/04/01</div></td>
+                      <td><div class="slds-truncate">2027/03/31</div></td>
+                      <td><div class="slds-truncate">長期継続割引</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row5" data-name="2026年度 自習室利用" />
+                          <label class="slds-checkbox__label" for="row5"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">5</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年度 自習室利用</a></div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/04/01</div></td>
+                      <td><div class="slds-truncate">2027/03/31</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="seminar">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row6" data-name="2026夏期講習 中2総合" />
+                          <label class="slds-checkbox__label" for="row6"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">6</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026夏期講習 中2総合</a></div></td>
+                      <td><div class="slds-truncate">夏期講習 中2総合</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/07/21</div></td>
+                      <td><div class="slds-truncate">2026/08/31</div></td>
+                      <td><div class="slds-truncate">講習早割</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="seminar">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row7" data-name="2026冬期講習 英数強化" />
+                          <label class="slds-checkbox__label" for="row7"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">7</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026冬期講習 英数強化</a></div></td>
+                      <td><div class="slds-truncate">冬期講習 英数強化</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/12/20</div></td>
+                      <td><div class="slds-truncate">2027/01/10</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="single">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row8" data-name="英検対策単品 3級" />
+                          <label class="slds-checkbox__label" for="row8"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">8</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">英検対策単品 3級</a></div></td>
+                      <td><div class="slds-truncate">英検対策</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">オンライン</a></div></td>
+                      <td><div class="slds-truncate">2026/05/15</div></td>
+                      <td><div class="slds-truncate">2026/06/30</div></td>
+                      <td><div class="slds-truncate">キャンペーン割引</div></td>
+                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="single">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row9" data-name="模試パック 2026前期" />
+                          <label class="slds-checkbox__label" for="row9"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">9</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">模試パック 2026前期</a></div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2026/06/01</div></td>
+                      <td><div class="slds-truncate">2026/09/30</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-128</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2025" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row10" data-name="2025年度 中1本科" />
+                          <label class="slds-checkbox__label" for="row10"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">10</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2025年度 中1本科</a></div></td>
+                      <td><div class="slds-truncate">本科 中1標準</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2025/04/01</div></td>
+                      <td><div class="slds-truncate">2026/03/31</div></td>
+                      <td><div class="slds-truncate">兄弟割引</div></td>
+                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-091</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2025" data-type="seminar">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row11" data-name="2025冬期講習 中1復習" />
+                          <label class="slds-checkbox__label" for="row11"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">11</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2025冬期講習 中1復習</a></div></td>
+                      <td><div class="slds-truncate">冬期講習 中1復習</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2025/12/21</div></td>
+                      <td><div class="slds-truncate">2026/01/09</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-092</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2027" data-type="annual">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row12" data-name="2027年度 中3本科 予約" />
+                          <label class="slds-checkbox__label" for="row12"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">12</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2027年度 中3本科 予約</a></div></td>
+                      <td><div class="slds-truncate">本科 中3受験</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate">2027/04/01</div></td>
+                      <td><div class="slds-truncate">2028/03/31</div></td>
+                      <td><div class="slds-truncate">早期申込割引</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-201</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent student-product-row" data-year="2027" data-type="single">
+                      <td class="col-check">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" class="row-check" id="row13" data-name="入試演習プリント 2027" />
+                          <label class="slds-checkbox__label" for="row13"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">選択</span></label>
+                        </span>
+                      </td>
+                      <td><div class="slds-truncate">13</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">入試演習プリント 2027</a></div></td>
+                      <td><div class="slds-truncate">入試演習</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">オンライン</a></div></td>
+                      <td><div class="slds-truncate">2027/09/01</div></td>
+                      <td><div class="slds-truncate">2028/02/28</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-202</a></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="student-product-empty" id="studentProductEmpty">条件に一致する生徒商品がありません。</div>
+
+                <div class="related-list__footer">
+                  <a href="#">すべて表示</a>
+                </div>
+              </div>
+
+              <div class="related-list">
+                <div class="related-list__header">
+                  <div class="related-list__icon">
+                    <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 3c0 .55.45 1 1 1h1l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h11c.55 0 1-.45 1-1s-.45-1-1-1H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.67-1.43A.993.993 0 003.64 2H2c-.55 0-1 .45-1 1zm16 15c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                  </div>
+                  <div class="related-list__titles">
+                    <div class="related-list__title"><a href="#">次回の締め請求書内容 (10+)</a></div>
+                    <div class="billing-summary">合計額 <strong>&yen;102,400</strong></div>
+                    <div class="related-list__sortinfo">10+ 個の項目 &middot; 並び替え基準: 金額 &middot; 検索条件: 次回請求締日 &middot; 数秒前に更新されました</div>
+                  </div>
+                  <button class="related-list__refresh" title="表示設定">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  </button>
+                  <button class="related-list__refresh" title="リフレッシュ" style="margin-left:0.5rem;">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout next-invoice-table">
+                  <colgroup>
+                    <col style="width:32px;">
+                    <col>
+                    <col style="width:116px;">
+                    <col style="width:112px;">
+                    <col style="width:120px;">
+                    <col style="width:96px;">
+                  </colgroup>
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th class="col-num" scope="col"><div class="slds-truncate" title="#">#</div></th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="内容">内容</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求期間">請求期間</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-amount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="金額">金額</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-discount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="割引">割引</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-source" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="生成元">生成元</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">1</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 中2本科</div>
+                        <ul class="course-list">
+                          <li>本科 中2標準</li>
+                          <li>ホームルーム 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;19,800</div></td>
+                      <td><div class="slds-truncate">兄弟割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 英数国コース</div>
+                        <ul class="course-list">
+                          <li>英語 中2</li>
+                          <li>数学 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;8,800</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">3</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 英数国コース</div>
+                        <ul class="course-list">
+                          <li>国語 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;8,800</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">4</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 理社追加パック</div>
+                        <ul class="course-list">
+                          <li>理科 中2</li>
+                          <li>社会 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;4,400</div></td>
+                      <td><div class="slds-truncate">セット割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">5</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 理社追加パック</div>
+                        <ul class="course-list">
+                          <li>演習 理社 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;4,400</div></td>
+                      <td><div class="slds-truncate">セット割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">6</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 個別指導ライト</div>
+                        <ul class="course-list">
+                          <li>個別指導 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;12,100</div></td>
+                      <td><div class="slds-truncate">長期継続割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">7</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 自習室利用</div>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;2,200</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">8</div></td>
+                      <td>
+                        <div class="slds-truncate">2026夏期講習 中2総合</div>
+                        <ul class="course-list">
+                          <li>夏期講習 中2総合</li>
+                          <li>夏期講習 英数演習</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年7月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;32,000</div></td>
+                      <td><div class="slds-truncate">講習早割</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">9</div></td>
+                      <td>
+                        <div class="slds-truncate">英検対策単品 3級</div>
+                        <ul class="course-list">
+                          <li>英検対策</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;6,600</div></td>
+                      <td><div class="slds-truncate">キャンペーン割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">10</div></td>
+                      <td>
+                        <div class="slds-truncate">模試パック 2026前期</div>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;3,300</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-128</a></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="related-list__footer">
+                  <a href="#">すべて表示</a>
+                </div>
+              </div>
+
+              <div class="related-list">
+                <div class="related-list__header">
+                  <div class="related-list__icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                  </div>
+                  <div class="related-list__titles">
+                    <div class="related-list__title"><a href="#">請求項目履歴 (10+)</a></div>
+                    <div class="related-list__sortinfo">10+ 個の項目 &middot; 並び替え基準: 請求書締め（古い順） &middot; 検索条件: 過去の請求項目 &middot; 数秒前に更新されました</div>
+                  </div>
+                  <button class="related-list__refresh" title="表示設定">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  </button>
+                  <button class="related-list__refresh" title="リフレッシュ" style="margin-left:0.5rem;">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout billing-history-table">
+                  <colgroup>
+                    <col style="width:32px;">
+                    <col>
+                    <col style="width:126px;">
+                    <col style="width:120px;">
+                    <col style="width:150px;">
+                    <col style="width:106px;">
+                    <col style="width:106px;">
+                    <col style="width:136px;">
+                    <col style="width:114px;">
+                    <col style="width:170px;">
+                  </colgroup>
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th class="col-num" scope="col"><div class="slds-truncate" title="#">#</div></th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="内容">内容</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求期間">請求期間</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-amount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="金額">金額</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-discount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="割引">割引</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-source" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="生成元">生成元</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-invoice" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求書">請求書</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-closing" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求書締め">請求書締め</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-confirmed-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="確定日">確定日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-billing-status" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="ステータス">ステータス</span>
+                            <span class="table-header-info" data-tooltip="保護者からの問い合わせで「〇〇商品はすでに払えてますか？」にすぐ対応できるよう、決済完了の有無も表示します。" title="保護者からの問い合わせで「〇〇商品はすでに払えてますか？」にすぐ対応できるよう、決済完了の有無も表示します。" tabindex="0" aria-label="請求項目ステータスの説明">
+                              <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-14C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V7h-2v4z"/></svg>
+                            </span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">1</div></td>
+                      <td>
+                        <div class="slds-truncate">2025冬期講習 中1復習</div>
+                        <ul class="course-list">
+                          <li>冬期講習 中1復習</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年1月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;24,000</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-092</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-098</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">1月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/01/10</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--paid">決済完了</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 中2本科</div>
+                        <ul class="course-list">
+                          <li>本科 中2標準</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年5月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;19,800</div></td>
+                      <td><div class="slds-truncate">兄弟割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-123</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">5月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/05/10</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--paid">決済完了</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">3</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 英数国コース</div>
+                        <ul class="course-list">
+                          <li>英語 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年5月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;8,800</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-123</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">5月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/05/10</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--paid">決済完了</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">4</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 理社追加パック</div>
+                        <ul class="course-list">
+                          <li>理科 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年5月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;4,400</div></td>
+                      <td><div class="slds-truncate">セット割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-124</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">5月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/05/11</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--paid">決済完了</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">5</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 個別指導ライト</div>
+                        <ul class="course-list">
+                          <li>個別指導 中2</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;12,100</div></td>
+                      <td><div class="slds-truncate">長期継続割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-130</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">6月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/06/10</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--invoiced">請求書作成済</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">6</div></td>
+                      <td>
+                        <div class="slds-truncate">2026年度 自習室利用</div>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;2,200</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-130</a></div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">6月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/06/10</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--invoiced">請求書作成済</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">7</div></td>
+                      <td>
+                        <div class="slds-truncate">英検対策単品 3級</div>
+                        <ul class="course-list">
+                          <li>英検対策</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年6月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;6,600</div></td>
+                      <td><div class="slds-truncate">キャンペーン割引</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">6月締め</a></div></td>
+                      <td><div class="slds-truncate">2026/06/12</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--pending">確定</span></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">8</div></td>
+                      <td>
+                        <div class="slds-truncate">模試パック 2026前期</div>
+                      </td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">2026年7月</a></div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;3,300</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-128</a></div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">7月締め</a></div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--draft">確定前</span></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="related-list__footer">
+                  <a href="#">すべて表示</a>
+                </div>
+              </div>
+
+              <div class="related-list">
+                <div class="related-list__header">
+                  <div class="related-list__icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                  </div>
+                  <div class="related-list__titles">
+                    <div class="related-list__title"><a href="#">申請履歴 (9)</a></div>
+                    <div class="related-list__sortinfo">9 個の項目 &middot; 並び替え基準: 作成日（新しい順） &middot; 検索条件: すべての申請 &middot; 数秒前に更新されました</div>
+                  </div>
+                  <button class="related-list__refresh" title="表示設定">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  </button>
+                  <button class="related-list__refresh" title="リフレッシュ" style="margin-left:0.5rem;">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th class="col-application" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="申請番号">申請番号</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-type" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="タイプ">タイプ</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-application-product" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="商品">商品</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-status" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="ステータス">ステータス</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-invoice-status" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求書作成済">請求書作成済</span>
+                            <span class="table-header-info" data-tooltip="請求書作成済の申請は取消不可能です。取消できると履歴を追うのが困難になるため、取り消したい場合は商品をキャンセルしてください。" title="請求書作成済の申請は取消不可能です。取消できると履歴を追うのが困難になるため、取り消したい場合は商品をキャンセルしてください。" tabindex="0" aria-label="請求書作成済の説明">
+                              <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-14C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V7h-2v4z"/></svg>
+                            </span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="作成日">作成日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="確定日">確定日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-128</a></div></td>
+                      <td><div class="slds-truncate">単品</div></td>
+                      <td><div class="slds-truncate">模試パック 2026前期（キャンセル）</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--error">取消</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate">2026/06/04</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
+                      <td><div class="slds-truncate">単品</div></td>
+                      <td><div class="slds-truncate">英検対策単品 3級（新規）</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate">2026/06/03</div></td>
+                      <td><div class="slds-truncate">2026/06/04</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
+                      <td><div class="slds-truncate">講習</div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>2026夏期講習 中2総合（変更）</li>
+                          <li>夏期講習 Web管理費（新規）</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--pending">承認待</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate">2026/06/02</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
+                      <td><div class="slds-truncate">通年契約</div></td>
+                      <td><div class="slds-truncate">2026年度 自習室利用（新規）</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate">2026/05/30</div></td>
+                      <td><div class="slds-truncate">2026/05/31</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
+                      <td><div class="slds-truncate">休会</div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>2026年度 中2本科（キャンセル）</li>
+                          <li>2026年度 英数国コース（キャンセル）</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--warning">差戻</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate">2026/05/28</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
+                      <td><div class="slds-truncate">通年契約</div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>2026年度 中2本科（新規）</li>
+                          <li>2026年度 英数国コース（新規）</li>
+                          <li>2026年度 理社追加パック（新規）</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate">2026/05/25</div></td>
+                      <td><div class="slds-truncate">2026/05/26</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-118</a></div></td>
+                      <td><div class="slds-truncate">転籍</div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>2026年度 個別指導ライト（変更）</li>
+                          <li>2026年度 自習室利用（変更）</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--draft">下書き</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate">2026/05/12</div></td>
+                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-110</a></div></td>
+                      <td><div class="slds-truncate">退会</div></td>
+                      <td>
+                        <ul class="course-list">
+                          <li>2026年度 個別指導ライト（キャンセル）</li>
+                          <li>2026年度 自習室利用（キャンセル）</li>
+                        </ul>
+                      </td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate">2026/04/20</div></td>
+                      <td><div class="slds-truncate">2026/04/21</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-092</a></div></td>
+                      <td><div class="slds-truncate">入会</div></td>
+                      <td><div class="slds-truncate">2025冬期講習 中1復習（新規）</div></td>
+                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate">2025/12/18</div></td>
+                      <td><div class="slds-truncate">2025/12/19</div></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="related-list__footer">
+                  <a href="#">すべて表示</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- 他のタブ（プレースホルダ） -->
+            <div id="tabContent-detail" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">詳細情報がここに表示されます</div></div>
+            <div id="tabContent-inquiry" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">問合情報がここに表示されます</div></div>
+            <div id="tabContent-billing-payment" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">請求・決済情報がここに表示されます</div></div>
+            <div id="tabContent-course" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">受講コース情報がここに表示されます</div></div>
+            <div id="tabContent-event" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">イベント情報がここに表示されます</div></div>
+            <div id="tabContent-grade" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">成績情報がここに表示されます</div></div>
+          </div>
+        </div>
+
+        <!-- ============ 右カラム: 活動 + Chatter ============ -->
+        <div class="record-body__right">
+          <div class="activity-card">
+            <div class="activity-tabs" id="activityTabBar">
+              <a href="#" class="activity-tab is-active" data-activity-tab="activity">活動</a>
+              <a href="#" class="activity-tab" data-activity-tab="chatter">Chatter</a>
+            </div>
+            <div class="activity-body" id="activityContent-activity">
+              <div class="activity-actions">
+                <div class="activity-action-btn btn-phone">
+                  <button class="activity-action-btn__icon" title="電話"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.1.31.03.66-.25 1.02l-2.2 2.2z"/></svg></button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-email">
+                  <button class="activity-action-btn__icon" title="メール"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-task">
+                  <button class="activity-action-btn__icon" title="ToDo"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+                <div class="activity-action-btn btn-event">
+                  <button class="activity-action-btn__icon" title="行動"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></button>
+                  <button class="activity-action-btn__dropdown"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></button>
+                </div>
+              </div>
+              <div class="activity-filter">
+                <span>条件: 常時・すべての活動・すべての種別</span>
+                <button class="activity-filter__gear" title="フィルター設定"><svg width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+              </div>
+              <div class="activity-links">
+                <a href="#">更新</a><span>・</span><a href="#">すべて展開</a><span>・</span><a href="#">すべて表示</a>
+              </div>
+              <div class="upcoming-section">
+                <div class="upcoming-section__header" onclick="toggleUpcoming()">
+                  <svg class="upcoming-section__toggle" id="upcomingToggle" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                  今後 &amp; 期限切れ
+                </div>
+                <div class="upcoming-section__body" id="upcomingBody">
+                  表示する活動がありません。<br>
+                  使用を開始するには、メールの送信や ToDo のスケジュールなどを行ってください。
+                </div>
+              </div>
+              <div class="upcoming-section__past">
+                過去の活動はありません。「完了」とマークされた過去のミーティングと ToDo がここに表示されます。
+              </div>
+            </div>
+            <div class="activity-body" id="activityContent-chatter" style="display:none;">
+              <div style="padding:1rem;text-align:center;color:#706e6b;">Chatter フィードがここに表示されます</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="slds-button slds-button_brand improvement-trigger" id="openImprovementDrawer" aria-controls="improvementDrawer" aria-expanded="false">
+        改善ポイント
+      </button>
+      <div class="improvement-backdrop" id="improvementBackdrop"></div>
+      <aside class="improvement-drawer" id="improvementDrawer" aria-hidden="true" aria-labelledby="improvementDrawerTitle">
+        <div class="improvement-drawer__header">
+          <div>
+            <div class="improvement-drawer__eyebrow">このモックで改善した箇所</div>
+            <div class="improvement-drawer__title" id="improvementDrawerTitle">説明メモ</div>
+          </div>
+          <button class="slds-button slds-button_icon slds-button_icon-border improvement-drawer__close" id="closeImprovementDrawer" title="閉じる">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <span class="slds-assistive-text">閉じる</span>
+          </button>
+        </div>
+        <div class="improvement-drawer__body">
+          <section class="improvement-section">
+            <div class="improvement-section__header">
+              <span class="improvement-section__num">1</span>
+              <div class="improvement-section__title">生徒に対するアクションボタンの整理</div>
+            </div>
+            <p class="improvement-section__text">契約変更、講習登録、単品登録、在籍変更、請求書作成、通知・案内送信を用途別に整理しました。階層化できるものはドロップダウンにまとめ、利用頻度の高い操作へすぐ到達できるようにしています。</p>
+          </section>
+
+          <section class="improvement-section">
+            <div class="improvement-section__header">
+              <span class="improvement-section__num">2</span>
+              <div class="improvement-section__title">生徒詳細ページのタブの整理</div>
+            </div>
+            <p class="improvement-section__text">タブを「詳細」「問合」「申請・契約」「請求・決済」「受講コース」「イベント」「成績」に整理しました。申請・契約まわりの確認先を集約し、旧「オーダー」「申請」タブで分かれていた確認作業を減らしています。</p>
+          </section>
+
+          <section class="improvement-section">
+            <div class="improvement-section__header">
+              <span class="improvement-section__num">3</span>
+              <div class="improvement-section__title">申請・契約タブのテーブル整理</div>
+            </div>
+            <p class="improvement-section__text">旧「オーダー」「申請」タブに散らばっていた情報を、問い合わせ対応と調整作業の流れに沿って並べ直しました。</p>
+
+            <div class="improvement-subsection">
+              <div class="improvement-subsection__title">生徒商品</div>
+              <ul class="improvement-list">
+                <li>見る頻度の高い通年契約を目立つ位置に表示。</li>
+                <li>生成元の申請を辿れるようにし、変更や調整の背景を確認しやすくしました。</li>
+                <li>請求書作成済かを表示し、変更時に調整金額が発生しそうか判断しやすくしました。</li>
+                <li>生徒商品リストから直接変更操作に進める導線を追加しました。</li>
+              </ul>
+            </div>
+
+            <div class="improvement-subsection">
+              <div class="improvement-subsection__title">次回の締め請求書内容</div>
+              <ul class="improvement-list">
+                <li>元々請求書タブにあった情報を、受講中商品と同じタブで見られるようにしました。</li>
+                <li>保護者からの問い合わせ時に、商品内容と次回請求内容を横断確認しやすくしました。</li>
+                <li>合計金額を表示し、次回請求の規模感をすぐ確認できるようにしました。</li>
+                <li>生成元の申請を辿れるようにし、調整作業の起点を確認しやすくしました。</li>
+              </ul>
+            </div>
+
+            <div class="improvement-subsection">
+              <div class="improvement-subsection__title">請求項目履歴</div>
+              <ul class="improvement-list">
+                <li>生成元の申請を表示し、請求項目がどの変更から生まれたか辿れるようにしました。</li>
+                <li>どの締めの請求書に入っているかを表示できるようにしました。これには請求書作成スケジュールマスタへ名称を持たせる想定です。</li>
+                <li>決済完了の有無を表示し、「この商品は払えていますか」という問い合わせにすぐ答えられるようにしました。</li>
+              </ul>
+            </div>
+
+            <div class="improvement-subsection">
+              <div class="improvement-subsection__title">申請履歴</div>
+              <ul class="improvement-list">
+                <li>確定済から差し戻しできる前提の履歴確認にしました。</li>
+                <li>請求書作成済の申請は取消できないように制御する想定を示しました。</li>
+                <li>承認ワークフローを設け、承認待ちの状態が分かるようにしました。</li>
+                <li>申請カテゴリに商品追加・変更も追加できる構成にしました。</li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <!-- ================================================================
+           5. フッター
+           ================================================================ -->
+      <div class="sf-footer">
+        <span class="sf-footer__arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></span>
+        <a href="#">収納</a>
+      </div>
+
+    </div><!-- /slds-scope -->
+
+    <script>
+      // ===== 画面遷移ユーティリティ =====
+      var MockupRouter = {
+        navigateTo: function(url) { console.log('Navigating to:', url); window.location.href = url; },
+        showModal: function(id) { var m = document.getElementById(id); if (m) m.style.display = 'flex'; },
+        hideModal: function(id) { var m = document.getElementById(id); if (m) m.style.display = 'none'; }
+      };
+
+      // ===== 左カラム詳細タブ切り替え =====
+      document.getElementById('detailTabList').addEventListener('click', function(e) {
+        var tab = e.target.closest('.detail-tab');
+        if (!tab) return;
+        e.preventDefault();
+        document.querySelectorAll('.detail-tab').forEach(function(t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        var tabName = tab.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.style.display = 'none'; });
+        var content = document.getElementById('tabContent-' + tabName);
+        if (content) content.style.display = 'block';
+      });
+
+      // ===== 右カラム活動/Chatter タブ切り替え =====
+      document.getElementById('activityTabBar').addEventListener('click', function(e) {
+        var tab = e.target.closest('.activity-tab');
+        if (!tab) return;
+        e.preventDefault();
+        document.querySelectorAll('.activity-tab').forEach(function(t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        var tabName = tab.dataset.activityTab;
+        document.getElementById('activityContent-activity').style.display = tabName === 'activity' ? 'block' : 'none';
+        document.getElementById('activityContent-chatter').style.display = tabName === 'chatter' ? 'block' : 'none';
+      });
+
+      // ===== 今後 & 期限切れ 折りたたみ =====
+      function toggleUpcoming() {
+        var body = document.getElementById('upcomingBody');
+        var toggle = document.getElementById('upcomingToggle');
+        if (body.style.display === 'none') { body.style.display = 'block'; toggle.style.transform = ''; }
+        else { body.style.display = 'none'; toggle.style.transform = 'rotate(-90deg)'; }
+      }
+
+      // ===== 生徒商品フィルター & 複数選択 =====
+      (function() {
+        var selectAll = document.getElementById('selectAll');
+        var rowChecks = Array.prototype.slice.call(document.querySelectorAll('.row-check'));
+        var productRows = Array.prototype.slice.call(document.querySelectorAll('.student-product-row'));
+        var bulkBar = document.getElementById('bulkBar');
+        var bulkCount = document.getElementById('bulkCount');
+        var yearFilter = document.getElementById('yearFilter');
+        var yearFilterButton = document.getElementById('yearFilterButton');
+        var yearFilterLabel = document.getElementById('yearFilterLabel');
+        var yearChecks = Array.prototype.slice.call(document.querySelectorAll('.year-check'));
+        var typeChecks = Array.prototype.slice.call(document.querySelectorAll('.type-check'));
+        var productCount = document.getElementById('studentProductCount');
+        var productSortInfo = document.getElementById('studentProductSortInfo');
+        var emptyMessage = document.getElementById('studentProductEmpty');
+
+        function visibleRows() {
+          return productRows.filter(function(row) { return row.style.display !== 'none'; });
+        }
+
+        function selectedYears() {
+          return yearChecks.filter(function(c) { return c.checked; }).map(function(c) { return c.value; });
+        }
+
+        function selectedTypes() {
+          return typeChecks.filter(function(c) { return c.checked; }).map(function(c) { return c.value; });
+        }
+
+        function typeLabel(types) {
+          if (!types.length) return '未選択';
+          var labels = [];
+          if (types.indexOf('annual') !== -1) labels.push('通年契約');
+          if (types.indexOf('seminar') !== -1) labels.push('講習');
+          if (types.indexOf('single') !== -1) labels.push('単品');
+          return labels.join('、');
+        }
+
+        function selectedNames() {
+          return visibleRows()
+            .map(function(row) { return row.querySelector('.row-check'); })
+            .filter(function(c) { return c && c.checked; })
+            .map(function(c) { return c.dataset.name; });
+        }
+
+        function refresh() {
+          var visible = visibleRows();
+          var visibleChecks = visible.map(function(row) { return row.querySelector('.row-check'); }).filter(Boolean);
+          var selected = visibleChecks.filter(function(c) { return c.checked; });
+          bulkCount.textContent = selected.length;
+          bulkBar.classList.toggle('is-visible', selected.length > 0);
+          visible.forEach(function(row, index) {
+            row.children[1].querySelector('.slds-truncate').textContent = index + 1;
+          });
+          rowChecks.forEach(function(c) {
+            c.closest('tr').classList.toggle('is-selected', c.checked);
+          });
+          selectAll.checked = selected.length === visibleChecks.length && visibleChecks.length > 0;
+          selectAll.indeterminate = selected.length > 0 && selected.length < visibleChecks.length;
+          selectAll.disabled = visibleChecks.length === 0;
+        }
+
+        function applyStudentProductFilters() {
+          var years = selectedYears();
+          var types = selectedTypes();
+          var count = 0;
+          productRows.forEach(function(row) {
+            var matchesYear = years.indexOf(row.dataset.year) !== -1;
+            var matchesType = types.indexOf(row.dataset.type) !== -1;
+            var shouldShow = matchesYear && matchesType;
+            row.style.display = shouldShow ? '' : 'none';
+            if (!shouldShow) {
+              var check = row.querySelector('.row-check');
+              if (check) check.checked = false;
+            } else {
+              count += 1;
+            }
+          });
+
+          yearFilterLabel.textContent = years.length ? years.join(', ') : '未選択';
+          productCount.textContent = count;
+          productSortInfo.textContent = count + ' 個の項目 ・ 年度: ' + (years.length ? years.join('、') : '未選択') + ' ・ 表示対象: ' + typeLabel(types) + ' ・ 5分前に更新されました';
+          emptyMessage.classList.toggle('is-visible', count === 0);
+          refresh();
+        }
+
+        selectAll.addEventListener('change', function() {
+          visibleRows().forEach(function(row) {
+            var check = row.querySelector('.row-check');
+            if (check) check.checked = selectAll.checked;
+          });
+          refresh();
+        });
+        rowChecks.forEach(function(c) { c.addEventListener('change', refresh); });
+        yearFilterButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          var isOpen = yearFilter.classList.toggle('is-open');
+          yearFilterButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        yearChecks.forEach(function(c) { c.addEventListener('change', applyStudentProductFilters); });
+        typeChecks.forEach(function(c) { c.addEventListener('change', applyStudentProductFilters); });
+        document.querySelectorAll('.type-filter .slds-checkbox__label').forEach(function(label) {
+          label.addEventListener('click', function(e) {
+            var input = document.getElementById(label.getAttribute('for'));
+            if (!input) return;
+            e.preventDefault();
+            input.checked = !input.checked;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+        });
+
+        document.getElementById('bulkClear').addEventListener('click', function() {
+          rowChecks.forEach(function(c) { c.checked = false; });
+          refresh();
+        });
+        document.getElementById('bulkChange').addEventListener('click', function() {
+          console.log('変更:', selectedNames());
+          MockupRouter.navigateTo('product-add-change.html');
+        });
+        document.getElementById('bulkCancel').addEventListener('click', function() {
+          console.log('キャンセル:', selectedNames());
+          // 本番では一括キャンセル確認モーダルを表示
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!yearFilter || yearFilter.contains(e.target)) return;
+          yearFilter.classList.remove('is-open');
+          yearFilterButton.setAttribute('aria-expanded', 'false');
+        });
+
+        applyStudentProductFilters();
+      })();
+
+      // ===== ハイライトパネルのボタン =====
+      var buttonHandlers = {
+        btnContractChange: function() { MockupRouter.navigateTo('product-add-change.html?mode=change'); },
+        btnSeminarRegistration: function() { MockupRouter.navigateTo('product-select.html?type=seminar'); },
+        btnSingleItemRegistration: function() { MockupRouter.navigateTo('product-select.html?type=single'); },
+        btnEnrollmentChange: function(e) {
+          e.preventDefault();
+          var wrapper = document.getElementById('enrollmentChangeActions');
+          var button = document.getElementById('btnEnrollmentChange');
+          var isOpen = wrapper.classList.toggle('is-open');
+          button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        },
+        btnCreateInvoice: function() { console.log('請求書作成 clicked'); },
+        btnNotificationActions: function(e) {
+          e.preventDefault();
+          var wrapper = document.getElementById('notificationActions');
+          var button = document.getElementById('btnNotificationActions');
+          var isOpen = wrapper.classList.toggle('is-open');
+          button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        },
+        btnWithdrawal: function(e) { e.preventDefault(); console.log('退会 clicked'); },
+        btnLeaveOfAbsence: function(e) { e.preventDefault(); console.log('休会 clicked'); },
+        btnTransfer: function(e) { e.preventDefault(); console.log('転籍 clicked'); },
+        btnRequestBankAccount: function(e) { e.preventDefault(); console.log('口座情報登録依頼 clicked'); },
+        btnPasswordReset: function(e) { e.preventDefault(); console.log('パスワード再発行 clicked'); },
+        btnPersonalInfoForm: function(e) { e.preventDefault(); console.log('個人情報登録フォーム clicked'); },
+        btnEmailVerification: function(e) { e.preventDefault(); console.log('メールアドレス認証依頼 clicked'); }
+      };
+      Object.keys(buttonHandlers).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('click', buttonHandlers[id]);
+      });
+      document.addEventListener('click', function(e) {
+        document.querySelectorAll('.highlights-panel__actions .actions-more').forEach(function(wrapper) {
+          if (wrapper.contains(e.target)) return;
+          var button = wrapper.querySelector('button[aria-haspopup="true"]');
+          wrapper.classList.remove('is-open');
+          if (button) button.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // ===== 改善ポイント説明ドロワー =====
+      (function() {
+        var openButton = document.getElementById('openImprovementDrawer');
+        var closeButton = document.getElementById('closeImprovementDrawer');
+        var drawer = document.getElementById('improvementDrawer');
+        var backdrop = document.getElementById('improvementBackdrop');
+        if (!openButton || !closeButton || !drawer || !backdrop) return;
+
+        function openDrawer() {
+          drawer.classList.add('is-open');
+          backdrop.classList.add('is-open');
+          document.body.classList.add('has-improvement-drawer-open');
+          drawer.setAttribute('aria-hidden', 'false');
+          openButton.setAttribute('aria-expanded', 'true');
+          closeButton.focus();
+        }
+
+        function closeDrawer() {
+          drawer.classList.remove('is-open');
+          backdrop.classList.remove('is-open');
+          document.body.classList.remove('has-improvement-drawer-open');
+          drawer.setAttribute('aria-hidden', 'true');
+          openButton.setAttribute('aria-expanded', 'false');
+          openButton.focus();
+        }
+
+        openButton.addEventListener('click', openDrawer);
+        closeButton.addEventListener('click', closeDrawer);
+        backdrop.addEventListener('click', closeDrawer);
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && drawer.classList.contains('is-open')) closeDrawer();
+        });
+      })();
+    </script>
+  </body>
+</html>
