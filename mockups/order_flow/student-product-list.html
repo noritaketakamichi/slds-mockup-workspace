@@ -92,6 +92,35 @@
         font-size: 0.8125rem; white-space: nowrap;
       }
       .actions-more__item:hover { background: #f3f3f3; text-decoration: none; }
+      .application-history-actions {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        margin-right: 0.5rem;
+        background: transparent;
+        flex-shrink: 0;
+      }
+      .application-history-actions .slds-button_neutral {
+        border-radius: 0;
+        margin-left: -1px;
+        min-height: 30px;
+        height: 30px;
+        padding: 0 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 400;
+      }
+      .application-history-actions > .slds-button_neutral:first-child {
+        border-radius: 4px 0 0 4px;
+        margin-left: 0;
+      }
+      .application-history-actions .actions-more .slds-button_neutral {
+        border-radius: 0 4px 4px 0;
+      }
+      .application-history-actions .actions-more__menu {
+        top: 32px;
+        left: 0;
+        right: auto;
+      }
       .highlights-panel__fields {
         display: flex; gap: 1.5rem; margin-top: 0.75rem; padding-left: 52px; flex-wrap: wrap;
       }
@@ -332,7 +361,7 @@
       }
       body.has-improvement-drawer-open { overflow: hidden; }
 
-      /* ===== 関連リスト（生徒商品）===== */
+      /* ===== 関連リスト（登録済商品）===== */
       .related-list { padding: 0.25rem 0 0; }
       .related-list__header {
         display: flex; align-items: center; padding: 0.75rem 1rem 0.5rem;
@@ -408,11 +437,23 @@
       .related-list .col-billing-status { width: 124px; }
       .related-list .col-application { width: 112px; }
       .related-list .col-type { width: 96px; }
-      .related-list .col-campus { width: 136px; }
+      .related-list .col-campus { width: 148px; }
       .related-list .col-status { width: 96px; }
       .related-list .col-application-product { width: 160px; }
+      .related-list .col-row-action { width: 48px; text-align: center; }
       .related-list .amount-cell { text-align: right; font-variant-numeric: tabular-nums; }
       .related-list tbody tr.is-selected > td { background: #f3f8ff; }
+      .row-action-button {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #747474;
+        border-radius: 4px;
+        background: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .row-action-button svg { width: 16px; height: 16px; fill: #706e6b; }
       .invoice-status {
         display: inline-flex; align-items: center; gap: 0.25rem;
         font-size: 0.75rem; font-weight: 600;
@@ -633,20 +674,6 @@
             <button class="slds-button slds-button_icon slds-button_icon-border" title="ユーザー詳細">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="#706e6b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </button>
-            <button class="slds-button slds-button_neutral" id="btnContractChange">契約変更</button>
-            <button class="slds-button slds-button_neutral" id="btnSeminarRegistration">講習登録</button>
-            <button class="slds-button slds-button_neutral" id="btnSingleItemRegistration">単品登録</button>
-            <div class="actions-more" id="enrollmentChangeActions">
-              <button class="slds-button slds-button_neutral" id="btnEnrollmentChange" aria-haspopup="true" aria-expanded="false">
-                在籍変更
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b" style="margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
-              </button>
-              <div class="actions-more__menu" role="menu" aria-label="在籍変更">
-                <a href="#" class="actions-more__item" id="btnWithdrawal" role="menuitem">退会</a>
-                <a href="#" class="actions-more__item" id="btnLeaveOfAbsence" role="menuitem">休会</a>
-                <a href="#" class="actions-more__item" id="btnTransfer" role="menuitem">転籍</a>
-              </div>
-            </div>
             <button class="slds-button slds-button_neutral" id="btnCreateInvoice">請求書作成</button>
             <div class="actions-more" id="notificationActions">
               <button class="slds-button slds-button_neutral" id="btnNotificationActions" aria-haspopup="true" aria-expanded="false">
@@ -714,16 +741,16 @@
               </ul>
             </div>
 
-            <!-- ===== 申請・契約タブ: 生徒商品 関連リスト ===== -->
+            <!-- ===== 申請・契約タブ: 申請履歴 / 登録済商品 関連リスト ===== -->
             <div id="tabContent-application-contract" class="tab-content">
-              <div class="related-list">
+              <div class="related-list" id="registeredProductSection">
                 <!-- 関連リストヘッダー -->
                 <div class="related-list__header">
                   <div class="related-list__icon">
                     <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
                   </div>
                   <div class="related-list__titles">
-                    <div class="related-list__title"><a href="#">生徒商品 (<span id="studentProductCount">5</span>)</a></div>
+                    <div class="related-list__title"><a href="#">登録済商品 (<span id="studentProductCount">5</span>)</a></div>
                     <div class="related-list__sortinfo"><span id="studentProductSortInfo">5 個の項目 &middot; 年度: 2026 &middot; 表示対象: 通年契約 &middot; 5分前に更新されました</span></div>
                   </div>
                   <button class="related-list__refresh" title="リフレッシュ">
@@ -731,7 +758,7 @@
                   </button>
                 </div>
 
-                <div class="student-product-filters" aria-label="生徒商品の絞り込み">
+                <div class="student-product-filters" aria-label="登録済商品の絞り込み">
                   <div class="student-product-filter year-filter" id="yearFilter">
                     <span class="student-product-filter__label">年度</span>
                     <button class="slds-button slds-button_neutral year-filter__button" id="yearFilterButton" aria-haspopup="true" aria-expanded="false">
@@ -1121,14 +1148,136 @@
                     </tr>
                   </tbody>
                 </table>
-                <div class="student-product-empty" id="studentProductEmpty">条件に一致する生徒商品がありません。</div>
+                <div class="student-product-empty" id="studentProductEmpty">条件に一致する登録済商品がありません。</div>
 
                 <div class="related-list__footer">
                   <a href="#">すべて表示</a>
                 </div>
               </div>
 
-              <div class="related-list">
+              <div class="related-list" id="invoiceSection">
+                <div class="related-list__header">
+                  <div class="related-list__icon" style="background:#45c773;">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 14.93V19h-2v-1.07c-1.64-.34-3-1.33-3-2.93h2c0 .55.9 1.1 2 1.1s2-.55 2-1.1c0-.72-.72-1.01-2.43-1.43C9.87 13.15 8 12.58 8 10.5c0-1.5 1.2-2.62 3-2.93V6h2v1.57c1.47.31 2.67 1.21 2.9 2.43h-2.06c-.19-.45-.91-.8-1.84-.8-1.1 0-2 .5-2 1.3 0 .61.55.91 2.43 1.37 1.8.45 3.57 1.08 3.57 3.13 0 1.49-1.22 2.6-3 2.93z"/></svg>
+                  </div>
+                  <div class="related-list__titles">
+                    <div class="related-list__title"><a href="#">請求書 (2)</a></div>
+                    <div class="related-list__sortinfo">2 個の項目 &middot; 並び替え基準: 作成日 &middot; 数秒前に更新されました</div>
+                  </div>
+                  <button class="slds-button slds-button_neutral slds-button_small" id="btnCreateInvoiceFromBilling" title="請求書作成" style="margin-right:0.5rem;">
+                    請求書作成
+                  </button>
+                  <button class="related-list__refresh" title="表示設定">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  </button>
+                  <button class="related-list__refresh" title="リフレッシュ" style="margin-left:0.5rem;">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout invoice-table">
+                  <colgroup>
+                    <col style="width:32px;">
+                    <col style="width:138px;">
+                    <col style="width:112px;">
+                    <col style="width:124px;">
+                    <col style="width:140px;">
+                    <col style="width:172px;">
+                    <col style="width:128px;">
+                    <col style="width:48px;">
+                  </colgroup>
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th class="col-num" scope="col"><div class="slds-truncate" title="#">#</div></th>
+                      <th scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="請求書番号">請求書番号</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-status" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="ステータス">ステータス</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-amount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="合計">合計</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-amount" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="未決済の金額">未決済の金額</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-date" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="作成日">作成日</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-type" scope="col">
+                        <a class="slds-th__action slds-text-link_reset" href="#">
+                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="タイプ">タイプ</span>
+                            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#706e6b;margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                          </div>
+                        </a>
+                      </th>
+                      <th class="col-row-action" scope="col"><span class="slds-assistive-text">行アクション</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">1</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-405</a></div></td>
+                      <td><div class="slds-truncate">確定前</div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;41,500</div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;41,500</div></td>
+                      <td><div class="slds-truncate">2026/05/19 16:06</div></td>
+                      <td><div class="slds-truncate">都度作成</div></td>
+                      <td class="col-row-action">
+                        <button class="row-action-button" title="行アクション">
+                          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                      <td><div class="slds-truncate">2</div></td>
+                      <td><div class="slds-truncate"><a href="#" class="cell-link">IV-404</a></div></td>
+                      <td><div class="slds-truncate">取消済</div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;47,000</div></td>
+                      <td><div class="slds-truncate amount-cell">&yen;47,000</div></td>
+                      <td><div class="slds-truncate">2026/05/19 15:24</div></td>
+                      <td><div class="slds-truncate">都度作成</div></td>
+                      <td class="col-row-action">
+                        <button class="row-action-button" title="行アクション">
+                          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="related-list__footer">
+                  <a href="#">すべて表示</a>
+                </div>
+              </div>
+
+              <div class="related-list" id="nextInvoiceSection">
                 <div class="related-list__header">
                   <div class="related-list__icon">
                     <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 3c0 .55.45 1 1 1h1l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h11c.55 0 1-.45 1-1s-.45-1-1-1H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.67-1.43A.993.993 0 003.64 2H2c-.55 0-1 .45-1 1zm16 15c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
@@ -1337,7 +1486,7 @@
                 </div>
               </div>
 
-              <div class="related-list">
+              <div class="related-list" id="billingHistorySection">
                 <div class="related-list__header">
                   <div class="related-list__icon">
                     <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
@@ -1589,14 +1738,30 @@
                 </div>
               </div>
 
-              <div class="related-list">
+              <div class="related-list" id="applicationHistorySection">
                 <div class="related-list__header">
                   <div class="related-list__icon">
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                   </div>
                   <div class="related-list__titles">
-                    <div class="related-list__title"><a href="#">申請履歴 (9)</a></div>
-                    <div class="related-list__sortinfo">9 個の項目 &middot; 並び替え基準: 作成日（新しい順） &middot; 検索条件: すべての申請 &middot; 数秒前に更新されました</div>
+                    <div class="related-list__title"><a href="#">申請履歴 (5)</a></div>
+                    <div class="related-list__sortinfo">5 個の項目 &middot; 並び替え基準: 作成日（新しい順） &middot; 検索条件: 最近の申請 &middot; 数秒前に更新されました</div>
+                  </div>
+                  <div class="application-history-actions" aria-label="生徒に対する申請アクション">
+                    <button class="slds-button slds-button_neutral" id="btnContractChange">契約変更</button>
+                    <button class="slds-button slds-button_neutral" id="btnSeminarRegistration">講習登録</button>
+                    <button class="slds-button slds-button_neutral" id="btnSingleItemRegistration">単品登録</button>
+                    <div class="actions-more" id="enrollmentChangeActions">
+                      <button class="slds-button slds-button_neutral" id="btnEnrollmentChange" aria-haspopup="true" aria-expanded="false">
+                        在籍変更
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#706e6b" style="margin-left:0.25rem;"><path d="M7 10l5 5 5-5z"/></svg>
+                      </button>
+                      <div class="actions-more__menu" role="menu" aria-label="在籍変更">
+                        <a href="#" class="actions-more__item" id="btnWithdrawal" role="menuitem">退会</a>
+                        <a href="#" class="actions-more__item" id="btnLeaveOfAbsence" role="menuitem">休会</a>
+                        <a href="#" class="actions-more__item" id="btnTransfer" role="menuitem">転籍</a>
+                      </div>
+                    </div>
                   </div>
                   <button class="related-list__refresh" title="表示設定">
                     <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
@@ -1727,7 +1892,7 @@
                     <tr class="slds-hint-parent">
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
                       <td><div class="slds-truncate">休会</div></td>
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
+                      <td><div class="slds-truncate" title="[集団]東京校"><a href="#" class="cell-link">[集団]東京校</a></div></td>
                       <td>
                         <ul class="course-list">
                           <li>2026年度 中2本科（キャンセル）</li>
@@ -1738,65 +1903,6 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
                       <td><div class="slds-truncate">2026/05/28</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                    </tr>
-                    <tr class="slds-hint-parent">
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
-                      <td><div class="slds-truncate">通年契約</div></td>
-                      <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
-                      <td>
-                        <ul class="course-list">
-                          <li>2026年度 中2本科（新規）</li>
-                          <li>2026年度 英数国コース（新規）</li>
-                          <li>2026年度 理社追加パック（新規）</li>
-                        </ul>
-                      </td>
-                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
-                      <td><div class="slds-truncate">2026/05/25</div></td>
-                      <td><div class="slds-truncate">2026/05/26</div></td>
-                    </tr>
-                    <tr class="slds-hint-parent">
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-118</a></div></td>
-                      <td><div class="slds-truncate">転籍</div></td>
-                      <td>
-                        <div class="slds-truncate">転籍元: 個別新宿校</div>
-                        <div class="slds-truncate">転籍先: <a href="#" class="cell-link">[集団]東京校</a></div>
-                      </td>
-                      <td>
-                        <ul class="course-list">
-                          <li>2026年度 個別指導ライト（変更）</li>
-                          <li>2026年度 自習室利用（変更）</li>
-                        </ul>
-                      </td>
-                      <td><div class="slds-truncate"><span class="status-badge status-badge--draft">下書き</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
-                      <td><div class="slds-truncate">2026/05/12</div></td>
-                      <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                    </tr>
-                    <tr class="slds-hint-parent">
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-110</a></div></td>
-                      <td><div class="slds-truncate">退会</div></td>
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">個別新宿校</a></div></td>
-                      <td>
-                        <ul class="course-list">
-                          <li>2026年度 個別指導ライト（キャンセル）</li>
-                          <li>2026年度 自習室利用（キャンセル）</li>
-                        </ul>
-                      </td>
-                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
-                      <td><div class="slds-truncate">2026/04/20</div></td>
-                      <td><div class="slds-truncate">2026/04/21</div></td>
-                    </tr>
-                    <tr class="slds-hint-parent">
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">AP-092</a></div></td>
-                      <td><div class="slds-truncate">入会</div></td>
-                      <td><div class="slds-truncate"><a href="#" class="cell-link">[集団]東京校</a></div></td>
-                      <td><div class="slds-truncate">2025冬期講習 中1復習（新規）</div></td>
-                      <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
-                      <td><div class="slds-truncate">2025/12/18</div></td>
-                      <td><div class="slds-truncate">2025/12/19</div></td>
                     </tr>
                   </tbody>
                 </table>
@@ -1810,7 +1916,7 @@
             <!-- 他のタブ（プレースホルダ） -->
             <div id="tabContent-detail" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">詳細情報がここに表示されます</div></div>
             <div id="tabContent-inquiry" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">問合情報がここに表示されます</div></div>
-            <div id="tabContent-billing-payment" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">請求・決済情報がここに表示されます</div></div>
+            <div id="tabContent-billing-payment" class="tab-content" style="display:none;"></div>
             <div id="tabContent-course" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">受講コース情報がここに表示されます</div></div>
             <div id="tabContent-event" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">イベント情報がここに表示されます</div></div>
             <div id="tabContent-grade" class="tab-content" style="display:none;"><div style="padding:2rem;text-align:center;color:#706e6b;">成績情報がここに表示されます</div></div>
@@ -1906,25 +2012,25 @@
           <section class="improvement-section">
             <div class="improvement-section__header">
               <span class="improvement-section__num">3</span>
-              <div class="improvement-section__title">申請・契約タブのテーブル整理</div>
+              <div class="improvement-section__title">申請・契約 / 請求・決済タブのテーブル整理</div>
             </div>
-            <p class="improvement-section__text">旧「オーダー」「申請」タブに散らばっていた情報を、問い合わせ対応と調整作業の流れに沿って並べ直しました。</p>
+            <p class="improvement-section__text">旧「オーダー」「申請」タブに散らばっていた情報を、申請・契約で確認する情報と請求・決済で確認する情報に分けて並べ直しました。</p>
 
             <div class="improvement-subsection">
-              <div class="improvement-subsection__title">生徒商品</div>
+              <div class="improvement-subsection__title">登録済商品</div>
               <ul class="improvement-list">
                 <li>見る頻度の高い通年契約を目立つ位置に表示。</li>
                 <li>生成元の申請を辿れるようにし、変更や調整の背景を確認しやすくしました。</li>
                 <li>請求書作成済かを表示し、変更時に調整金額が発生しそうか判断しやすくしました。</li>
-                <li>生徒商品リストから直接変更操作に進める導線を追加しました。</li>
+                <li>登録済商品リストから直接変更操作に進める導線を追加しました。</li>
               </ul>
             </div>
 
             <div class="improvement-subsection">
               <div class="improvement-subsection__title">次回の締め請求書内容</div>
               <ul class="improvement-list">
-                <li>元々請求書タブにあった情報を、受講中商品と同じタブで見られるようにしました。</li>
-                <li>保護者からの問い合わせ時に、商品内容と次回請求内容を横断確認しやすくしました。</li>
+                <li>請求・決済タブに配置し、次回請求に入る内容を請求確認の流れで見られるようにしました。</li>
+                <li>保護者からの問い合わせ時に、請求予定と請求履歴を同じタブで横断確認しやすくしました。</li>
                 <li>合計金額を表示し、次回請求の規模感をすぐ確認できるようにしました。</li>
                 <li>生成元の申請を辿れるようにし、調整作業の起点を確認しやすくしました。</li>
               </ul>
@@ -1970,6 +2076,26 @@
         hideModal: function(id) { var m = document.getElementById(id); if (m) m.style.display = 'none'; }
       };
 
+      // ===== タブ別の関連リスト配置 =====
+      (function arrangeRelatedLists() {
+        var applicationTab = document.getElementById('tabContent-application-contract');
+        var billingTab = document.getElementById('tabContent-billing-payment');
+        var applicationHistory = document.getElementById('applicationHistorySection');
+        var registeredProducts = document.getElementById('registeredProductSection');
+        var invoiceSection = document.getElementById('invoiceSection');
+        var nextInvoice = document.getElementById('nextInvoiceSection');
+        var billingHistory = document.getElementById('billingHistorySection');
+        if (applicationTab && applicationHistory && registeredProducts) {
+          applicationTab.appendChild(applicationHistory);
+          applicationTab.appendChild(registeredProducts);
+        }
+        if (billingTab && invoiceSection && nextInvoice && billingHistory) {
+          billingTab.appendChild(invoiceSection);
+          billingTab.appendChild(nextInvoice);
+          billingTab.appendChild(billingHistory);
+        }
+      })();
+
       // ===== 左カラム詳細タブ切り替え =====
       document.getElementById('detailTabList').addEventListener('click', function(e) {
         var tab = e.target.closest('.detail-tab');
@@ -2003,7 +2129,7 @@
         else { body.style.display = 'none'; toggle.style.transform = 'rotate(-90deg)'; }
       }
 
-      // ===== 生徒商品フィルター & 複数選択 =====
+      // ===== 登録済商品フィルター & 複数選択 =====
       (function() {
         var selectAll = document.getElementById('selectAll');
         var rowChecks = Array.prototype.slice.call(document.querySelectorAll('.row-check'));
@@ -2149,6 +2275,7 @@
         },
         btnCreateBillingItem: function() { console.log('請求項目作成 clicked'); },
         btnCreateInvoice: function() { console.log('請求書作成 clicked'); },
+        btnCreateInvoiceFromBilling: function() { console.log('請求書作成 clicked'); },
         btnNotificationActions: function(e) {
           e.preventDefault();
           var wrapper = document.getElementById('notificationActions');
@@ -2169,7 +2296,7 @@
         if (el) el.addEventListener('click', buttonHandlers[id]);
       });
       document.addEventListener('click', function(e) {
-        document.querySelectorAll('.highlights-panel__actions .actions-more').forEach(function(wrapper) {
+        document.querySelectorAll('.actions-more').forEach(function(wrapper) {
           if (wrapper.contains(e.target)) return;
           var button = wrapper.querySelector('button[aria-haspopup="true"]');
           wrapper.classList.remove('is-open');
