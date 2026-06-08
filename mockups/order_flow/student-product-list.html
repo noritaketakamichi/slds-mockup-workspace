@@ -443,6 +443,10 @@
       .related-list .col-row-action { width: 48px; text-align: center; }
       .related-list .amount-cell { text-align: right; font-variant-numeric: tabular-nums; }
       .related-list tbody tr.is-selected > td { background: #f3f8ff; }
+      #registeredProductSection .col-check,
+      #registeredProductSection .bulk-bar {
+        display: none !important;
+      }
       .row-action-button {
         width: 28px;
         height: 28px;
@@ -454,6 +458,49 @@
         justify-content: center;
       }
       .row-action-button svg { width: 16px; height: 16px; fill: #706e6b; }
+      .record-actions {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .record-action-trigger {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #747474;
+        border-radius: 4px;
+        background: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .record-action-trigger:hover { background: #f3f3f3; }
+      .record-action-trigger svg { width: 16px; height: 16px; fill: #706e6b; }
+      .record-action-menu {
+        display: none;
+        position: absolute;
+        top: 32px;
+        right: 0;
+        min-width: 112px;
+        padding: 0.25rem 0;
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+        z-index: 35;
+        text-align: left;
+      }
+      .record-actions.is-open .record-action-menu { display: block; }
+      .record-action-item {
+        display: block;
+        padding: 0.45rem 0.75rem;
+        color: #181818;
+        font-size: 0.8125rem;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .record-action-item:hover { background: #f3f3f3; text-decoration: none; }
       .invoice-status {
         display: inline-flex; align-items: center; gap: 0.25rem;
         font-size: 0.75rem; font-weight: 600;
@@ -1841,6 +1888,7 @@
                           </div>
                         </a>
                       </th>
+                      <th class="col-row-action" scope="col"><span class="slds-assistive-text">行アクション</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1853,6 +1901,17 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
                       <td><div class="slds-truncate">2026/06/04</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td class="col-row-action">
+                        <div class="record-actions">
+                          <button class="record-action-trigger" type="button" title="申請操作" aria-haspopup="true" aria-expanded="false">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                          </button>
+                          <div class="record-action-menu" role="menu" aria-label="AP-128の操作">
+                            <a href="#" class="record-action-item" role="menuitem">編集</a>
+                            <a href="#" class="record-action-item" role="menuitem">取り消し</a>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                     <tr class="slds-hint-parent">
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
@@ -1863,6 +1922,17 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
                       <td><div class="slds-truncate">2026/06/03</div></td>
                       <td><div class="slds-truncate">2026/06/04</div></td>
+                      <td class="col-row-action">
+                        <div class="record-actions">
+                          <button class="record-action-trigger" type="button" title="申請操作" aria-haspopup="true" aria-expanded="false">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                          </button>
+                          <div class="record-action-menu" role="menu" aria-label="AP-127の操作">
+                            <a href="#" class="record-action-item" role="menuitem">編集</a>
+                            <a href="#" class="record-action-item" role="menuitem">取り消し</a>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                     <tr class="slds-hint-parent">
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
@@ -1878,6 +1948,17 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
                       <td><div class="slds-truncate">2026/06/02</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td class="col-row-action">
+                        <div class="record-actions">
+                          <button class="record-action-trigger" type="button" title="申請操作" aria-haspopup="true" aria-expanded="false">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                          </button>
+                          <div class="record-action-menu" role="menu" aria-label="AP-126の操作">
+                            <a href="#" class="record-action-item" role="menuitem">編集</a>
+                            <a href="#" class="record-action-item" role="menuitem">取り消し</a>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                     <tr class="slds-hint-parent">
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
@@ -1888,6 +1969,17 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
                       <td><div class="slds-truncate">2026/05/30</div></td>
                       <td><div class="slds-truncate">2026/05/31</div></td>
+                      <td class="col-row-action">
+                        <div class="record-actions">
+                          <button class="record-action-trigger" type="button" title="申請操作" aria-haspopup="true" aria-expanded="false">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                          </button>
+                          <div class="record-action-menu" role="menu" aria-label="AP-125の操作">
+                            <a href="#" class="record-action-item" role="menuitem">編集</a>
+                            <a href="#" class="record-action-item" role="menuitem">取り消し</a>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                     <tr class="slds-hint-parent">
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
@@ -1903,6 +1995,17 @@
                       <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
                       <td><div class="slds-truncate">2026/05/28</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
+                      <td class="col-row-action">
+                        <div class="record-actions">
+                          <button class="record-action-trigger" type="button" title="申請操作" aria-haspopup="true" aria-expanded="false">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                          </button>
+                          <div class="record-action-menu" role="menu" aria-label="AP-124の操作">
+                            <a href="#" class="record-action-item" role="menuitem">編集</a>
+                            <a href="#" class="record-action-item" role="menuitem">取り消し</a>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -2303,6 +2406,46 @@
           if (button) button.setAttribute('aria-expanded', 'false');
         });
       });
+
+      // ===== 申請履歴 行アクション =====
+      (function() {
+        function closeRecordActionMenus() {
+          document.querySelectorAll('.record-actions').forEach(function(wrapper) {
+            wrapper.classList.remove('is-open');
+            var trigger = wrapper.querySelector('.record-action-trigger');
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+          });
+        }
+
+        document.querySelectorAll('.record-action-trigger').forEach(function(trigger) {
+          trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var wrapper = trigger.closest('.record-actions');
+            var shouldOpen = wrapper && !wrapper.classList.contains('is-open');
+            closeRecordActionMenus();
+            if (wrapper && shouldOpen) {
+              wrapper.classList.add('is-open');
+              trigger.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+
+        document.querySelectorAll('.record-action-item').forEach(function(item) {
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
+            var row = item.closest('tr');
+            var applicationLink = row ? row.querySelector('.cell-link') : null;
+            console.log('申請履歴行アクション:', applicationLink ? applicationLink.textContent.trim() : '', item.textContent.trim());
+            closeRecordActionMenus();
+          });
+        });
+
+        document.addEventListener('click', function(e) {
+          if (e.target.closest('.record-actions')) return;
+          closeRecordActionMenus();
+        });
+      })();
 
       // ===== 改善ポイント説明ドロワー =====
       (function() {
