@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>オーダーに商品を追加</title>
+    <title>申請に商品を追加</title>
     <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
     <style>
       body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
@@ -265,6 +265,24 @@
         height: 16px;
       }
       .tag-dropdown__item--checked { background: #eef4ff; }
+      .tag-badge {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #d8dde6;
+        border-radius: 999px;
+        padding: 1px 8px;
+        background: #f3f3f3;
+        color: #444;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        white-space: nowrap;
+      }
+      .tag-badge + .tag-badge { margin-left: 4px; }
+      .tag-badge--selected {
+        border-color: #b9daf5;
+        background: #eef4ff;
+        color: #0176d3;
+      }
 
       /* ===== 検索バー ===== */
       .search-bar {
@@ -285,6 +303,20 @@
         color: #181818;
       }
       .search-bar input::placeholder { color: #b0adab; }
+      .filter-summary {
+        font-size: 0.75rem;
+        color: #706e6b;
+        margin: -0.25rem 0 0.75rem;
+      }
+      .empty-state {
+        display: none;
+        padding: 1rem;
+        text-align: center;
+        color: #706e6b;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 0.8125rem;
+      }
+      .empty-state.is-visible { display: block; }
 
       /* ===== 選択カウント ===== */
       .select-count {
@@ -366,7 +398,7 @@
 
           <!-- ヘッダー -->
           <div class="modal-header">
-            <div class="modal-header__title">オーダーに商品を追加</div>
+            <div class="modal-header__title">申請に商品を追加</div>
           </div>
 
           <!-- ボディ -->
@@ -388,16 +420,16 @@
                 </div>
                 <div class="tag-dropdown" id="yearDropdown">
                   <label class="tag-dropdown__item">
-                    <input type="checkbox" class="year-checkbox" data-year="2025"> 2025
+                    <input type="checkbox" class="year-checkbox" data-year="2025" aria-label="2025年度で絞り込み"> 2025
                   </label>
                   <label class="tag-dropdown__item tag-dropdown__item--checked">
-                    <input type="checkbox" class="year-checkbox" data-year="2026" checked> 2026
+                    <input type="checkbox" class="year-checkbox" data-year="2026" aria-label="2026年度で絞り込み" checked> 2026
                   </label>
                 </div>
               </div>
               <div class="filter-field">
                 <label class="filter-field__label" for="locationFilter"><span class="required">*</span>拠点</label>
-                <select class="filter-select" id="locationFilter">
+                <select class="filter-select" id="locationFilter" aria-label="拠点">
                   <option value="" disabled>拠点を選択...</option>
                   <option value="order-test" selected>第一ゼミナール富田林校</option>
                   <option value="shibuya">渋谷教室</option>
@@ -409,12 +441,42 @@
             <!-- 商品タイプ -->
             <div style="margin-bottom: 0.75rem;">
               <label class="filter-field__label" for="productTypeFilter">商品タイプ</label>
-              <select class="filter-select" id="productTypeFilter">
-                <option>すべて</option>
-                <option>費用</option>
-                <option>コース商品</option>
-                <option>教材</option>
+              <select class="filter-select" id="productTypeFilter" aria-label="商品タイプ">
+                <option value="all">すべて</option>
+                <option value="費用">費用</option>
+                <option value="コース商品">コース商品</option>
+                <option value="教材">教材</option>
+                <option value="模試">模試</option>
               </select>
+            </div>
+
+            <!-- 商品タグ + 請求方式 -->
+            <div class="filter-row">
+              <div class="filter-field">
+                <div class="tag-multiselect" id="productTagFilter">
+                  <label class="tag-multiselect__label">商品タグ</label>
+                  <div class="tag-multiselect__input" id="tagFilterInput" tabindex="0" role="button" aria-label="商品タグで絞り込み" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="tag-multiselect__placeholder" id="tagFilterPlaceholder">教材、模試などで絞り込み</span>
+                    <svg class="tag-multiselect__chevron" width="14" height="14" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                  <div class="tag-dropdown" id="tagDropdown" role="listbox" aria-label="商品タグ">
+                    <label class="tag-dropdown__item"><input type="checkbox" class="tag-checkbox" data-tag="教材" aria-label="教材タグで絞り込み"> 教材</label>
+                    <label class="tag-dropdown__item"><input type="checkbox" class="tag-checkbox" data-tag="模試" aria-label="模試タグで絞り込み"> 模試</label>
+                    <label class="tag-dropdown__item"><input type="checkbox" class="tag-checkbox" data-tag="授業料" aria-label="授業料タグで絞り込み"> 授業料</label>
+                    <label class="tag-dropdown__item"><input type="checkbox" class="tag-checkbox" data-tag="講習" aria-label="講習タグで絞り込み"> 講習</label>
+                    <label class="tag-dropdown__item"><input type="checkbox" class="tag-checkbox" data-tag="入会金" aria-label="入会金タグで絞り込み"> 入会金</label>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-field">
+                <div class="checkbox-group">
+                  <span class="checkbox-group__label">請求方式</span>
+                  <div class="checkbox-row">
+                    <label class="checkbox-item"><input type="checkbox" class="billing-checkbox" value="one-time" aria-label="単発請求商品で絞り込み" checked> 単発請求商品</label>
+                    <label class="checkbox-item"><input type="checkbox" class="billing-checkbox" value="recurring" aria-label="継続請求商品で絞り込み" checked> 継続請求商品</label>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- 検索 -->
@@ -423,6 +485,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#b0adab"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
               <input type="text" placeholder="商品を検索..." id="productSearch" aria-label="商品を検索" />
             </div>
+            <div class="filter-summary" id="filterSummary">8 件の商品を表示中</div>
 
             <!-- 選択カウント -->
             <div class="select-count" id="selectCount">0 選択中</div>
@@ -434,78 +497,70 @@
                   <th style="width:32px;"><input type="checkbox" id="selectAll" aria-label="商品をすべて選択" /><label class="slds-assistive-text" for="selectAll">商品をすべて選択</label></th>
                   <th style="width:24px;"></th>
                   <th>名称 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
-                  <th>商品タイプ <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
-                  <th>拠点 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
+                  <th>タグ <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
                   <th>年度 <svg class="sort-icon" width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></th>
                 </tr>
               </thead>
               <tbody id="productTableBody">
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="コース商品" data-billing="recurring" data-tags="授業料" data-search="小5単科制算国1科 2026 コース商品 授業料 継続請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow1" aria-label="小5単科制算国1科_2026を選択" /><label class="slds-assistive-text" for="productRow1">小5単科制算国1科_2026を選択</label></td>
                   <td class="row-num">1</td>
                   <td><a href="#">小5単科制算国1科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">授業料</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="コース商品" data-billing="recurring" data-tags="授業料" data-search="小5単科制算国2科 2026 コース商品 授業料 継続請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow2" aria-label="小5単科制算国2科_2026を選択" /><label class="slds-assistive-text" for="productRow2">小5単科制算国2科_2026を選択</label></td>
                   <td class="row-num">2</td>
                   <td><a href="#">小5単科制算国2科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">授業料</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="コース商品" data-billing="recurring" data-tags="授業料" data-search="小5単科制英語 2026 コース商品 授業料 継続請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow3" aria-label="小5単科制英語_2026を選択" /><label class="slds-assistive-text" for="productRow3">小5単科制英語_2026を選択</label></td>
                   <td class="row-num">3</td>
                   <td><a href="#">小5単科制英語_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">授業料</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="コース商品" data-billing="recurring" data-tags="講習 授業料" data-search="小5公立中高算国1科 2026 コース商品 講習 授業料 継続請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow4" aria-label="小5公立中高算国1科_2026を選択" /><label class="slds-assistive-text" for="productRow4">小5公立中高算国1科_2026を選択</label></td>
                   <td class="row-num">4</td>
                   <td><a href="#">小5公立中高算国1科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">講習</span><span class="tag-badge">授業料</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="コース商品" data-billing="recurring" data-tags="講習 授業料" data-search="小5公立中高算国2科 2026 コース商品 講習 授業料 継続請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow5" aria-label="小5公立中高算国2科_2026を選択" /><label class="slds-assistive-text" for="productRow5">小5公立中高算国2科_2026を選択</label></td>
                   <td class="row-num">5</td>
                   <td><a href="#">小5公立中高算国2科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">講習</span><span class="tag-badge">授業料</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="教材" data-billing="one-time" data-tags="教材" data-search="小5公立中高理社併用1科 教材 2026 単発請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow6" aria-label="小5公立中高理社併用1科_2026を選択" /><label class="slds-assistive-text" for="productRow6">小5公立中高理社併用1科_2026を選択</label></td>
                   <td class="row-num">6</td>
                   <td><a href="#">小5公立中高理社併用1科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">教材</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="教材" data-billing="one-time" data-tags="教材" data-search="小5公立中高理社併用2科 教材 2026 単発請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow7" aria-label="小5公立中高理社併用2科_2026を選択" /><label class="slds-assistive-text" for="productRow7">小5公立中高理社併用2科_2026を選択</label></td>
                   <td class="row-num">7</td>
                   <td><a href="#">小5公立中高理社併用2科_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">教材</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
-                <tr data-year="2026">
+                <tr data-year="2026" data-product-type="模試" data-billing="one-time" data-tags="模試" data-search="小5単科制算国夏 模試 2026 単発請求 第一ゼミナール富田林校">
                   <td><input type="checkbox" class="product-checkbox" id="productRow8" aria-label="小5単科制算国夏_2026を選択" /><label class="slds-assistive-text" for="productRow8">小5単科制算国夏_2026を選択</label></td>
                   <td class="row-num">8</td>
                   <td><a href="#">小5単科制算国夏_2026</a></td>
-                  <td>コース商品</td>
-                  <td><a href="#">第一ゼミナール富田林校</a></td>
+                  <td><span class="tag-badge">模試</span></td>
                   <td><a href="#">2026</a></td>
                 </tr>
               </tbody>
             </table>
+            <div class="empty-state" id="emptyState">条件に一致する商品がありません。</div>
           </div>
 
           <!-- フッター -->
@@ -522,8 +577,17 @@
     <script>
       // ===== チェックボックス選択カウント =====
       function updateSelectCount() {
-        var checked = document.querySelectorAll('.product-checkbox:checked').length;
+        var checked = document.querySelectorAll('#productTableBody tr:not([style*="display: none"]) .product-checkbox:checked').length;
         document.getElementById('selectCount').textContent = checked + ' 選択中';
+        updateSelectAllState();
+      }
+
+      function updateSelectAllState() {
+        var visibleCheckboxes = Array.prototype.slice.call(document.querySelectorAll('#productTableBody tr:not([style*="display: none"]) .product-checkbox'));
+        var checkedCount = visibleCheckboxes.filter(function(cb) { return cb.checked; }).length;
+        var selectAll = document.getElementById('selectAll');
+        selectAll.checked = visibleCheckboxes.length > 0 && checkedCount === visibleCheckboxes.length;
+        selectAll.indeterminate = checkedCount > 0 && checkedCount < visibleCheckboxes.length;
       }
 
       document.querySelectorAll('.product-checkbox').forEach(function(cb) {
@@ -533,7 +597,7 @@
       // 全選択
       document.getElementById('selectAll').addEventListener('change', function() {
         var checked = this.checked;
-        document.querySelectorAll('.product-checkbox').forEach(function(cb) {
+        document.querySelectorAll('#productTableBody tr:not([style*="display: none"]) .product-checkbox').forEach(function(cb) {
           cb.checked = checked;
         });
         updateSelectCount();
@@ -554,7 +618,7 @@
             alert('商品を選択してください。');
             return;
           }
-          // オーダーグループ編集画面へ
+          // 申請グループ編集画面へ
           window.location.href = 'order-group-edit.html';
         }
       };
@@ -582,7 +646,7 @@
       document.querySelectorAll('.year-checkbox').forEach(function(cb) {
         cb.addEventListener('change', function() {
           renderYearPills();
-          filterByYear();
+          applyProductFilters();
         });
       });
 
@@ -608,7 +672,7 @@
               var checkbox = document.querySelector('.year-checkbox[data-year="' + yr + '"]');
               if (checkbox) { checkbox.checked = false; }
               renderYearPills();
-              filterByYear();
+              applyProductFilters();
             });
           } else {
             item.classList.remove('tag-dropdown__item--checked');
@@ -616,25 +680,105 @@
         });
       }
 
-      function filterByYear() {
-        var selectedYears = [];
-        document.querySelectorAll('.year-checkbox:checked').forEach(function(cb) {
-          selectedYears.push(cb.dataset.year);
+      // ===== 商品タグフィルター =====
+      var tagFilterInput = document.getElementById('tagFilterInput');
+      var tagDropdown = document.getElementById('tagDropdown');
+      var tagFilterPlaceholder = document.getElementById('tagFilterPlaceholder');
+
+      tagFilterInput.addEventListener('click', function(e) {
+        if (e.target.closest('[data-tag-remove]')) return;
+        tagDropdown.classList.toggle('is-open');
+        tagFilterInput.setAttribute('aria-expanded', tagDropdown.classList.contains('is-open') ? 'true' : 'false');
+      });
+
+      document.addEventListener('click', function(e) {
+        var tagFilter = document.getElementById('productTagFilter');
+        if (!tagFilter.contains(e.target)) {
+          tagDropdown.classList.remove('is-open');
+          tagFilterInput.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.querySelectorAll('.tag-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          renderTagPills();
+          applyProductFilters();
         });
+      });
+
+      function renderTagPills() {
+        tagFilterInput.querySelectorAll('[data-tag-pill]').forEach(function(pill) { pill.remove(); });
+        var chevron = tagFilterInput.querySelector('.tag-multiselect__chevron');
+        var selectedTags = getSelectedTags();
+        tagFilterPlaceholder.style.display = selectedTags.length ? 'none' : '';
+
+        document.querySelectorAll('.tag-checkbox').forEach(function(cb) {
+          var item = cb.closest('.tag-dropdown__item');
+          if (cb.checked) {
+            item.classList.add('tag-dropdown__item--checked');
+            var pill = document.createElement('span');
+            pill.className = 'tag-pill-selected';
+            pill.setAttribute('data-tag-pill', cb.dataset.tag);
+            pill.innerHTML =
+              '<span class="tag-pill-selected__icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/></svg></span>'
+              + cb.dataset.tag
+              + '<button class="tag-pill-selected__remove" data-tag-remove="' + cb.dataset.tag + '" title="削除"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>';
+            tagFilterInput.insertBefore(pill, chevron);
+            pill.querySelector('[data-tag-remove]').addEventListener('click', function(e) {
+              e.stopPropagation();
+              var tag = this.dataset.tagRemove;
+              var checkbox = document.querySelector('.tag-checkbox[data-tag="' + tag + '"]');
+              if (checkbox) { checkbox.checked = false; }
+              renderTagPills();
+              applyProductFilters();
+            });
+          } else {
+            item.classList.remove('tag-dropdown__item--checked');
+          }
+        });
+      }
+
+      function getSelectedTags() {
+        return Array.prototype.slice.call(document.querySelectorAll('.tag-checkbox:checked')).map(function(cb) {
+          return cb.dataset.tag;
+        });
+      }
+
+      function applyProductFilters() {
+        var selectedYears = Array.prototype.slice.call(document.querySelectorAll('.year-checkbox:checked')).map(function(cb) {
+          return cb.dataset.year;
+        });
+        var selectedTags = getSelectedTags();
+        var selectedBillingTypes = Array.prototype.slice.call(document.querySelectorAll('.billing-checkbox:checked')).map(function(cb) {
+          return cb.value;
+        });
+        var productType = document.getElementById('productTypeFilter').value;
+        var searchText = document.getElementById('productSearch').value.trim().toLowerCase();
         var rows = document.querySelectorAll('#productTableBody tr[data-year]');
         var visibleIndex = 0;
+
         rows.forEach(function(row) {
-          if (selectedYears.length === 0 || selectedYears.indexOf(row.dataset.year) !== -1) {
+          var rowTags = (row.dataset.tags || '').split(' ');
+          var matchesYear = selectedYears.length === 0 || selectedYears.indexOf(row.dataset.year) !== -1;
+          var matchesTag = selectedTags.length === 0 || selectedTags.some(function(tag) { return rowTags.indexOf(tag) !== -1; });
+          var matchesBilling = selectedBillingTypes.length === 0 || selectedBillingTypes.indexOf(row.dataset.billing) !== -1;
+          var matchesType = productType === 'all' || row.dataset.productType === productType;
+          var searchableText = (row.dataset.search || row.textContent).toLowerCase();
+          var matchesText = searchText === '' || searchableText.indexOf(searchText) !== -1;
+
+          if (matchesYear && matchesTag && matchesBilling && matchesType && matchesText) {
             row.style.display = '';
             visibleIndex++;
             row.querySelector('.row-num').textContent = visibleIndex;
           } else {
             row.style.display = 'none';
-            // チェック解除
             var cb = row.querySelector('.product-checkbox');
             if (cb) cb.checked = false;
           }
         });
+
+        document.getElementById('filterSummary').textContent = visibleIndex + ' 件の商品を表示中';
+        document.getElementById('emptyState').classList.toggle('is-visible', visibleIndex === 0);
         updateSelectCount();
       }
 
@@ -646,8 +790,14 @@
           var checkbox = document.querySelector('.year-checkbox[data-year="' + yr + '"]');
           if (checkbox) { checkbox.checked = false; }
           renderYearPills();
-          filterByYear();
+          applyProductFilters();
         });
+      });
+
+      document.getElementById('productTypeFilter').addEventListener('change', applyProductFilters);
+      document.getElementById('productSearch').addEventListener('input', applyProductFilters);
+      document.querySelectorAll('.billing-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', applyProductFilters);
       });
 
       // ===== 画面遷移ユーティリティ =====
@@ -655,10 +805,21 @@
         navigateTo: function(url) {
           window.location.href = url;
         },
+        showModal: function(id) {
+          var modal = document.getElementById(id);
+          if (modal) modal.classList.remove('is-hidden');
+        },
+        hideModal: function(id) {
+          var modal = document.getElementById(id);
+          if (modal) modal.classList.add('is-hidden');
+        },
         goBack: function() {
           window.location.href = 'student-product-list.html';
         }
       };
+
+      renderTagPills();
+      applyProductFilters();
     </script>
   </body>
 </html>

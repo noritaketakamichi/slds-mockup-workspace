@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ODG-540275 | オーダー</title>
+    <title>ODG-540275 | 申請</title>
     <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
     <style>
       body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
@@ -431,11 +431,11 @@
       <!-- ===== レコードタブバー ===== -->
       <div class="record-tabs">
         <a href="#" class="record-tab is-active">
-          ODG-540275 | オーダー
+          ODG-540275 | 申請
           <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </a>
         <a href="product-add-change.html" class="record-tab">
-          オーダーグループ内商品...
+          申請グループ内商品...
           <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </a>
       </div>
@@ -448,14 +448,14 @@
               <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </div>
             <div>
-              <div class="highlights-panel__label">オーダー</div>
+              <div class="highlights-panel__label">申請</div>
               <div class="highlights-panel__name">ODG-540275</div>
             </div>
           </div>
           <div class="highlights-panel__actions">
             <button class="slds-button slds-button_neutral" id="btnBackToStudent">生徒画面に戻る</button>
             <button class="slds-button slds-button_outline-brand" id="btnSubmit">提出</button>
-            <button class="slds-button slds-button_neutral" id="btnOrderChange">オーダー内容変更</button>
+            <button class="slds-button slds-button_neutral" id="btnOrderChange">申請内容変更</button>
             <button class="slds-button slds-button_neutral" id="btnCustomInvoice">カスタム請求項目追加・変更</button>
           </div>
         </div>
@@ -466,7 +466,7 @@
           </div>
           <div class="highlights-field">
             <div class="highlights-field__label">メイン拠点</div>
-            <div class="highlights-field__value"><a href="#" class="field-link">オーダーテスト用教室</a></div>
+            <div class="highlights-field__value"><a href="#" class="field-link">申請テスト用教室</a></div>
           </div>
           <div class="highlights-field">
             <div class="highlights-field__label">学年</div>
@@ -477,7 +477,7 @@
             <div class="highlights-field__value">新規</div>
           </div>
           <div class="highlights-field">
-            <div class="highlights-field__label">オーダー時に確定する請求項目金額</div>
+            <div class="highlights-field__label">申請時に確定する請求項目金額</div>
             <div class="highlights-field__value">&yen; 49,000</div>
           </div>
           <div class="highlights-field">
@@ -504,14 +504,14 @@
         <!-- ===== 左カラム ===== -->
         <div class="record-body__left">
 
-          <!-- オーダー商品 (3) — Before / After 比較ビュー -->
+          <!-- 申請商品 (3) — Before / After 比較ビュー -->
           <div class="section-card">
             <div class="section-header" onclick="toggleSection('order-items')">
               <div class="section-header__left">
                 <svg class="section-header__toggle" id="toggle-order-items" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M7 10l5 5 5-5z"/>
                 </svg>
-                <span class="section-header__title">オーダー商品 (3)</span>
+                <span class="section-header__title">申請商品 (3)</span>
               </div>
               <div class="section-header__right">
                 <span class="section-header__note">3 個の項目 ・ 数秒前 に更新されました。</span>
@@ -606,14 +606,14 @@
             </div>
           </div>
 
-          <!-- オーダーの請求項目 (2) -->
+          <!-- 申請の請求項目 (2) -->
           <div class="section-card">
             <div class="section-header" onclick="toggleSection('invoice-items')">
               <div class="section-header__left">
                 <svg class="section-header__toggle" id="toggle-invoice-items" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M7 10l5 5 5-5z"/>
                 </svg>
-                <span class="section-header__title">オーダーの請求項目 (2)</span>
+                <span class="section-header__title">申請の請求項目 (2)</span>
               </div>
               <div class="section-header__right">
                 <span class="section-header__note">2 個の項目 ・ 数秒前 に更新されました。</span>
@@ -635,14 +635,14 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a href="#">オーダーテスト...</a></td>
+                    <td><a href="#">申請テスト...</a></td>
                     <td><a href="#">2025</a></td>
                     <td>2026/03</td>
                     <td>2025中1継続個別コース商品テスト</td>
                     <td>&yen; 24,000</td>
                   </tr>
                   <tr>
-                    <td><a href="#">オーダーテスト...</a></td>
+                    <td><a href="#">申請テスト...</a></td>
                     <td><a href="#">2025</a></td>
                     <td>2026/03</td>
                     <td>入会費</td>

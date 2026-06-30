@@ -1,0 +1,54 @@
+<!-- ============================================
+     レコードページ本体（2カラム: 関連リスト + 詳細パネル）
+     ============================================ -->
+<div class="slds-grid slds-gutters" style="background: #f3f3f3; padding: 0.75rem;">
+
+  <!-- 左カラム: 関連リスト群 (~65%) -->
+  <div class="slds-col slds-size_8-of-12">
+
+    <!-- 関連リスト1 -->
+    <!-- ここに parts/related-list.html パターンを挿入 -->
+
+    <!-- 関連リスト2 -->
+    <!-- ... -->
+
+  </div>
+
+  <!-- 右カラム: 詳細パネル (~35%) -->
+  <div class="slds-col slds-size_4-of-12">
+    <article class="slds-card">
+      <div class="slds-card__body slds-card__body_inner slds-p-around_none">
+
+        <!-- タブ: 概要 | 活動 | Chatter -->
+        <div class="slds-tabs_default">
+          <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-tabs_default__item slds-is-active" role="presentation">
+              <a class="slds-tabs_default__link" role="tab" tabindex="0" aria-selected="true">概要</a>
+            </li>
+            <li class="slds-tabs_default__item" role="presentation">
+              <a class="slds-tabs_default__link" role="tab" tabindex="-1">活動</a>
+            </li>
+            <li class="slds-tabs_default__item" role="presentation">
+              <a class="slds-tabs_default__link" role="tab" tabindex="-1">Chatter</a>
+            </li>
+          </ul>
+
+          <!-- 概要タブ内容: フィールド縦並び -->
+          <div class="slds-tabs_default__content slds-show" role="tabpanel">
+            <div class="slds-p-around_medium">
+              <dl class="slds-list_stacked">
+                <dt class="slds-item_label slds-text-color_weak slds-truncate">{{FIELD_LABEL}}</dt>
+                <dd class="slds-item_detail slds-truncate slds-m-bottom_small">{{FIELD_VALUE}}</dd>
+
+                <dt class="slds-item_label slds-text-color_weak slds-truncate">{{FIELD_LABEL}}</dt>
+                <dd class="slds-item_detail slds-truncate slds-m-bottom_small">{{FIELD_VALUE}}</dd>
+              </dl>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </article>
+  </div>
+
+</div>

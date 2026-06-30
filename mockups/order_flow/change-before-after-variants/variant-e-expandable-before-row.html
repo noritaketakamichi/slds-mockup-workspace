@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant E: 展開行で変更前を表示</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; color: #181818; }
+    .page { padding: 1rem; }
+    .variant-label { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: .75rem 1rem; margin-bottom: .75rem; }
+    .variant-label__title { font-weight: 700; }
+    .variant-label__desc { color: #706e6b; font-size: .8125rem; margin-top: .25rem; }
+    .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; overflow: hidden; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; border-bottom: 1px solid #e5e5e5; }
+    .section-header__title { font-weight: 700; font-size: .875rem; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: .8125rem; }
+    .data-table th { background: #fafaf9; border-bottom: 1px solid #d8dde6; padding: .625rem .75rem; text-align: left; font-weight: 700; white-space: nowrap; }
+    .data-table td { border-bottom: 1px solid #e5e5e5; padding: .625rem .75rem; vertical-align: top; }
+    .data-table a { color: #0176d3; text-decoration: none; font-weight: 700; }
+    .data-table input[type="checkbox"] { width: 16px; height: 16px; accent-color: #0176d3; }
+    .toggle-btn { width: 24px; height: 24px; border: 1px solid #d8dde6; background: #fff; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .toggle-btn svg { width: 14px; height: 14px; fill: #706e6b; }
+    .status-pill { display: inline-flex; border-radius: 999px; padding: .125rem .5rem; font-size: .6875rem; font-weight: 700; }
+    .status-pill--change { background: #eaf5ff; color: #0176d3; }
+    .status-pill--new { background: #eef7ee; color: #2e844a; }
+    .course-list { margin: 0; padding-left: 1rem; }
+    .before-row td { background: #fbfbfb; padding: 0 .75rem .75rem 4.25rem; }
+    .before-box { border: 1px solid #d8dde6; border-left: 4px solid #8c8c8c; border-radius: 4px; padding: .625rem .75rem; display: grid; grid-template-columns: 150px 1fr 120px 120px; gap: .75rem; }
+    .before-box__label { color: #706e6b; font-size: .6875rem; font-weight: 700; margin-bottom: .25rem; }
+    .after-note { color: #0176d3; font-size: .6875rem; font-weight: 700; margin-bottom: .25rem; }
+    .diff-added { color: #0176d3; font-weight: 700; }
+    .diff-removed { color: #ba0517; text-decoration: line-through; }
+  </style>
+</head>
+<body>
+<div class="slds-scope page">
+  <div class="variant-label">
+    <div class="variant-label__title">Variant E: 展開行で変更前を表示</div>
+    <div class="variant-label__desc">現行テーブル行は維持し、変更行だけ開閉できる詳細行でBeforeを表示。通常時の一覧密度を守る案。</div>
+  </div>
+  <section class="section-card">
+    <div class="section-header">
+      <div class="section-header__title">申請内商品</div>
+      <div><button class="slds-button slds-button_neutral">編集</button> <button class="slds-button slds-button_neutral">削除</button></div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:32px;"><input type="checkbox"></th>
+          <th style="width:36px;"></th>
+          <th>拠点</th><th>年度</th><th>名称</th><th>提供コース</th><th>タイプ</th><th>割引</th><th>開始日</th><th>変更日</th><th>終了日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><button class="toggle-btn" aria-label="変更前を表示"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button></td>
+          <td><a href="#">申請テスト用教室</a></td>
+          <td><a href="#">2025</a></td>
+          <td><div class="after-note">変更後</div><a href="#">2025中1継続個別コー...</a></td>
+          <td><ul class="course-list"><li class="diff-added">[2025_test] 中1社会 1コマ</li><li class="diff-added">[2025_test] 中1理科 1コマ</li></ul></td>
+          <td><span class="status-pill status-pill--change">変更</span></td>
+          <td>-</td><td>2026/03/01</td><td>2026/03/01</td><td>2026/03/31</td>
+        </tr>
+        <tr class="before-row">
+          <td colspan="11">
+            <div class="before-box">
+              <div><div class="before-box__label">変更前の商品</div>2025中1継続集団コース</div>
+              <div><div class="before-box__label">変更前の提供コース</div>[2025_test] 中1算数 2コマ / <span class="diff-removed">[2025_test] 中1英語 1コマ</span></div>
+              <div><div class="before-box__label">開始日</div>2025/04/01</div>
+              <div><div class="before-box__label">終了日</div>2026/03/31</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td><td></td><td><a href="#">申請テスト用教室</a></td><td><a href="#">2025</a></td><td><a href="#">入会費</a></td><td>-</td><td><span class="status-pill status-pill--new">新規</span></td><td>-</td><td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>

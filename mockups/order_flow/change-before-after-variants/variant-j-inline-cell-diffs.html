@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant J: セル内差分表示</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; color: #181818; }
+    .page { padding: 1rem; }
+    .variant-label { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: .75rem 1rem; margin-bottom: .75rem; }
+    .variant-label__title { font-weight: 700; }
+    .variant-label__desc { color: #706e6b; font-size: .8125rem; margin-top: .25rem; }
+    .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; overflow: hidden; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; border-bottom: 1px solid #e5e5e5; }
+    .section-header__title { font-weight: 700; font-size: .875rem; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: .8125rem; table-layout: fixed; }
+    .data-table th { background: #fafaf9; border-bottom: 1px solid #d8dde6; padding: .625rem .75rem; text-align: left; font-weight: 700; white-space: nowrap; }
+    .data-table td { border-bottom: 1px solid #e5e5e5; padding: .625rem .75rem; vertical-align: top; }
+    .data-table a { color: #0176d3; text-decoration: none; font-weight: 700; }
+    .data-table input[type="checkbox"] { width: 16px; height: 16px; accent-color: #0176d3; }
+    .status-pill { display: inline-flex; border-radius: 999px; padding: .125rem .5rem; font-size: .6875rem; font-weight: 700; }
+    .status-pill--change { background: #eaf5ff; color: #0176d3; }
+    .status-pill--new { background: #eef7ee; color: #2e844a; }
+    .change-cell { display: grid; gap: .35rem; }
+    .after-note { color: #0176d3; font-size: .6875rem; font-weight: 700; }
+    .diff-list { display: grid; gap: .25rem; margin: 0; padding: 0; list-style: none; }
+    .diff-item { display: flex; align-items: flex-start; gap: .35rem; line-height: 1.35; }
+    .diff-badge { flex: 0 0 auto; min-width: 2rem; text-align: center; border-radius: 999px; padding: 1px .35rem; font-size: .625rem; font-weight: 700; }
+    .diff-badge--add { background: #eef7ee; color: #2e844a; }
+    .diff-badge--remove { background: #fef1ee; color: #ba0517; }
+    .diff-badge--change { background: #eaf5ff; color: #0176d3; }
+    .diff-text--add { color: #2e844a; font-weight: 700; }
+    .diff-text--remove { color: #ba0517; text-decoration: line-through; }
+    .before-mini { color: #706e6b; font-size: .75rem; line-height: 1.35; }
+    .before-mini strong { color: #444; }
+    .discount-line { display: inline-flex; align-items: center; gap: .25rem; flex-wrap: wrap; }
+    .discount-chip { border: 1px solid #d8dde6; border-radius: 999px; padding: 1px .5rem; background: #f3f3f3; font-size: .75rem; }
+    .discount-chip--add { border-color: #91db8b; background: #eef7ee; color: #2e844a; font-weight: 700; }
+    .discount-chip--remove { border-color: #f4b8b2; background: #fef1ee; color: #ba0517; text-decoration: line-through; }
+    .cell-muted { color: #706e6b; }
+  </style>
+</head>
+<body>
+<div class="slds-scope page">
+  <div class="variant-label">
+    <div class="variant-label__title">Variant J: セル内差分表示</div>
+    <div class="variant-label__desc">現行テーブルを維持し、変更が起きるセルだけに「追加・除外・コマ数変更・割引変更」を表示する案。</div>
+  </div>
+
+  <section class="section-card">
+    <div class="section-header">
+      <div class="section-header__title">申請内商品</div>
+      <div><button class="slds-button slds-button_neutral">編集</button> <button class="slds-button slds-button_neutral">削除</button></div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:32px;"><input type="checkbox"></th>
+          <th style="width:13%;">拠点</th>
+          <th style="width:7%;">年度</th>
+          <th style="width:18%;">名称</th>
+          <th>提供コース</th>
+          <th style="width:8%;">タイプ</th>
+          <th style="width:15%;">割引</th>
+          <th style="width:9%;">開始日</th>
+          <th style="width:9%;">変更日</th>
+          <th style="width:9%;">終了日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><a href="#">申請テスト用教室</a></td>
+          <td><a href="#">2025</a></td>
+          <td><a href="#">2025中1継続個別コー...</a></td>
+          <td>
+            <div class="change-cell">
+              <ul class="diff-list">
+                <li class="diff-item"><span class="diff-badge diff-badge--change">変更</span><span>[2025_test] 中1社会 <strong>1→2コマ</strong></span></li>
+                <li class="diff-item"><span class="diff-badge diff-badge--add">追加</span><span class="diff-text--add">[2025_test] 中1理科 1コマ</span></li>
+                <li class="diff-item"><span class="diff-badge diff-badge--remove">除外</span><span class="diff-text--remove">[2025_test] 中1英語 1コマ</span></li>
+              </ul>
+            </div>
+          </td>
+          <td><span class="status-pill status-pill--change">変更</span></td>
+          <td>
+            <div class="discount-line">
+              <span class="discount-chip">社員割</span>
+              <span class="discount-chip discount-chip--add">兄弟割 追加</span>
+            </div>
+            <div class="before-mini">変更前: 社員割のみ</div>
+          </td>
+          <td>2026/03/01</td>
+          <td>2026/03/01</td>
+          <td>2026/03/31</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><a href="#">申請テスト用教室</a></td>
+          <td><a href="#">2025</a></td>
+          <td><a href="#">入会費</a></td>
+          <td class="cell-muted">-</td>
+          <td><span class="status-pill status-pill--new">新規</span></td>
+          <td class="cell-muted">-</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>

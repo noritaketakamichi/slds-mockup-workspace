@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant C: 変更カード</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; color: #181818; }
+    .page { padding: 1rem; max-width: 1180px; margin: 0 auto; }
+    .variant-label { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; }
+    .variant-label__title { font-weight: 700; font-size: 0.95rem; }
+    .variant-label__desc { color: #706e6b; font-size: 0.8125rem; margin-top: 0.25rem; }
+    .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: 0.75rem; }
+    .section-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .change-card { border: 1px solid #d8dde6; border-radius: 4px; margin-bottom: 0.75rem; overflow: hidden; }
+    .change-card__header { display: flex; align-items: center; justify-content: space-between; padding: 0.625rem 0.75rem; background: #fafaf9; border-bottom: 1px solid #e5e5e5; }
+    .change-card__name { color: #0176d3; font-weight: 700; }
+    .badge { border-radius: 999px; padding: 0.125rem 0.5rem; font-size: 0.6875rem; font-weight: 700; }
+    .badge--change { background: #eaf5ff; color: #0176d3; }
+    .badge--new { background: #eef7ee; color: #2e844a; }
+    .compare { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 0; }
+    .state { padding: 0.75rem; min-height: 122px; }
+    .state--before { background: #fafaf9; border-right: 1px solid #e5e5e5; }
+    .state--after { background: #f7fbff; border-left: 1px solid #e5e5e5; }
+    .state__label { color: #706e6b; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.375rem; }
+    .arrow { display: flex; align-items: center; justify-content: center; background: #fff; }
+    .arrow svg { width: 18px; height: 18px; fill: #706e6b; }
+    .field { display: grid; grid-template-columns: 5rem 1fr; gap: 0.5rem; line-height: 1.55; font-size: 0.8125rem; }
+    .field__label { color: #706e6b; font-weight: 700; }
+    .course-list { margin: 0; padding-left: 1rem; }
+    .diff-added { color: #0176d3; font-weight: 700; background: #d8edff; border-radius: 3px; padding: 0 0.25rem; }
+    .diff-removed { color: #ba0517; text-decoration: line-through; }
+    .empty-state { height: 100%; min-height: 96px; border: 1px dashed #d8dde6; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #706e6b; }
+  </style>
+</head>
+<body>
+<div class="slds-scope page">
+  <div class="variant-label">
+    <div class="variant-label__title">Variant C: 変更カード</div>
+    <div class="variant-label__desc">商品ごとにカード化し、カード内で変更前/変更後を見せる案。差分の理解は一番しやすいが、行数は増える。</div>
+  </div>
+
+  <section class="section-card">
+    <div class="section-title">申請商品 変更内容</div>
+
+    <article class="change-card">
+      <div class="change-card__header">
+        <div class="change-card__name">2025中1継続個別コース商品テスト</div>
+        <span class="badge badge--change">変更</span>
+      </div>
+      <div class="compare">
+        <div class="state state--before">
+          <div class="state__label">変更前</div>
+          <div class="field"><span class="field__label">商品名</span><span>2025中1継続集団コース</span></div>
+          <div class="field"><span class="field__label">コース</span><ul class="course-list"><li>[2025_test] 中1算数 2コマ</li><li class="diff-removed">[2025_test] 中1英語 1コマ</li></ul></div>
+          <div class="field"><span class="field__label">期間</span><span>2025/04/01 - 2026/03/31</span></div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+        <div class="state state--after">
+          <div class="state__label">変更後</div>
+          <div class="field"><span class="field__label">商品名</span><span>2025中1継続個別コース商品テスト</span></div>
+          <div class="field"><span class="field__label">コース</span><ul class="course-list"><li class="diff-added">[2025_test] 中1社会 1コマ</li><li class="diff-added">[2025_test] 中1理科 1コマ</li></ul></div>
+          <div class="field"><span class="field__label">期間</span><span>2026/03/01 - 2026/03/31</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="change-card">
+      <div class="change-card__header">
+        <div class="change-card__name">入会費</div>
+        <span class="badge badge--new">新規</span>
+      </div>
+      <div class="compare">
+        <div class="state state--before"><div class="empty-state">変更前なし</div></div>
+        <div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+        <div class="state state--after">
+          <div class="state__label">追加後</div>
+          <div class="field"><span class="field__label">商品名</span><span>入会費</span></div>
+          <div class="field"><span class="field__label">タイプ</span><span>費用</span></div>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
+</body>
+</html>

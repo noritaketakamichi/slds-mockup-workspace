@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant A: 横並び比較テーブル</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; color: #181818; }
+    .page { padding: 1rem; }
+    .variant-label { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; }
+    .variant-label__title { font-weight: 700; font-size: 0.95rem; }
+    .variant-label__desc { color: #706e6b; font-size: 0.8125rem; margin-top: 0.25rem; }
+    .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; overflow: hidden; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e5e5; }
+    .section-header__title { font-size: 0.875rem; font-weight: 700; }
+    .section-header__note { color: #706e6b; font-size: 0.75rem; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; table-layout: fixed; }
+    .compare-table th { background: #fafaf9; border-bottom: 1px solid #d8dde6; padding: 0.625rem 0.75rem; text-align: left; font-weight: 700; }
+    .compare-table td { border-bottom: 1px solid #e5e5e5; padding: 0.75rem; vertical-align: top; }
+    .status-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.125rem 0.5rem; font-size: 0.6875rem; font-weight: 700; }
+    .status-pill--change { background: #eaf5ff; color: #0176d3; }
+    .status-pill--new { background: #eef7ee; color: #2e844a; }
+    .before-box, .after-box { border: 1px solid #d8dde6; border-radius: 4px; padding: 0.625rem; min-height: 94px; }
+    .before-box { background: #fafaf9; border-left: 4px solid #8c8c8c; }
+    .after-box { background: #f0f7ff; border-left: 4px solid #0176d3; }
+    .empty-box { border: 1px dashed #d8dde6; border-radius: 4px; padding: 0.625rem; min-height: 94px; color: #706e6b; display: flex; align-items: center; justify-content: center; background: #fafaf9; }
+    .product-name { font-weight: 700; margin-bottom: 0.35rem; color: #0176d3; }
+    .field-line { display: flex; gap: 0.375rem; line-height: 1.55; }
+    .field-line__label { color: #706e6b; font-weight: 700; min-width: 4.5rem; }
+    .course-list { margin: 0; padding-left: 1rem; }
+    .diff-added { color: #0176d3; font-weight: 700; background: #d8edff; border-radius: 3px; padding: 0 0.25rem; }
+    .diff-removed { color: #ba0517; text-decoration: line-through; }
+    .arrow-cell { width: 3rem; text-align: center; color: #706e6b; }
+    .arrow-cell svg { width: 18px; height: 18px; fill: #706e6b; margin-top: 2.25rem; }
+  </style>
+</head>
+<body>
+<div class="slds-scope page">
+  <div class="variant-label">
+    <div class="variant-label__title">Variant A: 横並び比較テーブル</div>
+    <div class="variant-label__desc">1行の中で「変更前」と「変更後」を左右に並べる。既存一覧に近く、差分を横に目で追いやすい案。</div>
+  </div>
+
+  <section class="section-card">
+    <div class="section-header">
+      <div class="section-header__title">申請商品 比較ビュー</div>
+      <div class="section-header__note">変更前と変更後を同じ行で確認</div>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width: 90px;">種別</th>
+          <th>変更前</th>
+          <th class="arrow-cell"></th>
+          <th>変更後</th>
+          <th style="width: 120px;">変更日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="status-pill status-pill--change">変更</span></td>
+          <td>
+            <div class="before-box">
+              <div class="product-name">2025中1継続集団コース</div>
+              <div class="field-line"><span class="field-line__label">提供コース</span><ul class="course-list"><li>[2025_test] 中1算数 2コマ</li><li class="diff-removed">[2025_test] 中1英語 1コマ</li></ul></div>
+              <div class="field-line"><span class="field-line__label">開始日</span><span>2025/04/01</span></div>
+              <div class="field-line"><span class="field-line__label">終了日</span><span>2026/03/31</span></div>
+            </div>
+          </td>
+          <td class="arrow-cell"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></td>
+          <td>
+            <div class="after-box">
+              <div class="product-name">2025中1継続個別コース商品テスト</div>
+              <div class="field-line"><span class="field-line__label">提供コース</span><ul class="course-list"><li class="diff-added">[2025_test] 中1社会 1コマ</li><li class="diff-added">[2025_test] 中1理科 1コマ</li></ul></div>
+              <div class="field-line"><span class="field-line__label">開始日</span><span>2026/03/01</span></div>
+              <div class="field-line"><span class="field-line__label">終了日</span><span>2026/03/31</span></div>
+            </div>
+          </td>
+          <td>2026/03/01</td>
+        </tr>
+        <tr>
+          <td><span class="status-pill status-pill--new">新規</span></td>
+          <td><div class="empty-box">変更前なし</div></td>
+          <td class="arrow-cell"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></td>
+          <td>
+            <div class="after-box">
+              <div class="product-name">入会費</div>
+              <div class="field-line"><span class="field-line__label">商品タイプ</span><span>費用</span></div>
+            </div>
+          </td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>

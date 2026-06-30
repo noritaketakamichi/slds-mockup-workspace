@@ -109,8 +109,50 @@
       .page-header__actions .slds-button_brand {
         border-radius: 0 4px 4px 0; margin-left: -1px;
       }
+      #btnSave.is-save-disabled {
+        background: #f3f3f3;
+        border-color: #c9c9c9;
+        color: #747474;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      #btnSave.is-save-disabled:hover,
+      #btnSave.is-save-disabled:focus {
+        background: #f3f3f3;
+        border-color: #c9c9c9;
+        color: #747474;
+      }
+      .mock-toast-container {
+        position: fixed;
+        top: 4.25rem;
+        left: 50%;
+        z-index: 9000;
+        transform: translateX(-50%);
+        width: min(32rem, calc(100vw - 2rem));
+      }
+      .mock-toast {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        background: #706e6b;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.24);
+        color: #fff;
+        padding: 0.75rem 1rem;
+      }
+      .mock-toast svg {
+        width: 1rem;
+        height: 1rem;
+        fill: #fff;
+        flex: 0 0 auto;
+        margin-top: 0.125rem;
+      }
+      .mock-toast__message {
+        font-size: 0.8125rem;
+        line-height: 1.4;
+      }
 
-      /* ===== オーダー情報行 ===== */
+      /* ===== 申請情報行 ===== */
       .order-info {
         display: flex; gap: 2rem; margin-top: 0.75rem; padding-left: 52px;
       }
@@ -123,7 +165,7 @@
       /* ===== メインコンテンツ ===== */
       .main-content { padding: 0.75rem; }
 
-      /* ===== セクション（オーダー内商品 / オーダー済商品） ===== */
+      /* ===== セクション（申請内商品 / 申請済商品） ===== */
       .section-card {
         background: #fff;
         border: 1px solid #d8dde6;
@@ -173,6 +215,70 @@
       .course-list { list-style: none; padding: 0; margin: 0; font-size: 0.8125rem; }
       .course-list li { line-height: 1.5; }
       .course-list li::before { content: "\2022 "; color: #181818; }
+      .change-cell {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .diff-list {
+        display: grid;
+        gap: 0.25rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .diff-list li::before { content: ""; }
+      .diff-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.35rem;
+        line-height: 1.35;
+      }
+      .diff-badge {
+        flex: 0 0 auto;
+        min-width: 2rem;
+        text-align: center;
+        border-radius: 999px;
+        padding: 1px 0.35rem;
+        font-size: 0.625rem;
+        font-weight: 700;
+      }
+      .diff-badge--add { background: #eef7ee; color: #2e844a; }
+      .diff-badge--remove { background: #fef1ee; color: #ba0517; }
+      .diff-badge--change { background: #eaf5ff; color: #0176d3; }
+      .diff-text--add { color: #2e844a; font-weight: 700; }
+      .diff-text--remove { color: #ba0517; text-decoration: line-through; }
+      .before-mini {
+        color: #706e6b;
+        font-size: 0.75rem;
+        line-height: 1.35;
+        margin-top: 0.25rem;
+      }
+      .discount-line {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+      }
+      .discount-chip {
+        border: 1px solid #d8dde6;
+        border-radius: 999px;
+        padding: 1px 0.5rem;
+        background: #f3f3f3;
+        font-size: 0.75rem;
+      }
+      .discount-chip--add {
+        border-color: #91db8b;
+        background: #eef7ee;
+        color: #2e844a;
+        font-weight: 700;
+      }
+      .no-discount {
+        color: #706e6b;
+        font-size: 0.8125rem;
+      }
+      .data-table tbody td.diff-aware-cell {
+        vertical-align: top;
+      }
 
       /* ===== チェックボックス行 ===== */
       .checkbox-row {
@@ -433,11 +539,11 @@
       <!-- ===== レコードタブバー ===== -->
       <div class="record-tabs">
         <a href="order-detail.html" class="record-tab">
-          <span class="record-tab__edited">*</span> ODG-70674 | オーダー
+          <span class="record-tab__edited">*</span> ODG-70674 | 申請
           <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </a>
         <a href="#" class="record-tab is-active">
-          <span class="record-tab__edited">*</span> オーダーグループ内商品...
+          <span class="record-tab__edited">*</span> 申請グループ内商品...
           <button class="record-tab__close" title="閉じる"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </a>
       </div>
@@ -458,14 +564,14 @@
             <button class="slds-button slds-button_outline-brand" id="btnAddProduct">商品追加</button>
             <button class="slds-button slds-button_neutral" id="btnMaxDiscount">最大割引を適用</button>
             <button class="slds-button slds-button_neutral" id="btnDiscardChanges">変更を破棄して戻る</button>
-            <button class="slds-button slds-button_brand" id="btnSave">保存</button>
+            <button class="slds-button slds-button_brand is-save-disabled" id="btnSave" aria-disabled="true">保存</button>
           </div>
         </div>
 
-        <!-- オーダー情報 -->
+        <!-- 申請情報 -->
         <div class="order-info">
           <div class="order-info__item">
-            <div class="order-info__label">オーダー番号</div>
+            <div class="order-info__label">申請番号</div>
             <div class="order-info__value">ODG-70674</div>
           </div>
           <div class="order-info__item">
@@ -570,14 +676,14 @@
       <!-- ===== メインコンテンツ ===== -->
       <div class="main-content">
 
-        <!-- ===== オーダー内商品セクション ===== -->
+        <!-- ===== 申請内商品セクション ===== -->
         <div class="section-card" id="section-order-products">
           <div class="section-header" onclick="toggleSection('order-products')">
             <div class="section-header__left">
               <svg class="section-header__toggle" id="toggle-order-products" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>
-              <span class="section-header__title">オーダー内商品</span>
+              <span class="section-header__title">申請内商品</span>
             </div>
             <div class="section-header__right">
               <button class="slds-button slds-button_neutral slds-button_small" id="btnEditProducts">編集</button>
@@ -621,7 +727,7 @@
               <tbody>
                 <tr>
                   <td><input type="checkbox" class="order-product-checkbox" /></td>
-                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">申請テスト用教室</a></td>
                   <td><a href="#">2025</a></td>
                   <td><a href="#">2025中1継続個別コー...</a></td>
                   <td>
@@ -654,7 +760,7 @@
                 </tr>
                 <tr>
                   <td><input type="checkbox" class="order-product-checkbox" /></td>
-                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">申請テスト用教室</a></td>
                   <td><a href="#">2025</a></td>
                   <td><a href="#">入会費</a></td>
                   <td></td>
@@ -674,7 +780,7 @@
                 </tr>
                 <tr>
                   <td><input type="checkbox" class="order-product-checkbox" /></td>
-                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">申請テスト用教室</a></td>
                   <td><a href="#">2025</a></td>
                   <td><a href="#">2025中1集団国語コー...</a></td>
                   <td>
@@ -702,14 +808,14 @@
           </div>
         </div>
 
-        <!-- ===== オーダー済商品セクション ===== -->
+        <!-- ===== 申請済商品セクション ===== -->
         <div class="section-card" id="section-ordered-products">
           <div class="section-header" onclick="toggleSection('ordered-products')">
             <div class="section-header__left">
               <svg class="section-header__toggle" id="toggle-ordered-products" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>
-              <span class="section-header__title">オーダー済商品</span>
+              <span class="section-header__title">申請済商品</span>
             </div>
             <div class="section-header__right">
               <button class="slds-button slds-button_neutral slds-button_small" id="btnProductChange" disabled>商品情報変更</button>
@@ -736,7 +842,7 @@
               <tbody id="ordered-products-body">
                 <tr>
                   <td><input type="checkbox" class="ordered-product-checkbox" /></td>
-                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">申請テスト用教室</a></td>
                   <td><a href="#">2025</a></td>
                   <td><a href="#">2025中1継続集団コー...</a></td>
                   <td>有効</td>
@@ -746,7 +852,12 @@
                       <li>(1/週) [2025_test] 中1英語</li>
                     </ul>
                   </td>
-                  <td>有効</td>
+                  <td>
+                    <div class="discount-line">
+                      <span class="discount-chip">兄弟割引</span>
+                      <span class="discount-chip">社員割</span>
+                    </div>
+                  </td>
                   <td>2025/04/01</td>
                   <td>2026/03/31</td>
                   <td>コース商品</td>
@@ -754,12 +865,12 @@
                 </tr>
                 <tr>
                   <td><input type="checkbox" class="ordered-product-checkbox" /></td>
-                  <td><a href="#">オーダーテスト用教室</a></td>
+                  <td><a href="#">申請テスト用教室</a></td>
                   <td><a href="#">2025</a></td>
                   <td><a href="#">入会費</a></td>
                   <td>有効</td>
                   <td></td>
-                  <td>有効</td>
+                  <td><span class="no-discount">適用なし</span></td>
                   <td>2025/04/01</td>
                   <td></td>
                   <td>費用</td>
@@ -794,6 +905,39 @@
         }
       }
 
+      var isMaxDiscountApplied = false;
+      var saveNotificationTimer;
+
+      function setSaveActive(isActive) {
+        isMaxDiscountApplied = isActive;
+        var btn = document.getElementById('btnSave');
+        if (!btn) return;
+        btn.classList.toggle('is-save-disabled', !isActive);
+        btn.setAttribute('aria-disabled', String(!isActive));
+      }
+
+      function showToast(message) {
+        var existing = document.getElementById('saveNoticeToast');
+        if (existing) existing.remove();
+        window.clearTimeout(saveNotificationTimer);
+
+        var container = document.createElement('div');
+        container.className = 'mock-toast-container';
+        container.id = 'saveNoticeToast';
+        container.setAttribute('role', 'status');
+        container.setAttribute('aria-live', 'polite');
+        container.innerHTML = ''
+          + '<div class="mock-toast">'
+          + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 17h2v-6h-2v6zm1-14C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2V7h-2v2z"/></svg>'
+          + '<div class="mock-toast__message">' + message + '</div>'
+          + '</div>';
+        document.body.appendChild(container);
+
+        saveNotificationTimer = window.setTimeout(function() {
+          container.remove();
+        }, 3200);
+      }
+
       // ===== ボタンハンドラ =====
       var buttonHandlers = {
         btnAddProduct: function() {
@@ -811,11 +955,16 @@
             }
           });
           btn.textContent = isCurrentlyVisible ? '最大割引を適用' : '割引をクリア';
+          setSaveActive(!isCurrentlyVisible);
         },
         btnDiscardChanges: function() {
           MockupRouter.navigateTo('order-detail.html');
         },
         btnSave: function() {
+          if (!isMaxDiscountApplied) {
+            showToast('最大割引を先に適用してください');
+            return;
+          }
           MockupRouter.navigateTo('order-detail.html');
         },
         btnEditProducts: function() {
@@ -830,6 +979,7 @@
         var el = document.getElementById(id);
         if (el) el.addEventListener('click', buttonHandlers[id]);
       });
+      setSaveActive(false);
 
       // ===== 画面遷移ユーティリティ =====
       var MockupRouter = {
@@ -872,9 +1022,9 @@
         var mode = params.get('mode');
         var orderBody = document.querySelector('#body-order-products tbody');
         var orderedBody = document.getElementById('ordered-products-body');
-        var emptyOrderMsg = '<tr><td colspan="10" style="text-align: center; color: #706e6b; padding: 2rem;">オーダー内商品はありません</td></tr>';
+        var emptyOrderMsg = '<tr><td colspan="10" style="text-align: center; color: #706e6b; padding: 2rem;">申請内商品はありません</td></tr>';
 
-        // 変更モード用のオーダー済商品データ（生徒詳細に表示されている通年契約）
+        // 変更モード用の申請済商品データ（生徒詳細に表示されている通年契約）
         var changeOrderedRows = ''
           + '<tr><td><input type="checkbox" class="ordered-product-checkbox" /></td>'
           + '<td><a href="#">[集団]東京校</a></td><td><a href="#">2026</a></td>'
@@ -901,22 +1051,28 @@
           + '<td><a href="#">2026年度 自習室利用</a></td><td>提供中</td>'
           + '<td></td><td></td><td>2026/04/01</td><td>2027/03/31</td><td>通年契約</td><td>--</td></tr>';
 
-        // 変更後のオーダー内商品（1件）
+        // 変更後の申請内商品（1件）
         var changedOrderRow = '<tr>'
           + '<td><input type="checkbox" class="order-product-checkbox" /></td>'
-          + '<td><a href="#">オーダーテスト用教室</a></td><td><a href="#">2025_test</a></td>'
+          + '<td><a href="#">申請テスト用教室</a></td><td><a href="#">2025_test</a></td>'
           + '<td><a href="#">2025中1継続個別コース商...</a></td>'
-          + '<td><ul class="course-list"><li>(2/週) [2025_test] 中1社会</li><li>(1/週) [2025_test] 中1理科</li></ul></td>'
-          + '<td>変更</td><td class="discount-cell"></td><td>2026/02/01</td><td>2026/03/05</td><td>2026/03/31</td></tr>';
+          + '<td class="diff-aware-cell"><div class="change-cell"><ul class="diff-list">'
+          + '<li class="diff-item"><span class="diff-badge diff-badge--change">変更</span><span>[2025_test] 中1社会 <strong>1→2コマ</strong></span></li>'
+          + '<li class="diff-item"><span class="diff-badge diff-badge--add">追加</span><span class="diff-text--add">[2025_test] 中1理科 1コマ</span></li>'
+          + '<li class="diff-item"><span class="diff-badge diff-badge--remove">除外</span><span class="diff-text--remove">[2025_test] 中1英語 1コマ</span></li>'
+          + '</ul></div></td>'
+          + '<td>変更</td>'
+          + '<td class="discount-cell diff-aware-cell"><div class="discount-line"><span class="discount-chip">社員割</span><span class="discount-chip discount-chip--add">兄弟割 追加</span></div><div class="before-mini">変更前: 社員割のみ</div></td>'
+          + '<td>2026/02/01</td><td>2026/03/05</td><td>2026/03/31</td></tr>';
 
         if (mode === 'skip') {
           orderBody.innerHTML = emptyOrderMsg;
         } else if (mode === 'change') {
-          // 商品変更の初期状態: オーダー内商品は空、オーダー済商品は通年契約のみ
+          // 商品変更の初期状態: 申請内商品は空、申請済商品は通年契約のみ
           orderBody.innerHTML = emptyOrderMsg;
           orderedBody.innerHTML = changeOrderedRows;
         } else if (mode === 'changed') {
-          // 商品変更の実行後: オーダー内商品に変更後1件、オーダー済商品は通年契約のみ
+          // 商品変更の実行後: 申請内商品に変更後1件、申請済商品は通年契約のみ
           orderBody.innerHTML = changedOrderRow;
           orderedBody.innerHTML = changeOrderedRows;
         }

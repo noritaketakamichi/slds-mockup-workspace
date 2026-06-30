@@ -1,0 +1,59 @@
+<!-- ============================================
+     関連リスト（Related List）
+     Salesforce標準スタイル: アイコン + タイトル(件数) + リフレッシュ + テーブル
+     ============================================ -->
+<article class="slds-card">
+  <div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <!-- 関連リストアイコン（色付き丸） -->
+        <span class="slds-icon_container" style="background-color: {{ICON_BG_COLOR}}; border-radius: 4px; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;">
+          <span style="color: #fff; font-size: 0.75rem;">{{ICON_EMOJI}}</span>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+          <span>{{LIST_TITLE}} ({{COUNT}})</span>
+        </h2>
+        <p class="slds-text-body_small slds-text-color_weak">{{SORT_INFO}}</p>
+      </div>
+    </header>
+    <div class="slds-no-flex">
+      <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="リフレッシュ">
+        <span style="font-size: 0.75rem;">⟳</span>
+        <span class="slds-assistive-text">リフレッシュ</span>
+      </button>
+    </div>
+  </div>
+  <div class="slds-card__body slds-card__body_inner">
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+      <thead>
+        <tr class="slds-line-height_reset">
+          <th scope="col">
+            <a class="slds-th__action slds-text-link_reset" href="#" role="button">
+              <span class="slds-assistive-text">Sort by: </span>
+              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                <span class="slds-truncate" title="{{COL_1}}">{{COL_1}}</span>
+                <span class="slds-icon_container" style="margin-left:0.25rem; font-size:0.5rem;">▼</span>
+              </div>
+            </a>
+          </th>
+          <th scope="col">
+            <a class="slds-th__action slds-text-link_reset" href="#" role="button">
+              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                <span class="slds-truncate" title="{{COL_2}}">{{COL_2}}</span>
+                <span class="slds-icon_container" style="margin-left:0.25rem; font-size:0.5rem;">▼</span>
+              </div>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="slds-hint-parent">
+          <td><div class="slds-truncate">{{ROW_DATA}}</div></td>
+          <td><div class="slds-truncate">{{ROW_DATA}}</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</article>

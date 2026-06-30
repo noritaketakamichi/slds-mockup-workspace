@@ -1,0 +1,68 @@
+<!-- ============================================
+     Highlights Panel (Record Home Page Header)
+     ============================================ -->
+<div class="slds-page-header slds-page-header_record-home">
+  <div class="slds-page-header__row">
+    <!-- オブジェクトアイコン + レコード名 -->
+    <div class="slds-page-header__col-title">
+      <div class="slds-media">
+        <div class="slds-media__figure">
+          <!-- アイコン: standard-icon の色付き丸。背景色はオブジェクトに応じて変更 -->
+          <span class="slds-icon_container slds-icon-standard-account" style="background-color: {{ICON_BG_COLOR}}; border-radius: 4px; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">
+            <span style="color: #fff; font-size: 1rem;">{{ICON_EMOJI}}</span>
+          </span>
+        </div>
+        <div class="slds-media__body">
+          <div class="slds-page-header__name">
+            <div class="slds-page-header__name-title">
+              <h1>
+                <span class="slds-page-header__name-meta">{{OBJECT_LABEL}}</span>
+                <span class="slds-page-header__title slds-truncate" title="{{RECORD_NAME}}">{{RECORD_NAME}}</span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- アクションボタン -->
+    <div class="slds-page-header__col-actions">
+      <div class="slds-page-header__controls">
+        <div class="slds-page-header__control">
+          <ul class="slds-button-group-list">
+            <li><button class="slds-button slds-button_neutral">{{ACTION_1}}</button></li>
+            <li><button class="slds-button slds-button_neutral">{{ACTION_2}}</button></li>
+            <li>
+              <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="その他のアクション">
+                <span style="font-size: 0.75rem;">▼</span>
+                <span class="slds-assistive-text">その他のアクション</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ハイライト項目（キー情報を横一列に表示） -->
+  <div class="slds-page-header__row slds-page-header__row_gutters">
+    <div class="slds-page-header__col-details">
+      <ul class="slds-page-header__detail-row">
+        <li class="slds-page-header__detail-block">
+          <p class="slds-text-title slds-truncate" title="{{FIELD_LABEL_1}}">{{FIELD_LABEL_1}}</p>
+          <p class="slds-truncate" title="{{FIELD_VALUE_1}}">{{FIELD_VALUE_1}}</p>
+        </li>
+        <li class="slds-page-header__detail-block">
+          <p class="slds-text-title slds-truncate" title="{{FIELD_LABEL_2}}">{{FIELD_LABEL_2}}</p>
+          <p class="slds-truncate" title="{{FIELD_VALUE_2}}">{{FIELD_VALUE_2}}</p>
+        </li>
+        <li class="slds-page-header__detail-block">
+          <p class="slds-text-title slds-truncate" title="{{FIELD_LABEL_3}}">{{FIELD_LABEL_3}}</p>
+          <p class="slds-truncate" title="{{FIELD_VALUE_3}}">{{FIELD_VALUE_3}}</p>
+        </li>
+        <li class="slds-page-header__detail-block">
+          <p class="slds-text-title slds-truncate" title="{{FIELD_LABEL_4}}">{{FIELD_LABEL_4}}</p>
+          <p class="slds-truncate" title="{{FIELD_VALUE_4}}">{{FIELD_VALUE_4}}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

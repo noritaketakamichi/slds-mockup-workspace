@@ -428,7 +428,7 @@
       .related-list .col-num { width: 32px; }
       .related-list .col-date { width: 104px; }
       .related-list .col-discount { width: 110px; }
-      .related-list .col-invoice-status { width: 128px; }
+      .related-list .col-invoice-status { width: 112px; }
       .related-list .col-amount { width: 112px; }
       .related-list .col-source { width: 96px; }
       .related-list .col-invoice { width: 104px; }
@@ -501,15 +501,13 @@
         white-space: nowrap;
       }
       .record-action-item:hover { background: #f3f3f3; text-decoration: none; }
-      .invoice-status {
-        display: inline-flex; align-items: center; gap: 0.25rem;
-        font-size: 0.75rem; font-weight: 600;
+      .invoice-checkbox {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
       }
-      .invoice-status svg { width: 14px; height: 14px; flex-shrink: 0; }
-      .invoice-status--done { color: #2e844a; }
-      .invoice-status--done svg { fill: #2e844a; }
-      .invoice-status--pending { color: #706e6b; }
-      .invoice-status--pending svg { fill: #706e6b; }
+      .invoice-checkbox .slds-checkbox { display: inline-flex; }
       .billing-summary {
         margin-top: 0.25rem; font-size: 0.8125rem; color: #181818;
       }
@@ -690,7 +688,7 @@
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="問合"><span class="nav-tab-with-arrow"><span class="slds-truncate">問合</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="申請"><span class="nav-tab-with-arrow"><span class="slds-truncate">申請</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="成績"><span class="nav-tab-with-arrow"><span class="slds-truncate">成績</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
-            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="オーダー"><span class="nav-tab-with-arrow"><span class="slds-truncate">オーダー</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
+            <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="申請"><span class="nav-tab-with-arrow"><span class="slds-truncate">申請</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="請求書管理"><span class="nav-tab-with-arrow"><span class="slds-truncate">請求書管理</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="レポート"><span class="nav-tab-with-arrow"><span class="slds-truncate">レポート</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
             <li class="slds-context-bar__item"><a href="#" class="slds-context-bar__label-action" title="アクティビティイベント"><span class="nav-tab-with-arrow"><span class="slds-truncate">アクティビティイベント</span><span class="nav-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M7 10l5 5 5-5z"/></svg></span></span></a></li>
@@ -975,7 +973,7 @@
                       <td><div class="slds-truncate">2026/04/01</div></td>
                       <td><div class="slds-truncate">2027/03/31</div></td>
                       <td><div class="slds-truncate">兄弟割引</div></td>
-                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct1" checked disabled /><label class="slds-checkbox__label" for="invoiceProduct1"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
@@ -998,7 +996,7 @@
                       <td><div class="slds-truncate">2026/04/01</div></td>
                       <td><div class="slds-truncate">2027/03/31</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct2" checked disabled /><label class="slds-checkbox__label" for="invoiceProduct2"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-123</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
@@ -1020,7 +1018,7 @@
                       <td><div class="slds-truncate">2026/04/01</div></td>
                       <td><div class="slds-truncate">2027/03/31</div></td>
                       <td><div class="slds-truncate">セット割引</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct3" disabled /><label class="slds-checkbox__label" for="invoiceProduct3"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-124</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
@@ -1037,7 +1035,7 @@
                       <td><div class="slds-truncate">2026/04/01</div></td>
                       <td><div class="slds-truncate">2027/03/31</div></td>
                       <td><div class="slds-truncate">長期継続割引</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct4" disabled /><label class="slds-checkbox__label" for="invoiceProduct4"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="annual">
@@ -1054,7 +1052,7 @@
                       <td><div class="slds-truncate">2026/04/01</div></td>
                       <td><div class="slds-truncate">2027/03/31</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct5" disabled /><label class="slds-checkbox__label" for="invoiceProduct5"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-125</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="seminar">
@@ -1071,7 +1069,7 @@
                       <td><div class="slds-truncate">2026/07/21</div></td>
                       <td><div class="slds-truncate">2026/08/31</div></td>
                       <td><div class="slds-truncate">講習早割</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct6" disabled /><label class="slds-checkbox__label" for="invoiceProduct6"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="seminar">
@@ -1088,7 +1086,7 @@
                       <td><div class="slds-truncate">2026/12/20</div></td>
                       <td><div class="slds-truncate">2027/01/10</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct7" disabled /><label class="slds-checkbox__label" for="invoiceProduct7"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-126</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="single">
@@ -1105,7 +1103,7 @@
                       <td><div class="slds-truncate">2026/05/15</div></td>
                       <td><div class="slds-truncate">2026/06/30</div></td>
                       <td><div class="slds-truncate">キャンペーン割引</div></td>
-                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct8" checked disabled /><label class="slds-checkbox__label" for="invoiceProduct8"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-127</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2026" data-type="single">
@@ -1122,7 +1120,7 @@
                       <td><div class="slds-truncate">2026/06/01</div></td>
                       <td><div class="slds-truncate">2026/09/30</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct9" disabled /><label class="slds-checkbox__label" for="invoiceProduct9"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-128</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2025" data-type="annual">
@@ -1139,7 +1137,7 @@
                       <td><div class="slds-truncate">2025/04/01</div></td>
                       <td><div class="slds-truncate">2026/03/31</div></td>
                       <td><div class="slds-truncate">兄弟割引</div></td>
-                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct10" checked disabled /><label class="slds-checkbox__label" for="invoiceProduct10"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-091</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2025" data-type="seminar">
@@ -1156,7 +1154,7 @@
                       <td><div class="slds-truncate">2025/12/21</div></td>
                       <td><div class="slds-truncate">2026/01/09</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>作成済</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct11" checked disabled /><label class="slds-checkbox__label" for="invoiceProduct11"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-092</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2027" data-type="annual">
@@ -1173,7 +1171,7 @@
                       <td><div class="slds-truncate">2027/04/01</div></td>
                       <td><div class="slds-truncate">2028/03/31</div></td>
                       <td><div class="slds-truncate">早期申込割引</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct12" disabled /><label class="slds-checkbox__label" for="invoiceProduct12"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-201</a></div></td>
                     </tr>
                     <tr class="slds-hint-parent student-product-row" data-year="2027" data-type="single">
@@ -1190,7 +1188,7 @@
                       <td><div class="slds-truncate">2027/09/01</div></td>
                       <td><div class="slds-truncate">2028/02/28</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
-                      <td><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>未作成</span></td>
+                      <td><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceProduct13" disabled /><label class="slds-checkbox__label" for="invoiceProduct13"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></td>
                       <td><div class="slds-truncate"><a href="#" class="cell-link">AP-202</a></div></td>
                     </tr>
                   </tbody>
@@ -1898,7 +1896,7 @@
                       <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
                       <td><div class="slds-truncate">模試パック 2026前期（キャンセル）</div></td>
                       <td><div class="slds-truncate"><span class="status-badge status-badge--error">取消</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceApplication1" disabled /><label class="slds-checkbox__label" for="invoiceApplication1"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></div></td>
                       <td><div class="slds-truncate">2026/06/04</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
                       <td class="col-row-action">
@@ -1919,7 +1917,7 @@
                       <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
                       <td><div class="slds-truncate">英検対策単品 3級（新規）</div></td>
                       <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceApplication2" checked disabled /><label class="slds-checkbox__label" for="invoiceApplication2"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></div></td>
                       <td><div class="slds-truncate">2026/06/03</div></td>
                       <td><div class="slds-truncate">2026/06/04</div></td>
                       <td class="col-row-action">
@@ -1945,7 +1943,7 @@
                         </ul>
                       </td>
                       <td><div class="slds-truncate"><span class="status-badge status-badge--pending">承認待</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceApplication3" disabled /><label class="slds-checkbox__label" for="invoiceApplication3"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></div></td>
                       <td><div class="slds-truncate">2026/06/02</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
                       <td class="col-row-action">
@@ -1966,7 +1964,7 @@
                       <td><div class="slds-truncate slds-text-color_weak">&nbsp;</div></td>
                       <td><div class="slds-truncate">2026年度 自習室利用（新規）</div></td>
                       <td><div class="slds-truncate"><span class="status-badge status-badge--success">確定済</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--done"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>作成済</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceApplication4" checked disabled /><label class="slds-checkbox__label" for="invoiceApplication4"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">作成済</span></label></span></span></div></td>
                       <td><div class="slds-truncate">2026/05/30</div></td>
                       <td><div class="slds-truncate">2026/05/31</div></td>
                       <td class="col-row-action">
@@ -1992,7 +1990,7 @@
                         </ul>
                       </td>
                       <td><div class="slds-truncate"><span class="status-badge status-badge--warning">差戻</span></div></td>
-                      <td><div class="slds-truncate"><span class="invoice-status invoice-status--pending"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>未作成</span></div></td>
+                      <td><div class="slds-truncate"><span class="invoice-checkbox"><span class="slds-checkbox"><input type="checkbox" id="invoiceApplication5" disabled /><label class="slds-checkbox__label" for="invoiceApplication5"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">未作成</span></label></span></span></div></td>
                       <td><div class="slds-truncate">2026/05/28</div></td>
                       <td><div class="slds-truncate slds-text-color_weak">&mdash;</div></td>
                       <td class="col-row-action">
@@ -2109,7 +2107,7 @@
               <span class="improvement-section__num">2</span>
               <div class="improvement-section__title">生徒詳細ページのタブの整理</div>
             </div>
-            <p class="improvement-section__text">タブを「詳細」「問合」「申請・契約」「請求・決済」「受講コース」「イベント」「成績」に整理しました。申請・契約まわりの確認先を集約し、旧「オーダー」「申請」タブで分かれていた確認作業を減らしています。</p>
+            <p class="improvement-section__text">タブを「詳細」「問合」「申請・契約」「請求・決済」「受講コース」「イベント」「成績」に整理しました。申請・契約まわりの確認先を集約し、旧タブで分かれていた確認作業を減らしています。</p>
           </section>
 
           <section class="improvement-section">
@@ -2117,7 +2115,7 @@
               <span class="improvement-section__num">3</span>
               <div class="improvement-section__title">申請・契約 / 請求・決済タブのテーブル整理</div>
             </div>
-            <p class="improvement-section__text">旧「オーダー」「申請」タブに散らばっていた情報を、申請・契約で確認する情報と請求・決済で確認する情報に分けて並べ直しました。</p>
+            <p class="improvement-section__text">旧タブに散らばっていた情報を、申請・契約で確認する情報と請求・決済で確認する情報に分けて並べ直しました。</p>
 
             <div class="improvement-subsection">
               <div class="improvement-subsection__title">登録済商品</div>

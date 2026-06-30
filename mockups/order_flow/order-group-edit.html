@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>オーダーグループ内商品を編集</title>
+    <title>申請グループ内商品を編集</title>
     <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
     <style>
       body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
@@ -131,11 +131,16 @@
       /* ===== フォームフィールド行 ===== */
       .field-row {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 1rem;
         margin-bottom: 1rem;
       }
       .field-item {}
+      .change-date-field { display: none; }
+      body.is-change-mode .field-row {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+      body.is-change-mode .change-date-field { display: block; }
       .field-item__label {
         font-size: 0.75rem;
         color: #181818;
@@ -295,7 +300,7 @@
         </div>
         <div>
           <div class="page-header__id">ODG-540275</div>
-          <div class="page-header__title">オーダーグループ内商品を編集</div>
+          <div class="page-header__title">申請グループ内商品を編集</div>
         </div>
       </div>
 
@@ -322,7 +327,7 @@
                   <option>50%</option>
                 </select>
               </div>
-              <div class="field-item">
+              <div class="field-item change-date-field">
                 <label class="field-item__label">変更日</label>
                 <div class="field-input-with-icon">
                   <input type="text" class="field-input" placeholder="" />
@@ -372,7 +377,7 @@
                   <option>50%</option>
                 </select>
               </div>
-              <div class="field-item">
+              <div class="field-item change-date-field">
                 <label class="field-item__label">変更日</label>
                 <div class="field-input-with-icon">
                   <input type="text" class="field-input" placeholder="" />
@@ -403,19 +408,20 @@
 
             <!-- スロットエリア -->
             <div class="slot-area">
-              <div class="slot-area__label">最大のスロット数 = 4</div>
+              <div class="slot-area__label">最大のコマ数 = 4</div>
               <div class="slot-tables">
-                <!-- 左: コース + スロット -->
+                <!-- 左: コース + コマ数 -->
                 <div class="slot-table-wrapper">
                   <table class="slot-table">
                     <thead>
                       <tr>
                         <th style="width:32px;"><input type="checkbox" checked /></th>
+                        <th style="width:40px;"></th>
                         <th>
                           <div class="header-content">コース <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div>
                         </th>
-                        <th>
-                          <div class="header-content">スロット <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div>
+                        <th style="width:130px;">
+                          <div class="header-content">コマ数 <svg width="10" height="10" viewBox="0 0 24 24" fill="#706e6b"><path d="M7 10l5 5 5-5z"/></svg></div>
                         </th>
                       </tr>
                     </thead>
@@ -486,6 +492,8 @@
       var isChangeMode = params.get('mode') === 'change';
 
       if (isChangeMode) {
+        document.body.classList.add('is-change-mode');
+
         // 入会費セクションを非表示
         var admissionSection = document.getElementById('section-admission');
         if (admissionSection) admissionSection.style.display = 'none';

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{RECORD_NAME}} | {{OBJECT_LABEL}}</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+    />
+    <style>
+      body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; }
+      .record-page { background: #f3f3f3; padding: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <div class="slds-scope">
+
+      <!-- ========== 1. グローバルナビ ========== -->
+      <!-- → parts/global-nav.html を参考に挿入 -->
+
+      <!-- ========== 2. Highlights Panel ========== -->
+      <!-- → parts/highlights-panel.html を参考に挿入 -->
+
+      <!-- ========== 3. Path (任意) ========== -->
+      <!-- → parts/path.html を参考に挿入 -->
+
+      <!-- ========== 4. レコードページ本体 (2カラム) ========== -->
+      <div class="record-page">
+        <div class="slds-grid slds-gutters">
+
+          <!-- 左カラム: 関連リスト (~65%) -->
+          <div class="slds-col slds-size_8-of-12">
+            <!-- → parts/related-list.html パターンを繰り返し挿入 -->
+          </div>
+
+          <!-- 右カラム: 詳細パネル (~35%) -->
+          <div class="slds-col slds-size_4-of-12">
+            <!-- → parts/record-body.html の右カラム部分を挿入 -->
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

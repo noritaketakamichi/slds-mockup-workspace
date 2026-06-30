@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant H: 差分小テーブル</title>
+  <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css">
+  <style>
+    body { margin: 0; font-family: "Salesforce Sans", Arial, sans-serif; background: #f3f3f3; color: #181818; }
+    .page { padding: 1rem; }
+    .variant-label { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; padding: .75rem 1rem; margin-bottom: .75rem; }
+    .variant-label__title { font-weight: 700; }
+    .variant-label__desc { color: #706e6b; font-size: .8125rem; margin-top: .25rem; }
+    .section-card { background: #fff; border: 1px solid #d8dde6; border-radius: 4px; overflow: hidden; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; border-bottom: 1px solid #e5e5e5; }
+    .section-header__title { font-weight: 700; font-size: .875rem; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: .8125rem; }
+    .data-table th { background: #fafaf9; border-bottom: 1px solid #d8dde6; padding: .625rem .75rem; text-align: left; font-weight: 700; white-space: nowrap; }
+    .data-table td { border-bottom: 1px solid #e5e5e5; padding: .625rem .75rem; vertical-align: top; }
+    .data-table a { color: #0176d3; text-decoration: none; font-weight: 700; }
+    .data-table input[type="checkbox"] { width: 16px; height: 16px; accent-color: #0176d3; }
+    .status-pill { display: inline-flex; border-radius: 999px; padding: .125rem .5rem; font-size: .6875rem; font-weight: 700; }
+    .status-pill--change { background: #eaf5ff; color: #0176d3; }
+    .status-pill--new { background: #eef7ee; color: #2e844a; }
+    .course-list { margin: 0; padding-left: 1rem; }
+    .diff-row td { background: #fbfbfb; padding: 0 .75rem .75rem 3.5rem; }
+    .diff-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #d8dde6; border-radius: 4px; overflow: hidden; }
+    .diff-table th { background: #f3f3f3; padding: .5rem .625rem; font-size: .75rem; border-bottom: 1px solid #d8dde6; }
+    .diff-table td { padding: .5rem .625rem; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+    .diff-table tr:last-child td { border-bottom: 0; }
+    .diff-added { color: #0176d3; font-weight: 700; }
+    .diff-removed { color: #ba0517; text-decoration: line-through; }
+  </style>
+</head>
+<body>
+<div class="slds-scope page">
+  <div class="variant-label">
+    <div class="variant-label__title">Variant H: 差分小テーブル</div>
+    <div class="variant-label__desc">現行テーブル行の下に「項目 / 変更前 / 変更後」の小テーブルを表示。何が変わったかを一番明確にする案。</div>
+  </div>
+  <section class="section-card">
+    <div class="section-header"><div class="section-header__title">申請内商品</div><div><button class="slds-button slds-button_neutral">編集</button> <button class="slds-button slds-button_neutral">削除</button></div></div>
+    <table class="data-table">
+      <thead><tr><th style="width:32px;"><input type="checkbox"></th><th>拠点</th><th>年度</th><th>名称</th><th>提供コース</th><th>タイプ</th><th>割引</th><th>開始日</th><th>変更日</th><th>終了日</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td><td><a href="#">申請テスト用教室</a></td><td><a href="#">2025</a></td><td><a href="#">2025中1継続個別コー...</a></td><td><ul class="course-list"><li class="diff-added">[2025_test] 中1社会 1コマ</li><li class="diff-added">[2025_test] 中1理科 1コマ</li></ul></td><td><span class="status-pill status-pill--change">変更</span></td><td>-</td><td>2026/03/01</td><td>2026/03/01</td><td>2026/03/31</td>
+        </tr>
+        <tr class="diff-row">
+          <td colspan="10">
+            <table class="diff-table">
+              <thead><tr><th style="width:140px;">変更項目</th><th>変更前</th><th>変更後</th></tr></thead>
+              <tbody>
+                <tr><td>商品名</td><td>2025中1継続集団コース</td><td class="diff-added">2025中1継続個別コース商品テスト</td></tr>
+                <tr><td>提供コース</td><td>[2025_test] 中1算数 2コマ<br><span class="diff-removed">[2025_test] 中1英語 1コマ</span></td><td class="diff-added">[2025_test] 中1社会 1コマ<br>[2025_test] 中1理科 1コマ</td></tr>
+                <tr><td>開始日</td><td>2025/04/01</td><td class="diff-added">2026/03/01</td></tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr><td><input type="checkbox"></td><td><a href="#">申請テスト用教室</a></td><td><a href="#">2025</a></td><td><a href="#">入会費</a></td><td>-</td><td><span class="status-pill status-pill--new">新規</span></td><td>-</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>
